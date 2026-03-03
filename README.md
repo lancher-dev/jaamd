@@ -60,7 +60,7 @@ The integration registers all remark plugins and injects the stylesheet automati
 
 ```ts
 jaamd({
-  selector: ".jaamd-content",   // must match the class on <MarkdownContent>
+  selector: ".jaamd-content",   // CSS selector for the JS enhancements (see below)
   plugins: {
     codeTabs:  true,            // :::code-tabs directive blocks
     alerts:    true,            // > [!NOTE] / [!WARNING] blockquote alerts
@@ -69,11 +69,12 @@ jaamd({
 })
 ```
 
-Change `selector` only if you need a completely different CSS selector:
+### About `selector`
 
-```ts
-jaamd({ selector: "[data-md]" })
-```
+`selector` only controls which element the **client-side JS enhancements** target at runtime. It does **not** affect the CSS file, which always uses `.jaamd-content`.
+
+- **When using `<MarkdownContent>`** — leave `selector` at its default. The component always adds `jaamd-content` to the wrapper, the CSS targets it, and so does the JS.
+- **When doing [manual usage](#manual--advanced-usage)** — if you write a completely custom wrapper (e.g. `<div data-md>`), set `selector` to match it. You will also need to provide your own CSS, since the bundled stylesheet is hardcoded to `.jaamd-content`.
 
 ---
 
