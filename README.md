@@ -9,6 +9,7 @@
 
 - [Installation](#installation)
 - [Setup](#setup)
+- [View Transitions (FOUC fix)](#view-transitions-fouc-fix)
 - [Integration Options](#integration-options)
 - [MarkdownContent Component](#markdowncontent-component)
 - [Theming](#theming)
@@ -53,6 +54,23 @@ import { MarkdownContent } from "jaamd/components";
 ```
 
 The integration registers all remark plugins and injects the stylesheet automatically. No other configuration is required.
+
+---
+
+## View Transitions (FOUC fix)
+
+If you are using Astro's `ClientRouter` (View Transitions), you may notice a **flash of unstyled content** when navigating between pages. This happens because the integration injects the stylesheet via `injectScript("page", ...)` — a JS module that runs *after* the new page content has already been swapped into the DOM.
+
+To fix it, import the stylesheet **statically** in your layout's frontmatter alongside your other CSS. Astro will bundle it as a `<link>` in `<head>`, which persists across navigations and is applied before any render:
+
+```astro
+---
+//  In any layout that uses MarkdownContent
+import "jaamd/styles.css";
+---
+```
+
+The duplicate import from `injectScript` is automatically deduplicated by the browser — no extra weight, no side effects.
 
 ---
 
