@@ -1,6 +1,6 @@
 import type { AstroIntegration } from "astro";
-import { remarkAlert } from "remark-github-blockquote-alert";
 import remarkDirective from "remark-directive";
+import { remarkAlert } from "./src/plugins/remark-alert.js";
 import remarkCodeTabs from "./src/plugins/remark-code-tabs.js";
 
 export interface JaamdOptions {
@@ -69,7 +69,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
 // Named re-exports for users who configure remark manually
 export { default as remarkCodeTabs } from "./src/plugins/remark-code-tabs.js";
-export { remarkAlert, remarkDirective };
+export { remarkAlert } from "./src/plugins/remark-alert.js";
+export { default as remarkDirective } from "remark-directive";
 
 // Component exports — import directly: import { MarkdownContent } from 'jaamd'
 export { default as MarkdownContent } from "./src/components/MarkdownContent.astro";
