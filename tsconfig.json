@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "types": ["astro/client"]
+  },
+  "include": ["index.ts", "src/**/*"],
+  "exclude": ["dist", "node_modules"]
+}

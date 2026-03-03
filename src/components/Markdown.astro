@@ -1,0 +1,41 @@
+---
+/**
+ * MarkdownContent
+ *
+ * Wraps markdown-rendered HTML and initialises client-side enhancements.
+ * The `class` prop must match the `selector` configured in jaamd() — defaults
+ * to "jaamd-content" in both places.
+ */
+export interface Props {
+  /**
+   * CSS class applied to the wrapper element.
+   * Override only if you also changed `selector` in jaamd().
+   * @default "jaamd-content"
+   */
+  class?: string;
+
+  [key: string]: unknown;
+}
+
+const { class: className = "jaamd-content", ...attrs } = Astro.props;
+---
+
+<div class={className} {...attrs}>
+  <slot />
+</div>
+
+<script>
+  import { initMarkdownEnhancements } from "../scripts/enhancements.js";
+
+  function run() {
+    // Support both the default class and a data-jaamd attribute for custom selectors
+    const el = document.querySelector<HTMLElement>("[data-jaamd], .jaamd-content");
+    const selector = el?.dataset.jaamd
+      ? `[data-jaamd="${el.dataset.jaamd}"]`
+      : `.${(el?.className ?? "jaamd-content").split(" ")[0]}`;
+    initMarkdownEnhancements(selector);
+  }
+
+  run();
+  document.addEventListener("astro:page-load", run);
+</script>

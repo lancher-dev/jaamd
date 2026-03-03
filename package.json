@@ -1,0 +1,44 @@
+{
+  "name": "jaamd",
+  "version": "0.1.1",
+  "description": "Just Another Astro Markdown",
+  "type": "module",
+  "license": "MIT",
+  "author": "Kasui92 <info@lucapattocchio.dev>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lancher-dev/jaamd"
+  },
+  "keywords": [
+    "astro",
+    "astro-component",
+    "astro-integration",
+    "withastro",
+    "markdown",
+    "remark"
+  ],
+  "exports": {
+    ".": "./index.ts",
+    "./components": "./src/components/MarkdownContent.astro",
+    "./styles": "./src/styles/markdown.css"
+  },
+  "files": [
+    "index.ts",
+    "src",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "astro": ">=4.0.0"
+  },
+  "dependencies": {
+    "remark-directive": "^4.0.0",
+    "remark-github-blockquote-alert": "^2.0.1",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "astro": "^5.0.0",
+    "typescript": "^5.0.0",
+    "unified": "^11.0.0"
+  }
+}
