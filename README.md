@@ -45,7 +45,7 @@ Wrap your markdown content with the `MarkdownContent` component in your layout:
 ```astro
 ---
 // src/layouts/BlogPost.astro
-import { MarkdownContent } from "jaamd";
+import { MarkdownContent } from "jaamd/components";
 ---
 <MarkdownContent>
   <slot />
@@ -81,18 +81,27 @@ jaamd({ selector: "[data-md]" })
 
 `MarkdownContent` is a polymorphic component. It renders as `<div>` by default and accepts any valid HTML tag via the `as` prop.
 
+> ```ts
+> import { MarkdownContent } from "jaamd/components";
+> ```
+
 ### Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `as` | `HTMLTag` | `"div"` | The HTML element to render as. |
 | `class` | `string` | — | Extra CSS classes appended to the wrapper. |
+| *...rest* | — | — | All standard HTML attributes for the chosen `as` element (e.g. `id`, `data-*`, `aria-*`). |
 
 The `jaamd-content` class is always present on the wrapper element — it is the selector used by the JS enhancements and must not be removed.
 
 ### Examples
 
 ```astro
+---
+import { MarkdownContent } from "jaamd/components";
+---
+
 <!-- Default: renders as <div class="jaamd-content"> -->
 <MarkdownContent>
   <slot />

@@ -72,6 +72,4 @@ export { default as remarkCodeTabs } from "./src/plugins/remark-code-tabs.js";
 export { remarkAlert } from "./src/plugins/remark-alert.js";
 export { default as remarkDirective } from "remark-directive";
 
-// Component exports — import directly: import { MarkdownContent } from 'jaamd'
-export { default as MarkdownContent } from "./src/components/MarkdownContent.astro";
 export type { JaamdOptions as Options };
