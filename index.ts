@@ -48,7 +48,18 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         updateConfig({ markdown: { remarkPlugins } });
 
         // "page" stage: bundled by Vite, tree-shaken, no duplicate injection
-        injectScript("page", `import "jaamd/styles";`);
+        injectScript(
+          "page",
+          `import "jaamd/styles";
+` +
+          `import { initMarkdownEnhancements } from "jaamd/client";
+` +
+          `function __jaamdRun() { initMarkdownEnhancements(${JSON.stringify(selector)}); }
+` +
+          `__jaamdRun();
+` +
+          `document.addEventListener("astro:page-load", __jaamdRun);`,
+        );
 
         logger.info("jaamd: markdown enhancements ready");
       },
@@ -59,4 +70,7 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 // Named re-exports for users who configure remark manually
 export { default as remarkCodeTabs } from "./src/plugins/remark-code-tabs.js";
 export { remarkAlert, remarkDirective };
+
+// Component exports — import directly: import { MarkdownContent } from 'jaamd'
+export { default as MarkdownContent } from "./src/components/MarkdownContent.astro";
 export type { JaamdOptions as Options };

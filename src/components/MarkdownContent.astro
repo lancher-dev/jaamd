@@ -1,0 +1,25 @@
+---
+/**
+ * MarkdownContent
+ *
+ * Wraps markdown-rendered HTML. Client-side enhancements are initialised
+ * automatically by the jaamd() integration via its injected page script.
+ */
+export interface Props {
+  /**
+   * Extra CSS classes to add to the wrapper alongside the mandatory
+   * `jaamd-content` class. The `jaamd-content` class is always present
+   * and must not be removed — it is the selector used by the JS enhancements.
+   */
+  class?: string;
+
+  [key: string]: unknown;
+}
+
+const { class: extraClass, ...attrs } = Astro.props;
+const className = extraClass ? `jaamd-content ${extraClass}` : "jaamd-content";
+---
+
+<div class={className} {...attrs}>
+  <slot />
+</div>
