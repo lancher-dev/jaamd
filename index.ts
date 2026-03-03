@@ -45,7 +45,17 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         if (directive || codeTabs) remarkPlugins.push(remarkDirective);
         if (codeTabs) remarkPlugins.push(remarkCodeTabs);
 
-        updateConfig({ markdown: { remarkPlugins } });
+        updateConfig({
+          vite: {
+            ssr: {
+              // Ensure jaamd source files (including .astro components) are
+              // processed by Vite transforms (i.e. the Astro compiler) rather
+              // than being treated as pre-bundled external modules.
+              noExternal: ["jaamd"],
+            },
+          },
+          markdown: { remarkPlugins },
+        });
 
         // "page" stage: bundled by Vite, tree-shaken, no duplicate injection
         injectScript(
