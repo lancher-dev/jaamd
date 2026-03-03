@@ -1,14 +1,22 @@
-<h1 align="center" class="b">
-  <br>
-  JAAMD
-</h1>
-<p align="center" class="b">
-  <b>Just Another Astro Markdown</b> - remark plugins, client-side enhancements and styles as a single Astro integration.
+<h1 align="center">JAAMD</h1>
+<p align="center">
+  <b>Just Another Astro Markdown</b> — remark plugins, client-side enhancements and styles as a single Astro integration.
 </p>
-<br>
-<br>
 
-## Install
+---
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Setup](#setup)
+- [Integration Options](#integration-options)
+- [MarkdownContent Component](#markdowncontent-component)
+- [Theming](#theming)
+- [Manual / Advanced Usage](#manual--advanced-usage)
+
+---
+
+## Installation
 
 ```bash
 npm install jaamd
@@ -16,7 +24,11 @@ npm install jaamd
 npx astro add jaamd
 ```
 
+---
+
 ## Setup
+
+Add the integration to your Astro config:
 
 ```ts
 // astro.config.mjs
@@ -27,6 +39,8 @@ export default defineConfig({
   integrations: [jaamd()],
 });
 ```
+
+Wrap your markdown content with the `MarkdownContent` component in your layout:
 
 ```astro
 ---
@@ -40,7 +54,9 @@ import { MarkdownContent } from "jaamd";
 
 The integration registers all remark plugins and injects the stylesheet automatically. No other configuration is required.
 
-## Options
+---
+
+## Integration Options
 
 ```ts
 jaamd({
@@ -53,24 +69,51 @@ jaamd({
 })
 ```
 
-### Extra classes
-
-The `class` prop appends to the mandatory `jaamd-content` class — the selector used by the JS enhancements stays `.jaamd-content` by default.
-
-```astro
-<!-- renders: <div class="jaamd-content prose mx-auto"> -->
-<MarkdownContent class="prose mx-auto"><slot /></MarkdownContent>
-```
-
-Change `selector` only if you need a completely different selector:
+Change `selector` only if you need a completely different CSS selector:
 
 ```ts
 jaamd({ selector: "[data-md]" })
 ```
 
+---
+
+## MarkdownContent Component
+
+`MarkdownContent` is a polymorphic component. It renders as `<div>` by default and accepts any valid HTML tag via the `as` prop.
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `HTMLTag` | `"div"` | The HTML element to render as. |
+| `class` | `string` | — | Extra CSS classes appended to the wrapper. |
+
+The `jaamd-content` class is always present on the wrapper element — it is the selector used by the JS enhancements and must not be removed.
+
+### Examples
+
+```astro
+<!-- Default: renders as <div class="jaamd-content"> -->
+<MarkdownContent>
+  <slot />
+</MarkdownContent>
+
+<!-- Custom tag: renders as <article class="jaamd-content"> -->
+<MarkdownContent as="article">
+  <slot />
+</MarkdownContent>
+
+<!-- Extra classes: renders as <article class="jaamd-content prose mx-auto"> -->
+<MarkdownContent as="article" class="prose mx-auto">
+  <slot />
+</MarkdownContent>
+```
+
+---
+
 ## Theming
 
-All styles use CSS custom properties with neutral slate/gray fallbacks. Override on `:root` or `.jaamd-content`:
+All styles use CSS custom properties with neutral slate/gray fallbacks. Override them on `:root` or `.jaamd-content`:
 
 ```css
 :root {
@@ -99,9 +142,11 @@ All styles use CSS custom properties with neutral slate/gray fallbacks. Override
 
 Full variable reference is in `src/styles/markdown.css`.
 
-## Manual / advanced usage
+---
 
-Import plugins and styles directly, without the integration:
+## Manual / Advanced Usage
+
+Import plugins and styles directly, bypassing the integration:
 
 ```ts
 // astro.config.mjs
@@ -129,9 +174,8 @@ import "jaamd/styles";
 </script>
 ```
 
-Or import the CSS file directly (e.g. from a `.css` file or a framework that prefers bare CSS imports):
+You can also import the CSS file directly from `.css` files or frameworks that prefer bare CSS imports:
 
 ```css
 @import "jaamd/styles.css";
-```
 ```
