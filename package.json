@@ -19,8 +19,9 @@
   ],
   "exports": {
     ".": "./index.ts",
-    "./components": "./src/components/MarkdownContent.astro",
-    "./styles": "./src/styles/markdown.css"
+    "./client": "./src/scripts/enhancements.ts",
+    "./styles": "./src/styles/markdown.css",
+    "./styles.css": "./src/styles/markdown.css"
   },
   "files": [
     "index.ts",
