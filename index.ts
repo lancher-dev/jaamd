@@ -38,12 +38,23 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
   return {
     name: "jaamd",
     hooks: {
-      "astro:config:setup": ({ updateConfig, injectScript, logger }) => {
-        const remarkPlugins: any[] = [];
-        if (alerts) remarkPlugins.push(remarkAlert);
+      "astro:config:setup": ({ config, updateConfig, injectScript, logger }) => {
+        const jaamdRemarkPlugins: any[] = [];
+        if (alerts) jaamdRemarkPlugins.push(remarkAlert);
         // directive must come before codeTabs
-        if (directive || codeTabs) remarkPlugins.push(remarkDirective);
-        if (codeTabs) remarkPlugins.push(remarkCodeTabs);
+        if (directive || codeTabs) jaamdRemarkPlugins.push(remarkDirective);
+        if (codeTabs) jaamdRemarkPlugins.push(remarkCodeTabs);
+
+        // Read remark/rehype plugins already set in the user's defineConfig
+        // and prepend jaamd's own plugins so they run first.
+        const existingMarkdown = (config.markdown as any) ?? {};
+        const existingRemarkPlugins: any[] = existingMarkdown.remarkPlugins ?? [];
+        const existingShikiConfig: any = existingMarkdown.shikiConfig ?? {};
+
+        // Apply sensible defaults for shikiConfig only when the user hasn't
+        // already set those specific keys.
+        const shikiDefaults: any = { theme: "github-dark", wrap: true };
+        const mergedShikiConfig = { ...shikiDefaults, ...existingShikiConfig };
 
         updateConfig({
           vite: {
@@ -54,7 +65,10 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
               noExternal: ["jaamd"],
             },
           },
-          markdown: { remarkPlugins },
+          markdown: {
+            remarkPlugins: [...jaamdRemarkPlugins, ...existingRemarkPlugins],
+            shikiConfig: mergedShikiConfig,
+          },
         });
 
         // "page" stage: bundled by Vite, tree-shaken, no duplicate injection
