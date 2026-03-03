@@ -21,6 +21,8 @@
     ".": "./index.ts",
     "./components": "./src/components/MarkdownContent.astro",
     "./client": "./src/scripts/enhancements.ts",
+    "./default": "./src/styles/variables.css",
+    "./default.css": "./src/styles/variables.css",
     "./styles": "./src/styles/markdown.css",
     "./styles.css": "./src/styles/markdown.css"
   },

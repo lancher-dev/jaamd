@@ -12,6 +12,22 @@ export interface JaamdOptions {
   selector?: string;
 
   /**
+   * Shiki syntax-highlighting theme family.
+   * Selects between `github-light` and `github-dark`.
+   * @default "light"
+   */
+  theme?: "light" | "dark";
+
+  /**
+   * Skip injecting the default CSS variable fallbacks (`jaamd/default`).
+   * When `false` (default), the built-in light-theme variable set is always
+   * loaded before the main stylesheet so unstyled pages never occur.
+   * Set to `true` only when you supply your own full variable set.
+   * @default false
+   */
+  noDefault?: boolean;
+
+  /**
    * Granular control over which remark plugins are registered.
    * All enabled by default.
    */
@@ -32,7 +48,7 @@ export interface JaamdOptions {
  * Supports `astro add jaamd`.
  */
 export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
-  const { selector = ".jaamd-content", plugins = {} } = options;
+  const { selector = ".jaamd-content", theme = "light", noDefault = false, plugins = {} } = options;
   const { codeTabs = true, alerts = true, directive = true } = plugins;
 
   return {
@@ -53,7 +69,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         // Apply sensible defaults for shikiConfig only when the user hasn't
         // already set those specific keys.
-        const shikiDefaults: any = { theme: "github-dark", wrap: true };
+        const shikiTheme = theme === "dark" ? "github-dark" : "github-light";
+        const shikiDefaults: any = { theme: shikiTheme, wrap: true };
         const mergedShikiConfig = { ...shikiDefaults, ...existingShikiConfig };
 
         updateConfig({
@@ -74,6 +91,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         // "page" stage: bundled by Vite, tree-shaken, no duplicate injection
         injectScript(
           "page",
+          (!noDefault ? `import "jaamd/default";
+` : "") +
           `import "jaamd/styles";
 ` +
           `import { initMarkdownEnhancements } from "jaamd/client";

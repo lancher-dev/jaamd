@@ -1,0 +1,198 @@
+/* ============================================================
+ * JAAMD — Default Variables & Full CSS Variable Reference
+ * ============================================================
+ *
+ * This file serves a dual purpose:
+ *
+ *  1. FALLBACK THEME — it is automatically imported by the
+ *     integration (before markdown.css) so all --jaamd-* vars
+ *     have sensible values even if you never set any yourself.
+ *     You can opt out with `noDefault: true` in jaamd({…}).
+ *
+ *  2. DOCUMENTATION — every --jaamd-* property is listed here
+ *     with a comment describing its role. Copy any variable
+ *     you want to override into your own :root block.
+ *
+ * Importable as:  import "jaamd/default";
+ *                 @import "jaamd/default.css";
+ * ============================================================ */
+
+:root {
+  /* ── Typography ─────────────────────────────────────────── */
+
+  /** Sans-serif font stack for body text */
+  --jaamd-font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /** Serif font stack (used when --jaamd-font-sans is overridden to a serif) */
+  --jaamd-font-serif: Georgia, "Times New Roman", Times, serif;
+
+  /** Monospace font stack for code */
+  --jaamd-font-mono:  "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+  /** Base font size for all scaled elements */
+  --jaamd-font-size:  1.125rem;
+
+  /** Line height for body text, lists and code blocks */
+  --jaamd-line-height: 1.6;
+
+
+  /* ── Core colors ────────────────────────────────────────── */
+
+  /** Default body/paragraph text color */
+  --jaamd-color-fg:            #3a3a3a;
+
+  /** Headings, strong, table headers, summary — brighter than fg */
+  --jaamd-color-fg-bright:     #1a1a1a;
+
+  /** Accent / primary color (links, active tab label, summary arrow) */
+  --jaamd-color-primary:       #2d2d2d;
+
+  /** Slightly lighter accent (link :hover, blockquote text) */
+  --jaamd-color-primary-light: #4a4a4a;
+
+
+  /* ── Headings ───────────────────────────────────────────── */
+
+  /** Border-bottom color of h2 */
+  --jaamd-heading-border-color: rgb(from var(--jaamd-color-primary) r g b / 0.4);
+
+
+  /* ── Inline code (<code> outside a <pre>) ───────────────── */
+
+  /** Background of inline code */
+  --jaamd-code-bg:     #e8e4df;
+
+  /** Border of inline code */
+  --jaamd-code-border: #d0cbc6;
+
+  /** Text color of inline code */
+  --jaamd-code-fg:     #1a1a1a;
+
+
+  /* ── Fenced code blocks (<pre>) ─────────────────────────── */
+
+  /** Background of code blocks (overrides Shiki when not using a Shiki theme) */
+  --jaamd-pre-bg:     #eeeae5;
+
+  /** Border of code blocks */
+  --jaamd-pre-border: #c8c4bf;
+
+  /** Fallback text color inside code blocks */
+  --jaamd-pre-fg:     #2d2d2d;
+
+
+  /* ── Copy-to-clipboard button ───────────────────────────── */
+
+  /** Copy button background (idle) */
+  --jaamd-copy-btn-bg:           #d8d4cf;
+
+  /** Copy button border (idle) */
+  --jaamd-copy-btn-border:       #a8a39e;
+
+  /** Copy button icon color (idle) */
+  --jaamd-copy-btn-fg:           #2d2d2d;
+
+  /** Copy button background on hover */
+  --jaamd-copy-btn-hover-bg:     #c8c4bf;
+
+  /** Copy button border on hover */
+  --jaamd-copy-btn-hover-border: #9a958f;
+
+  /** Copy button icon color on hover */
+  --jaamd-copy-btn-hover-fg:     #1a1a1a;
+
+
+  /* ── Blockquote ─────────────────────────────────────────── */
+
+  /** Blockquote background fill */
+  --jaamd-blockquote-bg:     #eeeae5;
+
+  /** Blockquote left-border accent color */
+  --jaamd-blockquote-border: #5a5a5a;
+
+  /** Blockquote paragraph text color */
+  --jaamd-blockquote-fg:     #4a4a4a;
+
+
+  /* ── Emphasis ───────────────────────────────────────────── */
+
+  /** Color of <em> / italic text */
+  --jaamd-em-fg: #4a4a4a;
+
+
+  /* ── Horizontal rule (<hr>) ─────────────────────────────── */
+
+  /** Color of the hr border line */
+  --jaamd-hr-color: rgb(from var(--jaamd-color-primary) r g b / 0.4);
+
+
+  /* ── Tables ─────────────────────────────────────────────── */
+
+  /** Table cell border color (also used for box-shadow outline) */
+  --jaamd-table-border:     #b8b3ae;
+
+  /** <th> header row background */
+  --jaamd-table-header-bg:  #eeeae5;
+
+  /** <tr>:hover background */
+  --jaamd-table-hover-bg:   #e0dcd7;
+
+
+  /* ── Code tabs (.code-tabs) ───────────────────────────────── */
+
+  /** Outer border and tab-strip bottom border */
+  --jaamd-tabs-border:          #c8c4bf;
+
+  /** Tab strip header background */
+  --jaamd-tabs-header-bg:       #e0dcd7;
+
+  /** Inactive tab button :hover background */
+  --jaamd-tabs-btn-hover-bg:    #d0cbc6;
+
+  /** Active tab button background (matches the panel below it) */
+  --jaamd-tabs-btn-active-bg:   #eeeae5;
+
+
+  /* ── Details / Summary ───────────────────────────────────── */
+
+  /** <details> block background */
+  --jaamd-details-bg:     #eeeae5;
+
+  /** <details> block border */
+  --jaamd-details-border: #c8c4bf;
+
+
+  /* ── Spoiler ─────────────────────────────────────────────── */
+
+  /** Hidden spoiler text+background color (same value hides text) */
+  --jaamd-spoiler-hidden-color:  #1a1a1a;
+
+  /** Revealed spoiler background */
+  --jaamd-spoiler-revealed-bg:   #eeeae5;
+
+  /** Revealed spoiler text color */
+  --jaamd-spoiler-revealed-fg:   #3a3a3a;
+
+
+  /* ── Alert blocks (.markdown-alert) ────────────────────── */
+
+  /* Note */
+  --jaamd-alert-note-color: #0969da;
+  --jaamd-alert-note-bg:    #dff0fd;
+
+  /* Tip */
+  --jaamd-alert-tip-color:  #1a7f37;
+  --jaamd-alert-tip-bg:     #dafbe1;
+
+  /* Important */
+  --jaamd-alert-important-color: #8250df;
+  --jaamd-alert-important-bg:    #fbefff;
+
+  /* Warning */
+  --jaamd-alert-warning-color: #9a6700;
+  --jaamd-alert-warning-bg:    #fff8c5;
+
+  /* Caution */
+  --jaamd-alert-caution-color: #cf222e;
+  --jaamd-alert-caution-bg:    #ffebe9;
+}

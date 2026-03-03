@@ -62,6 +62,7 @@ To fix it, import the stylesheet **statically** in your layout's frontmatter alo
 ```astro
 ---
 //  In any layout that uses MarkdownContent
+import "jaamd/default.css";  // variable fallbacks
 import "jaamd/styles.css";
 ---
 ```
@@ -72,7 +73,9 @@ The duplicate import from `injectScript` is automatically deduplicated by the br
 
 ```ts
 jaamd({
-  selector: ".jaamd-content",   // CSS selector for the JS enhancements (see below)
+  selector:   ".jaamd-content", // CSS selector for the JS enhancements (see below)
+  theme:      "light",          // "light" → github-light | "dark" → github-dark Shiki theme
+  noDefault:  false,            // set true to skip injecting jaamd/default variable fallbacks
   plugins: {
     codeTabs:  true,            // :::code-tabs directive blocks
     alerts:    true,            // > [!NOTE] / [!WARNING] blockquote alerts
@@ -131,34 +134,34 @@ import { MarkdownContent } from "jaamd/components";
 
 ## Theming
 
-All styles use CSS custom properties with neutral slate/gray fallbacks. Override them on `:root` or `.jaamd-content`:
+All styles are driven by CSS custom properties. By default, `jaamd/default` is automatically injected before the main stylesheet so every variable has a sensible fallback value.
+
+Override any variable on `:root` or `.jaamd-content` in your own stylesheet:
 
 ```css
 :root {
-  /* foreground */
+  /* core colors */
   --jaamd-color-fg:            #334155;
   --jaamd-color-fg-bright:     #0f172a;
   --jaamd-color-primary:       #6366f1;
   --jaamd-color-primary-light: #818cf8;
 
-  /* background / border */
-  --jaamd-color-bg-secondary:  #f8fafc;
-  --jaamd-color-border:        #e2e8f0;
-
-  /* code blocks */
-  --jaamd-pre-bg:              #0f172a;
-  --jaamd-pre-fg:              #e2e8f0;
-  --jaamd-code-bg:             #f1f5f9;
-  --jaamd-code-fg:             #0f172a;
-
   /* typography */
-  --jaamd-font-sans:  ui-sans-serif, system-ui, sans-serif;
-  --jaamd-font-mono:  ui-monospace, monospace;
-  --jaamd-font-size:  1rem;
+  --jaamd-font-sans: ui-sans-serif, system-ui, sans-serif;
+  --jaamd-font-mono: ui-monospace, monospace;
+  --jaamd-font-size: 1rem;
 }
 ```
 
-Full variable reference is in `src/styles/markdown.css`.
+For the complete list of every available variable with its default value, see [`src/styles/variables.css`](src/styles/variables.css).
+
+### Skipping the defaults
+
+If you supply your own full variable set and don't want jaamd to inject its defaults, set `noDefault: true`:
+
+```ts
+jaamd({ noDefault: true })
+```
 
 ## Manual / Advanced Usage
 
@@ -177,6 +180,7 @@ export default defineConfig({
 
 ```astro
 ---
+import "jaamd/default";  // variable fallbacks — omit if you provide your own
 import "jaamd/styles";
 ---
 <div class="jaamd-content">
@@ -190,8 +194,9 @@ import "jaamd/styles";
 </script>
 ```
 
-You can also import the CSS file directly from `.css` files or frameworks that prefer bare CSS imports:
+You can also import the CSS files directly from `.css` files or frameworks that prefer bare CSS imports:
 
 ```css
+@import "jaamd/default.css";
 @import "jaamd/styles.css";
 ```
