@@ -62,7 +62,7 @@ To fix it, import the stylesheet **statically** in your layout's frontmatter alo
 ```astro
 ---
 //  In any layout that uses MarkdownContent
-import "jaamd/default.css";  // variable fallbacks
+import "jaamd/default.css"; 
 import "jaamd/styles.css";
 ---
 ```
@@ -74,7 +74,7 @@ The duplicate import from `injectScript` is automatically deduplicated by the br
 ```ts
 jaamd({
   selector:   ".jaamd-content", // CSS selector for the JS enhancements (see below)
-  theme:      "light",          // "light" → github-light | "dark" → github-dark Shiki theme
+  theme:      "",               // Shiki theme (default "github-light")
   noDefault:  false,            // set true to skip injecting jaamd/default variable fallbacks
   plugins: {
     codeTabs:  true,            // :::code-tabs directive blocks
