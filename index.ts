@@ -13,10 +13,9 @@ export interface JaamdOptions {
 
   /**
    * Shiki syntax-highlighting theme family.
-   * Selects between `github-light` and `github-dark`.
-   * @default "light"
+   * @default "github-light"
    */
-  theme?: "light" | "dark";
+  theme?: string;
 
   /**
    * Skip injecting the default CSS variable fallbacks (`jaamd/default`).
@@ -48,7 +47,12 @@ export interface JaamdOptions {
  * Supports `astro add jaamd`.
  */
 export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
-  const { selector = ".jaamd-content", theme = "light", noDefault = false, plugins = {} } = options;
+  const {
+    selector  = ".jaamd-content",
+    theme     = "github-light",
+    noDefault = false,
+    plugins   = {},
+  } = options;
   const { codeTabs = true, alerts = true, directive = true } = plugins;
 
   return {
@@ -67,11 +71,10 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         const existingRemarkPlugins: any[] = existingMarkdown.remarkPlugins ?? [];
         const existingShikiConfig: any = existingMarkdown.shikiConfig ?? {};
 
-        // Apply sensible defaults for shikiConfig only when the user hasn't
-        // already set those specific keys.
-        const shikiTheme = theme === "dark" ? "github-dark" : "github-light";
-        const shikiDefaults: any = { theme: shikiTheme, wrap: true };
-        const mergedShikiConfig = { ...shikiDefaults, ...existingShikiConfig };
+        // `wrap` and other keys are only filled in when absent.
+        const mergedShikiConfig: any = { ...existingShikiConfig };
+        mergedShikiConfig.theme = theme;
+        if (mergedShikiConfig.wrap === undefined) mergedShikiConfig.wrap = true;
 
         updateConfig({
           vite: {
