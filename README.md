@@ -31,7 +31,7 @@ export default defineConfig({
 ```astro
 ---
 // src/layouts/BlogPost.astro
-import MarkdownContent from "jaamd/components";
+import { MarkdownContent } from "jaamd";
 ---
 <MarkdownContent>
   <slot />
@@ -53,14 +53,19 @@ jaamd({
 })
 ```
 
-### Custom selector
+### Extra classes
 
-```ts
-jaamd({ selector: ".prose" })
-```
+The `class` prop appends to the mandatory `jaamd-content` class — the selector used by the JS enhancements stays `.jaamd-content` by default.
 
 ```astro
-<MarkdownContent class="prose"><slot /></MarkdownContent>
+<!-- renders: <div class="jaamd-content prose mx-auto"> -->
+<MarkdownContent class="prose mx-auto"><slot /></MarkdownContent>
+```
+
+Change `selector` only if you need a completely different selector:
+
+```ts
+jaamd({ selector: "[data-md]" })
 ```
 
 ## Theming
@@ -116,4 +121,17 @@ import "jaamd/styles";
 <div class="jaamd-content">
   <slot />
 </div>
+<script>
+  import { initMarkdownEnhancements } from "jaamd/client";
+  function run() { initMarkdownEnhancements(".jaamd-content"); }
+  run();
+  document.addEventListener("astro:page-load", run);
+</script>
+```
+
+Or import the CSS file directly (e.g. from a `.css` file or a framework that prefers bare CSS imports):
+
+```css
+@import "jaamd/styles.css";
+```
 ```
