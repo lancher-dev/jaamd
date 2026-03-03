@@ -25,8 +25,6 @@ npm install jaamd
 npx astro add jaamd
 ```
 
----
-
 ## Setup
 
 Add the integration to your Astro config:
@@ -55,11 +53,9 @@ import { MarkdownContent } from "jaamd/components";
 
 The integration registers all remark plugins and injects the stylesheet automatically. No other configuration is required.
 
----
-
 ## View Transitions (FOUC fix)
 
-If you are using Astro's `ClientRouter` (View Transitions), you may notice a **flash of unstyled content** when navigating between pages. This happens because the integration injects the stylesheet via `injectScript("page", ...)` — a JS module that runs *after* the new page content has already been swapped into the DOM.
+If you are using Astro's `ClientRouter` (View Transitions), you may notice a **flash of unstyled content** when navigating between pages. This happens because the integration injects the stylesheet via `injectScript("page", ...)`, a JS module that runs *after* the new page content has already been swapped into the DOM.
 
 To fix it, import the stylesheet **statically** in your layout's frontmatter alongside your other CSS. Astro will bundle it as a `<link>` in `<head>`, which persists across navigations and is applied before any render:
 
@@ -70,9 +66,7 @@ import "jaamd/styles.css";
 ---
 ```
 
-The duplicate import from `injectScript` is automatically deduplicated by the browser — no extra weight, no side effects.
-
----
+The duplicate import from `injectScript` is automatically deduplicated by the browser. No extra weight, no side effects.
 
 ## Integration Options
 
@@ -91,18 +85,16 @@ jaamd({
 
 `selector` only controls which element the **client-side JS enhancements** target at runtime. It does **not** affect the CSS file, which always uses `.jaamd-content`.
 
-- **When using `<MarkdownContent>`** — leave `selector` at its default. The component always adds `jaamd-content` to the wrapper, the CSS targets it, and so does the JS.
-- **When doing [manual usage](#manual--advanced-usage)** — if you write a completely custom wrapper (e.g. `<div data-md>`), set `selector` to match it. You will also need to provide your own CSS, since the bundled stylesheet is hardcoded to `.jaamd-content`.
-
----
+- **When using `<MarkdownContent>`** leave `selector` at its default. The component always adds `jaamd-content` to the wrapper, the CSS targets it, and so does the JS.
+- **When doing [manual usage](#manual--advanced-usage)**, if you write a completely custom wrapper (e.g. `<div data-md>`), set `selector` to match it. You will also need to provide your own CSS, since the bundled stylesheet is hardcoded to `.jaamd-content`.
 
 ## MarkdownContent Component
 
 `MarkdownContent` is a polymorphic component. It renders as `<div>` by default and accepts any valid HTML tag via the `as` prop.
 
-> ```ts
-> import { MarkdownContent } from "jaamd/components";
-> ```
+```ts
+import { MarkdownContent } from "jaamd/components";
+```
 
 ### Props
 
@@ -112,7 +104,7 @@ jaamd({
 | `class` | `string` | — | Extra CSS classes appended to the wrapper. |
 | *...rest* | — | — | All standard HTML attributes for the chosen `as` element (e.g. `id`, `data-*`, `aria-*`). |
 
-The `jaamd-content` class is always present on the wrapper element — it is the selector used by the JS enhancements and must not be removed.
+The `jaamd-content` class is always present on the wrapper element. It is the selector used by the JS enhancements and must not be removed.
 
 ### Examples
 
@@ -136,8 +128,6 @@ import { MarkdownContent } from "jaamd/components";
   <slot />
 </MarkdownContent>
 ```
-
----
 
 ## Theming
 
@@ -169,8 +159,6 @@ All styles use CSS custom properties with neutral slate/gray fallbacks. Override
 ```
 
 Full variable reference is in `src/styles/markdown.css`.
-
----
 
 ## Manual / Advanced Usage
 
