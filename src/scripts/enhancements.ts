@@ -47,7 +47,7 @@ export function initMarkdownEnhancements(
 // ─── Heading anchor links ─────────────────────────────────────────────────────
 
 function addHeadingLinks(selector: string): void {
-  qsa<HTMLElement>(document, `${selector} h2, ${selector} h3`).forEach(
+  qsa<HTMLElement>(document, `${selector} h1, ${selector} h2, ${selector} h3`).forEach(
     (header) => {
       if (!header.id) header.id = slugify(header.textContent ?? "");
       if (qs(header, ".jaamd-heading-link")) return;

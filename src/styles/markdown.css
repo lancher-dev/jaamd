@@ -21,10 +21,12 @@
   text-wrap: balance;
 }
 
+.jaamd-content h1,
 .jaamd-content h2 {
   scroll-margin-top: 80px;
 }
 
+.jaamd-content h1:hover .jaamd-heading-link,
 .jaamd-content h2:hover .jaamd-heading-link {
   opacity: 0.6;
 }
