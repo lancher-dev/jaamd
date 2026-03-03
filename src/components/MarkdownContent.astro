@@ -1,25 +1,30 @@
 ---
+import type { HTMLTag, Polymorphic } from "astro/types";
+
 /**
  * MarkdownContent
  *
  * Wraps markdown-rendered HTML. Client-side enhancements are initialised
  * automatically by the jaamd() integration via its injected page script.
  */
-export interface Props {
+export type Props<Tag extends HTMLTag = "div"> = Polymorphic<{
+  as: Tag;
   /**
-   * Extra CSS classes to add to the wrapper alongside the mandatory
-   * `jaamd-content` class. The `jaamd-content` class is always present
-   * and must not be removed — it is the selector used by the JS enhancements.
+   * Extra CSS classes to append to the wrapper element.
+   * The `jaamd-content` class is always present — it is the selector used
+   * by the JS enhancements and must not be removed.
+   *
+   * @example
+   * // Renders: <article class="jaamd-content prose mx-auto">
+   * <MarkdownContent as="article" class="prose mx-auto">
    */
   class?: string;
+}>;
 
-  [key: string]: unknown;
-}
-
-const { class: extraClass, ...attrs } = Astro.props;
+const { as: Tag = "div", class: extraClass, ...attrs } = Astro.props;
 const className = extraClass ? `jaamd-content ${extraClass}` : "jaamd-content";
 ---
 
-<div class={className} {...attrs}>
+<Tag class={className} {...attrs}>
   <slot />
-</div>
+</Tag>
