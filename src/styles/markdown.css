@@ -361,11 +361,11 @@
   animation: jaamd-fade-in 0.2s ease-in-out;
 }
 
-.jaamd-lightbox.hidden {
+.jaamd-lightbox--hidden {
   display: none;
 }
 
-.jaamd-lightbox-backdrop {
+.jaamd-lightbox__backdrop {
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.75);
@@ -373,7 +373,7 @@
   cursor: pointer;
 }
 
-.jaamd-lightbox-content {
+.jaamd-lightbox__content {
   position: relative;
   max-width: 95vw;
   max-height: 95vh;
@@ -383,7 +383,7 @@
   z-index: 1;
 }
 
-.jaamd-lightbox-img {
+.jaamd-lightbox__img {
   max-width: 100%;
   max-height: 95vh;
   width: auto;
@@ -393,7 +393,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-.jaamd-lightbox-close {
+.jaamd-lightbox__close {
   position: fixed;
   top: 1rem;
   right: 1rem;
@@ -413,13 +413,13 @@
   z-index: 10;
 }
 
-.jaamd-lightbox-close:hover {
+.jaamd-lightbox__close:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
 }
 
-.jaamd-lightbox-close:active {
+.jaamd-lightbox__close:active {
   transform: scale(0.95);
 }
 
