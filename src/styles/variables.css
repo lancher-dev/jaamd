@@ -4,19 +4,29 @@
  *
  * This file serves a dual purpose:
  *
- *  1. FALLBACK THEME — it is automatically imported by the
- *     integration (before markdown.css) so all --jaamd-* vars
- *     have sensible values even if you never set any yourself.
- *     You can opt out with `noDefault: true` in jaamd({…}).
+ *  1. FALLBACK THEME:
+ *     it is automatically imported by the integration so all
+ *     --jaamd-* vars have sensible values even if you never
+ *     set any yourself. You can opt out with `noDefault: true`
+ *     in jaamd({…}).
  *
- *  2. DOCUMENTATION — every --jaamd-* property is listed here
- *     with a comment describing its role. Copy any variable
- *     you want to override into your own :root block.
+ *     All defaults live inside @layer jaamd.defaults, so any
+ *     :root rule you write outside a layer always wins — no
+ *     matter the load order.
+ *
+ *  2. DOCUMENTATION:
+ *     every --jaamd-* property is listed here with a comment
+ *     describing its role. Copy any variable you want to override
+ *     into your own :root block (no layer needed).
  *
  * Importable as:  import "jaamd/default";
  *                 @import "jaamd/default.css";
  * ============================================================ */
 
+/* Establish the layer so its priority is always below unlayered CSS. */
+@layer jaamd.defaults;
+
+@layer jaamd.defaults {
 :root {
   /* ── Typography ─────────────────────────────────────────── */
 
@@ -195,4 +205,5 @@
   /* Caution */
   --jaamd-alert-caution-color: #cf222e;
   --jaamd-alert-caution-bg:    #ffebe9;
+}
 }
