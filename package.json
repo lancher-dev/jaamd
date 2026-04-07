@@ -24,7 +24,21 @@
     "./default": "./src/styles/variables.css",
     "./default.css": "./src/styles/variables.css",
     "./styles": "./src/styles/markdown.css",
-    "./styles.css": "./src/styles/markdown.css"
+    "./styles.css": "./src/styles/markdown.css",
+    "./shiki-dual": "./src/styles/shiki-dual.css",
+    "./shiki-dual.css": "./src/styles/shiki-dual.css",
+    "./themes/dracula": "./src/themes/dracula/index.css",
+    "./themes/dracula.css": "./src/themes/dracula/index.css",
+    "./themes/dracula/dark": "./src/themes/dracula/dark.css",
+    "./themes/dracula/dark.css": "./src/themes/dracula/dark.css",
+    "./themes/nord": "./src/themes/nord/index.css",
+    "./themes/nord.css": "./src/themes/nord/index.css",
+    "./themes/nord/dark": "./src/themes/nord/dark.css",
+    "./themes/nord/dark.css": "./src/themes/nord/dark.css",
+    "./themes/one-dark": "./src/themes/one-dark/index.css",
+    "./themes/one-dark.css": "./src/themes/one-dark/index.css",
+    "./themes/one-dark/dark": "./src/themes/one-dark/dark.css",
+    "./themes/one-dark/dark.css": "./src/themes/one-dark/dark.css"
   },
   "files": [
     "index.ts",

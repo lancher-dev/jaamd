@@ -1,0 +1,66 @@
+/* ============================================================
+ * JAAMD Theme — Dracula
+ * Pairs with Shiki theme: "dracula" or "dracula-soft"
+ * ============================================================
+ *
+ * Import:  @import "jaamd/themes/dracula";
+ *          import "jaamd/themes/dracula";
+ * ============================================================ */
+
+:root {
+  --jaamd-color-fg:            #f8f8f2;
+  --jaamd-color-fg-bright:     #ffffff;
+  --jaamd-color-primary:       #bd93f9;
+  --jaamd-color-primary-light: #ff79c6;
+
+  --jaamd-heading-border-color: rgba(189, 147, 249, 0.3);
+
+  --jaamd-code-bg:     #44475a;
+  --jaamd-code-border: #6272a4;
+  --jaamd-code-fg:     #f8f8f2;
+
+  --jaamd-pre-bg:     #282a36;
+  --jaamd-pre-border: #44475a;
+  --jaamd-pre-fg:     #f8f8f2;
+
+  --jaamd-copy-btn-bg:           #44475a;
+  --jaamd-copy-btn-border:       #6272a4;
+  --jaamd-copy-btn-fg:           #f8f8f2;
+  --jaamd-copy-btn-hover-bg:     #6272a4;
+  --jaamd-copy-btn-hover-border: #bd93f9;
+  --jaamd-copy-btn-hover-fg:     #ffffff;
+
+  --jaamd-blockquote-bg:     #282a36;
+  --jaamd-blockquote-border: #6272a4;
+  --jaamd-blockquote-fg:     #6272a4;
+
+  --jaamd-em-fg: #8be9fd;
+  --jaamd-hr-color: rgba(189, 147, 249, 0.3);
+
+  --jaamd-table-border:     #44475a;
+  --jaamd-table-header-bg:  #282a36;
+  --jaamd-table-hover-bg:   #44475a;
+
+  --jaamd-tabs-border:        #44475a;
+  --jaamd-tabs-header-bg:     #21222c;
+  --jaamd-tabs-btn-hover-bg:  #44475a;
+  --jaamd-tabs-btn-active-bg: #282a36;
+
+  --jaamd-details-bg:     #282a36;
+  --jaamd-details-border: #44475a;
+
+  --jaamd-spoiler-hidden-color: #f8f8f2;
+  --jaamd-spoiler-revealed-bg:  #44475a;
+  --jaamd-spoiler-revealed-fg:  #f8f8f2;
+
+  --jaamd-alert-note-color:      #8be9fd;
+  --jaamd-alert-note-bg:         rgba(139, 233, 253, 0.1);
+  --jaamd-alert-tip-color:       #50fa7b;
+  --jaamd-alert-tip-bg:          rgba(80, 250, 123, 0.1);
+  --jaamd-alert-important-color: #bd93f9;
+  --jaamd-alert-important-bg:    rgba(189, 147, 249, 0.1);
+  --jaamd-alert-warning-color:   #f1fa8c;
+  --jaamd-alert-warning-bg:      rgba(241, 250, 140, 0.1);
+  --jaamd-alert-caution-color:   #ff5555;
+  --jaamd-alert-caution-bg:      rgba(255, 85, 85, 0.1);
+}
