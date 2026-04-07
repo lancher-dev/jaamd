@@ -12,10 +12,16 @@ export interface JaamdOptions {
   selector?: string;
 
   /**
-   * Shiki syntax-highlighting theme family.
+   * Shiki syntax-highlighting theme.
+   *
+   * - **string** — single theme name (e.g. `"github-light"`).
+   * - **{ light, dark }** — enables dual-theme mode. Shiki outputs CSS
+   *   variables for both themes and JAAMD injects the switching CSS.
+   *   Use together with a `.dark` class on `<html>` for dark-mode toggling.
+   *
    * @default "github-light"
    */
-  theme?: string;
+  theme?: string | { light: string; dark: string };
 
   /**
    * Skip injecting the default CSS variable fallbacks (`jaamd/default`).
@@ -73,7 +79,16 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         // `wrap` and other keys are only filled in when absent.
         const mergedShikiConfig: any = { ...existingShikiConfig };
-        mergedShikiConfig.theme = theme;
+
+        // Dual-theme mode: { light, dark } → Shiki "themes" with CSS variables
+        if (typeof theme === "object" && theme.light && theme.dark) {
+          delete mergedShikiConfig.theme;
+          mergedShikiConfig.themes = { light: theme.light, dark: theme.dark };
+          mergedShikiConfig.defaultColor = false;
+        } else {
+          mergedShikiConfig.theme = typeof theme === "string" ? theme : "github-light";
+        }
+
         if (mergedShikiConfig.wrap === undefined) mergedShikiConfig.wrap = true;
 
         updateConfig({
@@ -92,9 +107,12 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         });
 
         // "page" stage: bundled by Vite, tree-shaken, no duplicate injection
+        const isDualTheme = typeof theme === "object" && theme.light && theme.dark;
         injectScript(
           "page",
           (!noDefault ? `import "jaamd/default";
+` : "") +
+          (isDualTheme ? `import "jaamd/shiki-dual";
 ` : "") +
           `import "jaamd/styles";
 ` +
