@@ -54,8 +54,8 @@
   },
   "devDependencies": {
     "@types/mdast": "^4.0.4",
-    "astro": "^5.0.0",
-    "typescript": "^5.0.0",
+    "astro": "^6.0.0",
+    "typescript": "^6.0.0",
     "unified": "^11.0.0"
   }
 }
