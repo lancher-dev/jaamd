@@ -13,6 +13,10 @@
 - [Integration Options](#integration-options)
 - [MarkdownContent Component](#markdowncontent-component)
 - [Theming](#theming)
+  - [Customizing variables](#customizing-variables)
+  - [Dark mode](#dark-mode)
+  - [Theme presets](#theme-presets)
+  - [Dual-theme Shiki](#dual-theme-shiki-optional)
 - [Manual / Advanced Usage](#manual--advanced-usage)
 
 ---
@@ -62,7 +66,7 @@ To fix it, import the stylesheet **statically** in your layout's frontmatter alo
 ```astro
 ---
 //  In any layout that uses MarkdownContent
-import "jaamd/default.css"; 
+import "jaamd/default.css";
 import "jaamd/styles.css";
 ---
 ```
@@ -73,9 +77,9 @@ The duplicate import from `injectScript` is automatically deduplicated by the br
 
 ```ts
 jaamd({
-  selector:   ".jaamd-content", // CSS selector for the JS enhancements (see below)
-  theme:      "",               // Shiki theme (default "github-light")
-  noDefault:  false,            // set true to skip injecting jaamd/default variable fallbacks
+  selector:   ".jaamd-content", // CSS selector for the JS enhancements
+  theme:      "github-light",   // Shiki theme name (or { light, dark } — see below)
+  noDefault:  false,            // skip injecting jaamd/default variable fallbacks
   plugins: {
     codeTabs:  true,            // :::code-tabs directive blocks
     alerts:    true,            // > [!NOTE] / [!WARNING] blockquote alerts
@@ -134,30 +138,87 @@ import { MarkdownContent } from "jaamd/components";
 
 ## Theming
 
-All styles are driven by CSS custom properties. By default, `jaamd/default` is automatically injected before the main stylesheet so every variable has a sensible fallback value.
+All styles are driven by CSS custom properties prefixed with `--jaamd-*`. The default variable set (`jaamd/default`) is injected automatically so everything works out of the box.
 
-Override any variable on `:root` or `.jaamd-content` in your own stylesheet:
+### Customizing variables
+
+Override any variable on `:root` in your own stylesheet:
 
 ```css
 :root {
-  /* core colors */
   --jaamd-color-fg:            #334155;
   --jaamd-color-fg-bright:     #0f172a;
   --jaamd-color-primary:       #6366f1;
   --jaamd-color-primary-light: #818cf8;
-
-  /* typography */
-  --jaamd-font-sans: ui-sans-serif, system-ui, sans-serif;
   --jaamd-font-mono: ui-monospace, monospace;
   --jaamd-font-size: 1rem;
 }
 ```
 
-For the complete list of every available variable with its default value, see [`src/styles/variables.css`](src/styles/variables.css).
+See [`src/styles/variables.css`](src/styles/variables.css) for every available variable and its default value.
+
+### Dark mode
+
+The default variable set includes dark-mode overrides activated by the `dark` class on `<html>`. Toggle the class and all JAAMD elements adapt.
+
+### Theme presets
+
+Three additional presets restyle all `--jaamd-*` variables to match popular editor colour schemes:
+
+| Preset | Import | Recommended Shiki theme |
+|--------|--------|------------------------|
+| Dracula | `jaamd/themes/dracula` | `dracula` |
+| Nord | `jaamd/themes/nord` | `nord` |
+| One Dark | `jaamd/themes/one-dark` | `one-dark-pro` |
+
+**Standalone preset** — replaces the default light theme entirely:
+
+```ts
+jaamd({ theme: "dracula", noDefault: true })
+```
+
+```css
+@import "jaamd/themes/dracula.css";
+@import "jaamd/styles.css";
+```
+
+**Dark-mode toggle** — each preset ships a `/dark` variant scoped to `html.dark`:
+
+```css
+@import "jaamd/themes/dracula/dark.css";
+```
+
+```ts
+import "jaamd/themes/dracula/dark";
+```
+
+You can also copy any preset from `src/themes/` and customise the values.
+
+### Dual-theme Shiki (optional)
+
+Pass an object to `theme` to configure Shiki with two colour schemes and CSS-variable–based switching:
+
+```ts
+jaamd({
+  theme: { light: "github-light", dark: "github-dark" },
+})
+```
+
+JAAMD sets `defaultColor: false` on Shiki and injects a stylesheet that swaps token colours when `html.dark` is present. Add an inline script in `<head>` to prevent a flash of wrong theme:
+
+```html
+<script is:inline>
+  (function () {
+    var t = localStorage.getItem("theme");
+    if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches))
+      document.documentElement.classList.add("dark");
+  })();
+</script>
+```
 
 ### Skipping the defaults
 
-If you supply your own full variable set and don't want jaamd to inject its defaults, set `noDefault: true`:
+If you supply your own full variable set, set `noDefault: true`:
 
 ```ts
 jaamd({ noDefault: true })

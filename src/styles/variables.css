@@ -206,4 +206,64 @@
   --jaamd-alert-caution-color: #cf222e;
   --jaamd-alert-caution-bg:    #ffebe9;
 }
+
+/* ── Dark mode overrides ─────────────────────────────────── */
+
+html.dark {
+  --jaamd-color-fg:            #c9d1d9;
+  --jaamd-color-fg-bright:     #e6edf3;
+  --jaamd-color-primary:       #c9d1d9;
+  --jaamd-color-primary-light: #8b949e;
+
+  --jaamd-heading-border-color: rgb(from var(--jaamd-color-primary) r g b / 0.3);
+
+  --jaamd-code-bg:     #161b22;
+  --jaamd-code-border: #30363d;
+  --jaamd-code-fg:     #e6edf3;
+
+  --jaamd-pre-bg:     #161b22;
+  --jaamd-pre-border: #30363d;
+  --jaamd-pre-fg:     #c9d1d9;
+
+  --jaamd-copy-btn-bg:           #21262d;
+  --jaamd-copy-btn-border:       #30363d;
+  --jaamd-copy-btn-fg:           #c9d1d9;
+  --jaamd-copy-btn-hover-bg:     #30363d;
+  --jaamd-copy-btn-hover-border: #484f58;
+  --jaamd-copy-btn-hover-fg:     #e6edf3;
+
+  --jaamd-blockquote-bg:     #161b22;
+  --jaamd-blockquote-border: #484f58;
+  --jaamd-blockquote-fg:     #8b949e;
+
+  --jaamd-em-fg: #8b949e;
+  --jaamd-hr-color: rgb(from var(--jaamd-color-primary) r g b / 0.3);
+
+  --jaamd-table-border:     #30363d;
+  --jaamd-table-header-bg:  #161b22;
+  --jaamd-table-hover-bg:   #1c2128;
+
+  --jaamd-tabs-border:          #30363d;
+  --jaamd-tabs-header-bg:       #1c2128;
+  --jaamd-tabs-btn-hover-bg:    #21262d;
+  --jaamd-tabs-btn-active-bg:   #161b22;
+
+  --jaamd-details-bg:     #161b22;
+  --jaamd-details-border: #30363d;
+
+  --jaamd-spoiler-hidden-color:  #e6edf3;
+  --jaamd-spoiler-revealed-bg:   #161b22;
+  --jaamd-spoiler-revealed-fg:   #c9d1d9;
+
+  --jaamd-alert-note-color: #58a6ff;
+  --jaamd-alert-note-bg:    rgba(56, 139, 253, 0.1);
+  --jaamd-alert-tip-color:  #3fb950;
+  --jaamd-alert-tip-bg:     rgba(46, 160, 67, 0.1);
+  --jaamd-alert-important-color: #a371f7;
+  --jaamd-alert-important-bg:    rgba(163, 113, 247, 0.1);
+  --jaamd-alert-warning-color: #d29922;
+  --jaamd-alert-warning-bg:    rgba(187, 128, 9, 0.1);
+  --jaamd-alert-caution-color: #f85149;
+  --jaamd-alert-caution-bg:    rgba(248, 81, 73, 0.1);
+}
 }

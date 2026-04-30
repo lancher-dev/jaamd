@@ -1,6 +1,7 @@
 ---
 import "jaamd/default.css";
 import "jaamd/styles.css";
+import "jaamd/themes/one-dark/dark.css";
 import MarkdownContent from "jaamd/components";
 
 export interface Props {
@@ -17,6 +18,13 @@ const pageTitle = frontmatter?.title ?? title ?? "JAAMD Example";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
+    <script is:inline>
+      (function () {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches))
+          document.documentElement.classList.add("dark");
+      })();
+    </script>
     <style>
       body {
         margin: 0;
@@ -31,20 +39,41 @@ const pageTitle = frontmatter?.title ?? title ?? "JAAMD Example";
         border-bottom: 1px solid #e0e0e0;
         display: flex;
         gap: 1rem;
+        align-items: center;
       }
       nav a { color: #2d2d2d; text-decoration: none; font-weight: 500; }
       nav a:hover { text-decoration: underline; }
+      html.dark body { background: #1e1e1e; color: #c9d1d9; }
+      html.dark nav { border-color: #3d3d3d; }
+      html.dark nav a { color: #c9d1d9; }
+      #theme-toggle {
+        margin-left: auto;
+        cursor: pointer;
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 14px;
+      }
+      html.dark #theme-toggle { border-color: #555; color: #c9d1d9; }
     </style>
   </head>
   <body>
     <nav>
       <a href="/">Home</a>
       <a href="/demo">Demo</a>
+      <button id="theme-toggle">Toggle Dark/Light</button>
     </nav>
     <main>
       <MarkdownContent>
         <slot />
       </MarkdownContent>
     </main>
+    <script is:inline>
+      document.getElementById("theme-toggle").addEventListener("click", function () {
+        var isDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      });
+    </script>
   </body>
 </html>
