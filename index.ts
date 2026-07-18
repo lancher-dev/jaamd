@@ -1,7 +1,17 @@
+import * as astroMarkdownRemark from "@astrojs/markdown-remark";
 import type { AstroIntegration } from "astro";
 import remarkDirective from "remark-directive";
 import { remarkAlert } from "./src/plugins/remark-alert.js";
 import remarkCodeTabs from "./src/plugins/remark-code-tabs.js";
+
+// `@astrojs/markdown-remark`'s `.d.ts` doesn't declare these yet, though the runtime exports them.
+const { unified, isUnifiedProcessor } = astroMarkdownRemark as unknown as {
+  unified: (opts?: { remarkPlugins?: unknown[]; rehypePlugins?: unknown[]; remarkRehype?: unknown }) => {
+    name: string;
+    options: { remarkPlugins: unknown[]; rehypePlugins: unknown[]; remarkRehype: unknown };
+  };
+  isUnifiedProcessor: (p: unknown) => boolean;
+};
 
 export interface JaamdOptions {
   /**
@@ -71,10 +81,7 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         if (directive || codeTabs) jaamdRemarkPlugins.push(remarkDirective);
         if (codeTabs) jaamdRemarkPlugins.push(remarkCodeTabs);
 
-        // Read remark/rehype plugins already set in the user's defineConfig
-        // and prepend jaamd's own plugins so they run first.
         const existingMarkdown = (config.markdown as any) ?? {};
-        const existingRemarkPlugins: any[] = existingMarkdown.remarkPlugins ?? [];
         const existingShikiConfig: any = existingMarkdown.shikiConfig ?? {};
 
         // `wrap` and other keys are only filled in when absent.
@@ -91,6 +98,23 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         if (mergedShikiConfig.wrap === undefined) mergedShikiConfig.wrap = true;
 
+        const markdownUpdate: Record<string, any> = { shikiConfig: mergedShikiConfig };
+
+        // Default processor arrives pre-filled as "satteri" here — that's
+        // the no-override case, so it's still safe to replace.
+        const currentProcessor = existingMarkdown.processor;
+        const isDefaultOrUnified =
+          !currentProcessor || currentProcessor.name === "satteri" || isUnifiedProcessor(currentProcessor);
+        if (!isDefaultOrUnified) {
+          logger.warn(
+            `a custom \`markdown.processor\` ("${currentProcessor.name}") is already configured; jaamd's remark plugins (alerts/code-tabs) were not added. Pass them to your processor manually.`,
+          );
+        } else {
+          const target = isUnifiedProcessor(currentProcessor) ? currentProcessor : unified();
+          target.options.remarkPlugins.unshift(...jaamdRemarkPlugins);
+          markdownUpdate.processor = target;
+        }
+
         updateConfig({
           vite: {
             ssr: {
@@ -100,10 +124,7 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
               noExternal: ["jaamd"],
             },
           },
-          markdown: {
-            remarkPlugins: [...jaamdRemarkPlugins, ...existingRemarkPlugins],
-            shikiConfig: mergedShikiConfig,
-          },
+          markdown: markdownUpdate,
         });
 
         // "page" stage: bundled by Vite, tree-shaken, no duplicate injection

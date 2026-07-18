@@ -228,13 +228,18 @@ jaamd({ noDefault: true })
 
 Import plugins and styles directly, bypassing the integration:
 
+Astro 7's default Markdown processor (Sätteri) doesn't run `markdown.remarkPlugins`. You need the `unified` processor from `@astrojs/markdown-remark` explicitly:
+
 ```ts
 // astro.config.mjs
+import { unified } from "@astrojs/markdown-remark";
 import { remarkCodeTabs, remarkAlert, remarkDirective } from "jaamd";
 
 export default defineConfig({
   markdown: {
-    remarkPlugins: [remarkAlert, remarkDirective, remarkCodeTabs],
+    processor: unified({
+      remarkPlugins: [remarkAlert, remarkDirective, remarkCodeTabs],
+    }),
   },
 });
 ```
