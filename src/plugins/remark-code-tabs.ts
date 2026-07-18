@@ -2,6 +2,14 @@ import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
 import type { Root } from "mdast";
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 /**
  * Remark plugin: tabbed code blocks.
  *
@@ -39,7 +47,7 @@ const remarkCodeTabs: Plugin<[], Root> = () => {
         .map(
           (label, i) =>
             `<button class="code-tab-btn${i === 0 ? " active" : ""}" ` +
-            `data-tab-index="${i}" role="tab" aria-selected="${i === 0}">${label}</button>`,
+            `data-tab-index="${i}" role="tab" aria-selected="${i === 0}">${escapeHtml(label)}</button>`,
         )
         .join("");
 
