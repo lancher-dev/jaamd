@@ -660,6 +660,51 @@
   color: var(--jaamd-spoiler-revealed-fg);
 }
 
+/* ─── Footnotes (GFM) ─────────────────────────────────────────────────────── */
+
+.jaamd-content sup a[data-footnote-ref] {
+  color: var(--jaamd-color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0 0.15em;
+}
+
+.jaamd-content sup a[data-footnote-ref]:hover {
+  text-decoration: underline;
+}
+
+.jaamd-content .footnotes {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--jaamd-table-border);
+  font-size: calc(var(--jaamd-font-size) * 0.85);
+  color: var(--jaamd-color-fg);
+}
+
+.jaamd-content .footnotes ol {
+  padding-left: 1.25rem;
+}
+
+.jaamd-content .footnotes li {
+  margin-top: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+.jaamd-content .footnotes li p {
+  display: inline;
+  margin: 0;
+}
+
+.jaamd-content .data-footnote-backref {
+  margin-left: 0.375rem;
+  color: var(--jaamd-color-primary);
+  text-decoration: none !important;
+}
+
+.jaamd-content .data-footnote-backref:hover {
+  color: var(--jaamd-color-primary-light);
+}
+
 /* ─── Animation ─────────────────────────────────────────────── */
 
 @keyframes jaamd-fade-in {
