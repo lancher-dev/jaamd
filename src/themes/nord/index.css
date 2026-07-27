@@ -8,10 +8,17 @@
  * ============================================================ */
 
 :root {
+  --jaamd-font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --jaamd-font-serif: Georgia, "Times New Roman", Times, serif;
+  --jaamd-font-mono:  "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  --jaamd-font-size:  1.125rem;
+  --jaamd-line-height: 1.6;
+
   --jaamd-color-fg:            #d8dee9;
   --jaamd-color-fg-bright:     #eceff4;
   --jaamd-color-primary:       #88c0d0;
   --jaamd-color-primary-light: #81a1c1;
+  --jaamd-color-success:       #a3be8c;
 
   --jaamd-heading-border-color: rgba(136, 192, 208, 0.3);
 
