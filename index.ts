@@ -35,9 +35,19 @@ export interface JaamdOptions {
 
   /**
    * Skip injecting the default CSS variable fallbacks (`jaamd/default`).
-   * When `false` (default), the built-in light-theme variable set is always
-   * loaded before the main stylesheet so unstyled pages never occur.
-   * Set to `true` only when you supply your own full variable set.
+   *
+   * `<MarkdownContent>` already imports `jaamd/default` (and the main
+   * stylesheet) statically in its own frontmatter, so this option has no
+   * effect for consumers using that component — the defaults are always
+   * present there, extracted by Astro/Vite's normal CSS pipeline.
+   *
+   * This flag only affects the fallback copy injected via the client-side
+   * "page" script, which exists for custom wrappers that render markdown
+   * without `<MarkdownContent>`. Note that CSS side-effect imports inside
+   * an injected script are not reliably retained by Rollup in a static
+   * build (confirmed missing from production output in testing) — prefer
+   * importing `jaamd/default` directly in your own wrapper rather than
+   * relying on this option.
    * @default false
    */
   noDefault?: boolean;
