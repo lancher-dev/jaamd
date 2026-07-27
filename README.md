@@ -9,7 +9,7 @@
 
 - [Installation](#installation)
 - [Setup](#setup)
-- [View Transitions (FOUC fix)](#view-transitions-fouc-fix)
+- [Styles and View Transitions](#styles-and-view-transitions)
 - [Integration Options](#integration-options)
 - [MarkdownContent Component](#markdowncontent-component)
 - [Theming](#theming)
@@ -48,7 +48,7 @@ Wrap your markdown content with the `MarkdownContent` component in your layout:
 ```astro
 ---
 // src/layouts/BlogPost.astro
-import { MarkdownContent } from "jaamd/components";
+import MarkdownContent from "jaamd/components";
 ---
 <MarkdownContent>
   <slot />
@@ -57,21 +57,21 @@ import { MarkdownContent } from "jaamd/components";
 
 The integration registers all remark plugins and injects the stylesheet automatically. No other configuration is required.
 
-## View Transitions (FOUC fix)
+## Styles and View Transitions
 
-If you are using Astro's `ClientRouter` (View Transitions), you may notice a **flash of unstyled content** when navigating between pages. This happens because the integration injects the stylesheet via `injectScript("page", ...)`, a JS module that runs *after* the new page content has already been swapped into the DOM.
+`<MarkdownContent>` imports `jaamd/default` and `jaamd/styles` **statically in its own frontmatter**. Astro's CSS pipeline extracts them into a real `<link>` in `<head>`, so they are applied before first paint and persist across `ClientRouter` (View Transitions) navigations. If you use the component, there is nothing to configure — no flash of unstyled content.
 
-To fix it, import the stylesheet **statically** in your layout's frontmatter alongside your other CSS. Astro will bundle it as a `<link>` in `<head>`, which persists across navigations and is applied before any render:
+The integration *also* imports the same two stylesheets from its injected page script. That copy is a fallback for custom wrappers (see [Manual / Advanced Usage](#manual--advanced-usage)); the duplicate is deduplicated by the bundler and the browser.
 
-```astro
----
-//  In any layout that uses MarkdownContent
-import "jaamd/default.css";
-import "jaamd/styles.css";
----
-```
-
-The duplicate import from `injectScript` is automatically deduplicated by the browser. No extra weight, no side effects.
+> [!IMPORTANT]
+> If you render markdown **without** `<MarkdownContent>`, do not rely on the injected script to deliver the CSS — side-effect CSS imports inside `injectScript()` are not reliably retained by Rollup in a static build. Import the stylesheets yourself in your layout frontmatter:
+>
+> ```astro
+> ---
+> import "jaamd/default.css";
+> import "jaamd/styles.css";
+> ---
+> ```
 
 ## Integration Options
 
@@ -100,7 +100,7 @@ jaamd({
 `MarkdownContent` is a polymorphic component. It renders as `<div>` by default and accepts any valid HTML tag via the `as` prop.
 
 ```ts
-import { MarkdownContent } from "jaamd/components";
+import MarkdownContent from "jaamd/components";
 ```
 
 ### Props
@@ -117,7 +117,7 @@ The `jaamd-content` class is always present on the wrapper element. It is the se
 
 ```astro
 ---
-import { MarkdownContent } from "jaamd/components";
+import MarkdownContent from "jaamd/components";
 ---
 
 <!-- Default: renders as <div class="jaamd-content"> -->
