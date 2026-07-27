@@ -60,6 +60,9 @@
   /** Slightly lighter accent (link :hover, blockquote text) */
   --jaamd-color-primary-light: #4a4a4a;
 
+  /** Confirmation colour — the copy button flashes this after a successful copy */
+  --jaamd-color-success:       #22c55e;
+
 
   /* ── Headings ───────────────────────────────────────────── */
 
