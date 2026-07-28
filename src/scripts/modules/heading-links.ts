@@ -1,11 +1,13 @@
-import { qs, qsa, slugify } from "../utils.js";
+import { qs, qsa, slugify, uniqueElementId } from "../utils.js";
 
 // ─── Heading anchor links ─────────────────────────────────────────────────────
 
 export function addHeadingLinks(selector: string): void {
   qsa<HTMLElement>(document, `${selector} h1, ${selector} h2, ${selector} h3`).forEach(
     (header) => {
-      if (!header.id) header.id = slugify(header.textContent ?? "");
+      // Astro normally assigns heading ids itself; this only fills the gap for
+      // markup that arrived without them.
+      if (!header.id) header.id = uniqueElementId(slugify(header.textContent ?? ""));
       if (qs(header, ".jaamd-heading-link")) return;
 
       const a = document.createElement("a");
