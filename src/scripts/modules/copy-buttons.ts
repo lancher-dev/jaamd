@@ -14,15 +14,23 @@ export function addCopyButtons(selector: string): void {
     btn.setAttribute("aria-label", "Copy code to clipboard");
     btn.innerHTML = iconCopy();
 
+    let resetTimer: ReturnType<typeof setTimeout> | undefined;
+
     btn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(code.textContent ?? "");
-        const orig = btn.innerHTML;
         btn.innerHTML = iconCheck();
         btn.style.color = "var(--jaamd-color-success, #22c55e)";
-        setTimeout(() => {
-          btn.innerHTML = orig;
+        // The icon swap alone gives screen readers no feedback.
+        btn.setAttribute("aria-label", "Code copied to clipboard");
+
+        // Restart on every click, so an earlier timer cannot revert a button
+        // that still reads as "copied".
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => {
+          btn.innerHTML = iconCopy();
           btn.style.color = "";
+          btn.setAttribute("aria-label", "Copy code to clipboard");
         }, 2000);
       } catch {
         // fail silently
