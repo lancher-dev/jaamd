@@ -1,4 +1,4 @@
-import { qs, qsa } from "../utils.js";
+import { qs, qsa, prefersReducedMotion } from "../utils.js";
 
 // ─── Details / Summary animation ─────────────────────────────────────────────
 
@@ -30,33 +30,43 @@ export function initDetails(selector: string): void {
         wrapper.style.overflow = "hidden";
       }
 
+      // A second click mid-animation would animate from a half-collapsed height.
+      let animating = false;
+
       summary.addEventListener("click", (e) => {
         e.preventDefault();
+        if (animating) return;
+
+        const duration = prefersReducedMotion() ? 0 : 280;
 
         if (details.open) {
           // closing
           const startH = wrapper.scrollHeight;
           wrapper.style.overflow = "hidden";
+          animating = true;
           const anim = wrapper.animate(
             [{ height: `${startH}px` }, { height: "0px" }],
-            { duration: 280, easing: "ease" },
+            { duration, easing: "ease" },
           );
           anim.onfinish = () => {
             wrapper.style.height = "0px";
             details.removeAttribute("open");
+            animating = false;
           };
         } else {
           // opening
           details.setAttribute("open", "");
           const endH = wrapper.scrollHeight;
           wrapper.style.overflow = "hidden";
+          animating = true;
           const anim = wrapper.animate(
             [{ height: "0px" }, { height: `${endH}px` }],
-            { duration: 280, easing: "ease" },
+            { duration, easing: "ease" },
           );
           anim.onfinish = () => {
             wrapper.style.height = "auto";
             wrapper.style.overflow = "";
+            animating = false;
           };
         }
       });

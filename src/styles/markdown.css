@@ -723,3 +723,20 @@
     opacity: 1;
   }
 }
+
+/* ─── Reduced motion ────────────────────────────────────────────
+   Scoped to jaamd's own elements, so the host page keeps control of the rest.
+   The details height animation uses the Web Animations API and is handled in
+   the client script instead. */
+
+@media (prefers-reduced-motion: reduce) {
+  .jaamd-content *,
+  .jaamd-content *::before,
+  .jaamd-content *::after,
+  .jaamd-lightbox,
+  .jaamd-lightbox * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
