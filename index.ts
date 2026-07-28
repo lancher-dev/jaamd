@@ -110,19 +110,47 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         const markdownUpdate: Record<string, any> = { shikiConfig: mergedShikiConfig };
 
-        // Default processor arrives pre-filled as "satteri" here — that's
-        // the no-override case, so it's still safe to replace.
+        // Astro pre-fills its default processor here, so seeing this name means
+        // the user did not override it and it is safe to replace.
+        // The name is an implementation detail, not a public API: if Astro
+        // renames it, jaamd stops registering its plugins and only logs a
+        // warning. That is why CI asserts on the rendered HTML, and why the
+        // peer range is capped. Re-verify on every Astro major.
+        const ASTRO_DEFAULT_PROCESSOR = "satteri";
+
         const currentProcessor = existingMarkdown.processor;
-        const isDefaultOrUnified =
-          !currentProcessor || currentProcessor.name === "satteri" || isUnifiedProcessor(currentProcessor);
-        if (!isDefaultOrUnified) {
+        const isUnified = !!currentProcessor && isUnifiedProcessor(currentProcessor);
+        const isDefault =
+          !currentProcessor || currentProcessor.name === ASTRO_DEFAULT_PROCESSOR;
+
+        if (!isDefault && !isUnified) {
           logger.warn(
             `a custom \`markdown.processor\` ("${currentProcessor.name}") is already configured; jaamd's remark plugins (alerts/code-tabs) were not added. Pass them to your processor manually.`,
           );
         } else {
-          const target = isUnifiedProcessor(currentProcessor) ? currentProcessor : unified();
-          target.options.remarkPlugins.unshift(...jaamdRemarkPlugins);
+          const target = isUnified ? currentProcessor : unified();
+          const existing: unknown[] = target.options.remarkPlugins ?? [];
+
+          // Registering a remark plugin twice re-registers its micromark
+          // extensions, so skip anything the user already wired up.
+          const nameOf = (p: unknown): string => {
+            const fn = Array.isArray(p) ? p[0] : p;
+            return typeof fn === "function" ? fn.name : "";
+          };
+          const existingNames = new Set(existing.map(nameOf).filter(Boolean));
+          const missing = jaamdRemarkPlugins.filter(
+            (p) => !existing.includes(p) && !existingNames.has(nameOf(p)),
+          );
+
+          // A new array rather than an unshift: the processor may be a
+          // module-scope object shared between configs, and mutating it in
+          // place would corrupt it and stack duplicates across setup runs.
+          target.options.remarkPlugins = [...missing, ...existing];
           markdownUpdate.processor = target;
+
+          logger.info(
+            `markdown processor: ${currentProcessor?.name ?? "none"}, registered ${missing.length}/${jaamdRemarkPlugins.length} remark plugin(s)`,
+          );
         }
 
         updateConfig({
