@@ -654,10 +654,18 @@
     background-color 0.25s ease;
 }
 
-.jaamd-content .spoiler:hover,
+/* Explicit action only. Hover is deliberately not a reveal: it would spoil the
+   content by moving the pointer across it, and on touch the state sticks after
+   the tap. */
 .jaamd-content .spoiler.revealed {
   background-color: var(--jaamd-spoiler-revealed-bg);
   color: var(--jaamd-spoiler-revealed-fg);
+}
+
+/* The client script makes spoilers focusable, so they need a focus ring. */
+.jaamd-content .spoiler:focus-visible {
+  outline: 2px solid var(--jaamd-color-primary);
+  outline-offset: 2px;
 }
 
 /* ─── Footnotes (GFM) ─────────────────────────────────────────────────────── */
