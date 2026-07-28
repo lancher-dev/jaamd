@@ -40,13 +40,17 @@
     "./themes/one-dark/dark": "./src/themes/one-dark/dark.css",
     "./themes/one-dark/dark.css": "./src/themes/one-dark/dark.css"
   },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke-test.mjs"
+  },
   "files": [
     "index.ts",
     "src",
     "README.md"
   ],
   "peerDependencies": {
-    "astro": ">=7.0.0"
+    "astro": ">=7.0.0 <8.0.0"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.0.0",
