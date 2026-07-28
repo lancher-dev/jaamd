@@ -26,5 +26,18 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      # Never publish a version whose markdown pipeline silently stopped
+      # working: build the example and assert on the HTML it produces.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Build example
+        working-directory: example
+        run: pnpm install && pnpm build
+
+      - name: Smoke test rendered output
+        run: node scripts/smoke-test.mjs
+
       - name: Publish
         run: npm publish --provenance --access public

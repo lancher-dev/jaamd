@@ -32,3 +32,10 @@ jobs:
         run: pnpm install
       - working-directory: example
         run: pnpm build
+
+      # `astro build` exits 0 even when jaamd skips its remark plugins (it only
+      # logs a warning), so a green build is not evidence that the pipeline ran.
+      # This asserts on the rendered HTML, which is what would catch Astro
+      # renaming its default markdown processor out from under us.
+      - name: Smoke test rendered output
+        run: node scripts/smoke-test.mjs
