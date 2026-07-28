@@ -8,17 +8,17 @@
 ## Table of Contents
 
 - [Installation](#installation)
-- [Compatibility](#compatibility)
+- [Requirements](#requirements)
 - [Setup](#setup)
-- [Styles and View Transitions](#styles-and-view-transitions)
 - [Integration Options](#integration-options)
+- [Markdown Syntax](#markdown-syntax)
 - [MarkdownContent Component](#markdowncontent-component)
 - [Client-side Enhancements](#client-side-enhancements)
 - [Theming](#theming)
   - [Customizing variables](#customizing-variables)
   - [Dark mode](#dark-mode)
   - [Theme presets](#theme-presets)
-  - [Dual-theme Shiki](#dual-theme-shiki-optional)
+  - [Dual-theme Shiki](#dual-theme-shiki)
 - [Manual / Advanced Usage](#manual--advanced-usage)
 
 ---
@@ -31,31 +31,17 @@ npm install jaamd
 npx astro add jaamd
 ```
 
-## Compatibility
+## Requirements
 
 | Requirement | Detail |
 |---|---|
 | Astro | `>=7.0.0 <8.0.0` |
-| Consumer toolchain | Must compile TypeScript and `.astro` sources |
+| Toolchain | Must compile TypeScript and `.astro` sources |
 
-JAAMD is **distributed as source**: the published package contains `index.ts`
-and the `.astro`/`.ts`/`.css` files themselves, with no compiled `dist/` and no
-emitted `.d.ts`. This keeps the package dependency-free and lets your own
-bundler tree-shake it, and it works out of the box in any Astro project: the
-integration adds itself to `vite.ssr.noExternal` so Vite transforms it like
-first-party code.
-
-The trade-off is that JAAMD is **not** consumable outside an Astro/Vite
-pipeline: importing it from plain Node, from a CommonJS build, or from a
-TypeScript project using `"moduleResolution": "node16"` will not work.
-
-> [!NOTE]
-> The Astro peer range is deliberately capped below the next major. JAAMD has to
-> recognise Astro's *default* markdown processor in order to attach its remark
-> plugins to it, and that processor's identity is an implementation detail
-> rather than a public API. The range is widened again only after each new Astro
-> major has been verified. The CI smoke test asserts on the rendered HTML
-> precisely because this failure mode would otherwise be silent.
+JAAMD is published as source, with no compiled `dist/` and no emitted `.d.ts`.
+It works out of the box in any Astro project, but is not consumable from plain
+Node, a CommonJS build, or a TypeScript project using
+`"moduleResolution": "node16"`.
 
 ## Setup
 
@@ -83,16 +69,12 @@ import MarkdownContent from "jaamd/components";
 </MarkdownContent>
 ```
 
-The integration registers all remark plugins and injects the stylesheet automatically. No other configuration is required.
-
-## Styles and View Transitions
-
-`<MarkdownContent>` imports `jaamd/default` and `jaamd/styles` **statically in its own frontmatter**. Astro's CSS pipeline extracts them into a real `<link>` in `<head>`, so they are applied before first paint and persist across `ClientRouter` (View Transitions) navigations. If you use the component, there is nothing to configure — no flash of unstyled content.
-
-The integration *also* imports the same two stylesheets from its injected page script. That copy is a fallback for custom wrappers (see [Manual / Advanced Usage](#manual--advanced-usage)); the duplicate is deduplicated by the bundler and the browser.
+The integration registers all remark plugins and injects the stylesheet
+automatically. No other configuration is required.
 
 > [!IMPORTANT]
-> If you render markdown **without** `<MarkdownContent>`, do not rely on the injected script to deliver the CSS — side-effect CSS imports inside `injectScript()` are not reliably retained by Rollup in a static build. Import the stylesheets yourself in your layout frontmatter:
+> `<MarkdownContent>` loads the stylesheets for you. If you render markdown
+> **without** it, import them yourself in your layout frontmatter:
 >
 > ```astro
 > ---
@@ -106,7 +88,7 @@ The integration *also* imports the same two stylesheets from its injected page s
 ```ts
 jaamd({
   selector:   ".jaamd-content", // CSS selector for the JS enhancements
-  theme:      "github-light",   // Shiki theme name (or { light, dark } — see below)
+  theme:      "github-light",   // Shiki theme name (or { light, dark })
   noDefault:  false,            // skip injecting jaamd/default variable fallbacks
   plugins: {
     codeTabs:  true,            // :::code-tabs directive blocks
@@ -116,16 +98,72 @@ jaamd({
 })
 ```
 
-### About `selector`
+### `selector`
 
-`selector` only controls which element the **client-side JS enhancements** target at runtime. It does **not** affect the CSS file, which always uses `.jaamd-content`.
+Controls which element the **client-side JS enhancements** target at runtime.
+It does not affect the CSS file, which always uses `.jaamd-content`.
 
-- **When using `<MarkdownContent>`** leave `selector` at its default. The component always adds `jaamd-content` to the wrapper, the CSS targets it, and so does the JS.
-- **When doing [manual usage](#manual--advanced-usage)**, if you write a completely custom wrapper (e.g. `<div data-md>`), set `selector` to match it. You will also need to provide your own CSS, since the bundled stylesheet is hardcoded to `.jaamd-content`.
+- With `<MarkdownContent>`, leave it at the default.
+- With a custom wrapper (e.g. `<div data-md>`), set `selector` to match it and
+  provide your own CSS.
+
+### `noDefault`
+
+Set to `true` when you supply a complete `--jaamd-*` variable set of your own.
+It has no effect on `<MarkdownContent>`, which imports the defaults directly;
+with a custom wrapper, control them by importing `jaamd/default` or not.
+
+## Markdown Syntax
+
+### Alerts
+
+GitHub-style blockquote alerts, in five variants:
+
+```markdown
+> [!NOTE]
+> Useful information the reader should know.
+
+> [!TIP]
+> Helpful advice.
+
+> [!IMPORTANT]
+> Key information required to succeed.
+
+> [!WARNING]
+> Urgent information needing immediate attention.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes.
+```
+
+### Code tabs
+
+Group several code blocks into a tabbed panel. The text after the language is
+used as the tab label; it falls back to the language, then to `Tab N`.
+
+````markdown
+:::code-tabs
+```bash npm
+npm install
+```
+```bash pnpm
+pnpm install
+```
+:::
+````
+
+### Spoilers
+
+Any element with the `spoiler` class is hidden until activated:
+
+```html
+<span class="spoiler">The butler did it.</span>
+```
 
 ## MarkdownContent Component
 
-`MarkdownContent` is a polymorphic component. It renders as `<div>` by default and accepts any valid HTML tag via the `as` prop.
+`MarkdownContent` is a polymorphic component. It renders as `<div>` by default
+and accepts any valid HTML tag via the `as` prop.
 
 ```ts
 import MarkdownContent from "jaamd/components";
@@ -136,12 +174,11 @@ import MarkdownContent from "jaamd/components";
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `as` | `HTMLTag` | `"div"` | The HTML element to render as. |
-| `class` | `string` | — | Extra CSS classes appended to the wrapper. |
-| *...rest* | — | — | All standard HTML attributes for the chosen `as` element (e.g. `id`, `data-*`, `aria-*`). |
+| `class` | `string` | – | Extra CSS classes appended to the wrapper. |
+| *...rest* | – | – | All standard HTML attributes for the chosen `as` element (e.g. `id`, `data-*`, `aria-*`). |
 
-The `jaamd-content` class is always present on the wrapper element. It is the selector used by the JS enhancements and must not be removed.
-
-### Examples
+The `jaamd-content` class is always present on the wrapper element. It is the
+selector used by the JS enhancements and must not be removed.
 
 ```astro
 ---
@@ -166,44 +203,39 @@ import MarkdownContent from "jaamd/components";
 
 ## Client-side Enhancements
 
-The integration ships a small dependency-free ES module (~2 kB gzipped) that
-progressively enhances the rendered markdown. It re-runs automatically on every
-`astro:page-load`, so everything keeps working across View Transitions.
+A dependency-free ES module (~2 kB gzipped) enhances the rendered markdown. It
+re-runs on every `astro:page-load`, so it keeps working across View Transitions.
 
 | Enhancement | Behaviour |
 |---|---|
-| Heading links | Adds an anchor to `h1`–`h3`; clicking copies the section URL. Fills in a missing `id` using a Unicode-aware slug, de-duplicated against the rest of the page. |
-| Copy buttons | Adds a copy button to every `pre`, with its accessible name updated on success. |
+| Heading links | Adds an anchor to `h1`–`h3`; clicking copies the section URL. Fills in a missing `id` with a Unicode-aware slug, de-duplicated across the page. |
+| Copy buttons | Adds a copy button to every `pre`. |
 | Image lightbox | Click an image to open it full-screen. Closes on backdrop click, the ✕ button or <kbd>Esc</kbd>. |
 | Responsive tables | Wraps every `table` in a horizontally scrollable container. |
-| Code tabs | Drives the `:::code-tabs` tablist (see below). |
+| Code tabs | Drives the `:::code-tabs` tablist. |
 | Spoilers | Reveals `.spoiler` content on click or <kbd>Enter</kbd>/<kbd>Space</kbd>. |
 | Details | Animates the height of `<details>` on open/close. |
 
-### Accessibility and motion
+### Keyboard
 
-- **Code tabs** follow the WAI-ARIA tabs pattern: <kbd>←</kbd>/<kbd>→</kbd> move
-  between tabs, <kbd>Home</kbd>/<kbd>End</kbd> jump to the first/last, and
-  `aria-selected` plus the roving `tabindex` are kept in sync with the visual
-  state. Panels are focusable so wide samples can be scrolled by keyboard.
-- **Spoilers** are exposed as `role="button"`, are reachable with <kbd>Tab</kbd>
-  and report `aria-expanded`. They deliberately do **not** reveal on hover: that
-  would spoil the content by merely moving the pointer, and the hover state
-  sticks after a tap on touch devices.
-- **Reduced motion** is respected throughout: with
-  `prefers-reduced-motion: reduce`, the `<details>` height animation is skipped
-  and JAAMD's CSS transitions are reduced to nothing.
+| Element | Keys |
+|---|---|
+| Code tabs | <kbd>←</kbd> <kbd>→</kbd> move between tabs, <kbd>Home</kbd> <kbd>End</kbd> jump to first/last. Panels are focusable so wide samples can be scrolled. |
+| Spoilers | <kbd>Tab</kbd> to focus, <kbd>Enter</kbd> or <kbd>Space</kbd> to reveal. Hover does not reveal. |
+| Lightbox | <kbd>Esc</kbd> to close. |
 
-### Images that should not open a lightbox
+Under `prefers-reduced-motion: reduce` the `<details>` animation is skipped and
+JAAMD's CSS transitions are disabled.
 
-Images that are themselves a link are skipped automatically, so the common
-badge pattern keeps navigating instead of opening an overlay:
+### Excluding images from the lightbox
+
+Linked images are skipped automatically, so badges keep navigating:
 
 ```markdown
 [![build](https://img.shields.io/badge/build-passing-green)](https://github.com/you/repo)
 ```
 
-To opt a standalone image out, add `data-no-lightbox`:
+Opt a standalone image out with `data-no-lightbox`:
 
 ```html
 <img src="/diagram.svg" alt="Architecture diagram" data-no-lightbox />
@@ -211,7 +243,8 @@ To opt a standalone image out, add `data-no-lightbox`:
 
 ## Theming
 
-All styles are driven by CSS custom properties prefixed with `--jaamd-*`. The default variable set (`jaamd/default`) is injected automatically so everything works out of the box.
+All styles are driven by CSS custom properties prefixed with `--jaamd-*`. The
+default set (`jaamd/default`) is injected automatically.
 
 ### Customizing variables
 
@@ -228,15 +261,21 @@ Override any variable on `:root` in your own stylesheet:
 }
 ```
 
-See [`src/styles/variables.css`](src/styles/variables.css) for every available variable and its default value.
+Defaults live in `@layer jaamd.defaults`, so an unlayered `:root` block always
+wins regardless of import order.
+
+See [`src/styles/variables.css`](src/styles/variables.css) for all 50 variables
+and their default values.
 
 ### Dark mode
 
-The default variable set includes dark-mode overrides activated by the `dark` class on `<html>`. Toggle the class and all JAAMD elements adapt.
+The default set includes dark-mode overrides activated by the `dark` class on
+`<html>`. Toggle the class and all JAAMD elements adapt.
 
 ### Theme presets
 
-Three additional presets restyle all `--jaamd-*` variables to match popular editor colour schemes:
+Three presets restyle all `--jaamd-*` variables to match popular editor colour
+schemes:
 
 | Preset | Import | Recommended Shiki theme |
 |--------|--------|------------------------|
@@ -244,7 +283,7 @@ Three additional presets restyle all `--jaamd-*` variables to match popular edit
 | Nord | `jaamd/themes/nord` | `nord` |
 | One Dark | `jaamd/themes/one-dark` | `one-dark-pro` |
 
-**Standalone preset** — replaces the default light theme entirely:
+As a standalone theme, replacing the default light theme:
 
 ```ts
 jaamd({ theme: "dracula", noDefault: true })
@@ -255,7 +294,7 @@ jaamd({ theme: "dracula", noDefault: true })
 @import "jaamd/styles.css";
 ```
 
-**Dark-mode toggle** — each preset ships a `/dark` variant scoped to `html.dark`:
+Scoped to `html.dark` via the `/dark` variant:
 
 ```css
 @import "jaamd/themes/dracula/dark.css";
@@ -265,11 +304,12 @@ jaamd({ theme: "dracula", noDefault: true })
 import "jaamd/themes/dracula/dark";
 ```
 
-You can also copy any preset from `src/themes/` and customise the values.
+Copy any preset from `src/themes/` to customise it.
 
-### Dual-theme Shiki (optional)
+### Dual-theme Shiki
 
-Pass an object to `theme` to configure Shiki with two colour schemes and CSS-variable–based switching:
+Pass an object to `theme` to highlight code with two colour schemes, switched by
+the `dark` class:
 
 ```ts
 jaamd({
@@ -277,7 +317,7 @@ jaamd({
 })
 ```
 
-JAAMD sets `defaultColor: false` on Shiki and injects a stylesheet that swaps token colours when `html.dark` is present. Add an inline script in `<head>` to prevent a flash of wrong theme:
+Add an inline script in `<head>` to prevent a flash of the wrong theme:
 
 ```html
 <script is:inline>
@@ -289,19 +329,11 @@ JAAMD sets `defaultColor: false` on Shiki and injects a stylesheet that swaps to
 </script>
 ```
 
-### Skipping the defaults
-
-If you supply your own full variable set, set `noDefault: true`:
-
-```ts
-jaamd({ noDefault: true })
-```
-
 ## Manual / Advanced Usage
 
-Import plugins and styles directly, bypassing the integration:
-
-Astro 7's default Markdown processor (Sätteri) doesn't run `markdown.remarkPlugins`. You need the `unified` processor from `@astrojs/markdown-remark` explicitly:
+To bypass the integration, register the plugins yourself. Astro's default
+markdown processor does not run `markdown.remarkPlugins`, so pass the `unified`
+processor from `@astrojs/markdown-remark` explicitly:
 
 ```ts
 // astro.config.mjs
@@ -319,7 +351,7 @@ export default defineConfig({
 
 ```astro
 ---
-import "jaamd/default";  // variable fallbacks — omit if you provide your own
+import "jaamd/default";  // variable fallbacks; omit if you provide your own
 import "jaamd/styles";
 ---
 <div class="jaamd-content">
@@ -333,7 +365,7 @@ import "jaamd/styles";
 </script>
 ```
 
-You can also import the CSS files directly from `.css` files or frameworks that prefer bare CSS imports:
+The CSS files can also be imported from plain `.css`:
 
 ```css
 @import "jaamd/default.css";
