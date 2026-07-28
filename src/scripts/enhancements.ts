@@ -25,7 +25,7 @@ export function initMarkdownEnhancements(
   addCopyButtons(selector);
   addImageLightbox(selector);
   wrapTables(selector);
-  initCodeTabs();
+  initCodeTabs(selector);
   initSpoilers(selector);
   initDetails(selector);
 }
