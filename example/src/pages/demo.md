@@ -92,7 +92,8 @@ And it also animates when you close it.
 
 ## Spoiler
 
-Hover or click the blurred text to reveal it:
+Click the blurred text, or focus it with <kbd>Tab</kbd> and press
+<kbd>Enter</kbd>, to reveal it:
 
 <span class="spoiler">The butler did it.</span>
 

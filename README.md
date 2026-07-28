@@ -8,10 +8,12 @@
 ## Table of Contents
 
 - [Installation](#installation)
+- [Compatibility](#compatibility)
 - [Setup](#setup)
 - [Styles and View Transitions](#styles-and-view-transitions)
 - [Integration Options](#integration-options)
 - [MarkdownContent Component](#markdowncontent-component)
+- [Client-side Enhancements](#client-side-enhancements)
 - [Theming](#theming)
   - [Customizing variables](#customizing-variables)
   - [Dark mode](#dark-mode)
@@ -28,6 +30,32 @@ npm install jaamd
 # or
 npx astro add jaamd
 ```
+
+## Compatibility
+
+| Requirement | Detail |
+|---|---|
+| Astro | `>=7.0.0 <8.0.0` |
+| Consumer toolchain | Must compile TypeScript and `.astro` sources |
+
+JAAMD is **distributed as source**: the published package contains `index.ts`
+and the `.astro`/`.ts`/`.css` files themselves, with no compiled `dist/` and no
+emitted `.d.ts`. This keeps the package dependency-free and lets your own
+bundler tree-shake it, and it works out of the box in any Astro project: the
+integration adds itself to `vite.ssr.noExternal` so Vite transforms it like
+first-party code.
+
+The trade-off is that JAAMD is **not** consumable outside an Astro/Vite
+pipeline: importing it from plain Node, from a CommonJS build, or from a
+TypeScript project using `"moduleResolution": "node16"` will not work.
+
+> [!NOTE]
+> The Astro peer range is deliberately capped below the next major. JAAMD has to
+> recognise Astro's *default* markdown processor in order to attach its remark
+> plugins to it, and that processor's identity is an implementation detail
+> rather than a public API. The range is widened again only after each new Astro
+> major has been verified. The CI smoke test asserts on the rendered HTML
+> precisely because this failure mode would otherwise be silent.
 
 ## Setup
 
@@ -134,6 +162,51 @@ import MarkdownContent from "jaamd/components";
 <MarkdownContent as="article" class="prose mx-auto">
   <slot />
 </MarkdownContent>
+```
+
+## Client-side Enhancements
+
+The integration ships a small dependency-free ES module (~2 kB gzipped) that
+progressively enhances the rendered markdown. It re-runs automatically on every
+`astro:page-load`, so everything keeps working across View Transitions.
+
+| Enhancement | Behaviour |
+|---|---|
+| Heading links | Adds an anchor to `h1`–`h3`; clicking copies the section URL. Fills in a missing `id` using a Unicode-aware slug, de-duplicated against the rest of the page. |
+| Copy buttons | Adds a copy button to every `pre`, with its accessible name updated on success. |
+| Image lightbox | Click an image to open it full-screen. Closes on backdrop click, the ✕ button or <kbd>Esc</kbd>. |
+| Responsive tables | Wraps every `table` in a horizontally scrollable container. |
+| Code tabs | Drives the `:::code-tabs` tablist (see below). |
+| Spoilers | Reveals `.spoiler` content on click or <kbd>Enter</kbd>/<kbd>Space</kbd>. |
+| Details | Animates the height of `<details>` on open/close. |
+
+### Accessibility and motion
+
+- **Code tabs** follow the WAI-ARIA tabs pattern: <kbd>←</kbd>/<kbd>→</kbd> move
+  between tabs, <kbd>Home</kbd>/<kbd>End</kbd> jump to the first/last, and
+  `aria-selected` plus the roving `tabindex` are kept in sync with the visual
+  state. Panels are focusable so wide samples can be scrolled by keyboard.
+- **Spoilers** are exposed as `role="button"`, are reachable with <kbd>Tab</kbd>
+  and report `aria-expanded`. They deliberately do **not** reveal on hover: that
+  would spoil the content by merely moving the pointer, and the hover state
+  sticks after a tap on touch devices.
+- **Reduced motion** is respected throughout: with
+  `prefers-reduced-motion: reduce`, the `<details>` height animation is skipped
+  and JAAMD's CSS transitions are reduced to nothing.
+
+### Images that should not open a lightbox
+
+Images that are themselves a link are skipped automatically, so the common
+badge pattern keeps navigating instead of opening an overlay:
+
+```markdown
+[![build](https://img.shields.io/badge/build-passing-green)](https://github.com/you/repo)
+```
+
+To opt a standalone image out, add `data-no-lightbox`:
+
+```html
+<img src="/diagram.svg" alt="Architecture diagram" data-no-lightbox />
 ```
 
 ## Theming
