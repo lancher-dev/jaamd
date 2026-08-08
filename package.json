@@ -42,6 +42,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "example": "cd example && npm run dev",
     "smoke": "node scripts/smoke-test.mjs"
   },
   "files": [
