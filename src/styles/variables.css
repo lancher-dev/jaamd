@@ -2,51 +2,43 @@
  * JAAMD — Default Variables & Full CSS Variable Reference
  * ============================================================
  *
- * This file serves a dual purpose:
- *
  *  1. FALLBACK THEME:
- *     it is automatically imported by the integration so all
- *     --jaamd-* vars have sensible values even if you never
- *     set any yourself. You can opt out with `noDefault: true`
- *     in jaamd({…}).
+ *     imported automatically by the integration so all --jaamd-*
+ *     vars have values even if you never set any. Opt out with
+ *     `noDefault: true` in jaamd({…}).
  *
- *     All defaults live inside @layer jaamd.defaults, so any
- *     :root rule you write outside a layer always wins — no
- *     matter the load order.
+ *     Defaults live in @layer jaamd.defaults, so any :root rule
+ *     you write outside a layer wins regardless of load order.
  *
  *  2. DOCUMENTATION:
- *     every --jaamd-* property is listed here with a comment
- *     describing its role. Copy any variable you want to override
- *     into your own :root block (no layer needed).
+ *     every --jaamd-* property is listed with its role.
+ *
+ * Theming: override the SEED tokens below and the rest follows.
+ * Every other value is derived from them with color-mix(). You can
+ * still override any individual token by name.
  *
  * Importable as:  import "jaamd/default";
  *                 @import "jaamd/default.css";
  * ============================================================ */
 
-/* Establish the layer so its priority is always below unlayered CSS. */
 @layer jaamd.defaults;
 
 @layer jaamd.defaults {
 :root {
   /* ── Typography ─────────────────────────────────────────── */
 
-  /** Sans-serif font stack for body text */
   --jaamd-font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-
-  /** Serif font stack (used when --jaamd-font-sans is overridden to a serif) */
   --jaamd-font-serif: Georgia, "Times New Roman", Times, serif;
-
-  /** Monospace font stack for code */
   --jaamd-font-mono:  "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-
-  /** Base font size for all scaled elements */
   --jaamd-font-size:  1.125rem;
-
-  /** Line height for body text, lists and code blocks */
   --jaamd-line-height: 1.6;
 
 
-  /* ── Core colors ────────────────────────────────────────── */
+  /* ══ SEED TOKENS ═════════════════════════════════════════ */
+  /* Override these to rebrand. Everything below derives from them. */
+
+  /** Page background these surfaces sit on */
+  --jaamd-bg:                  #faf8f5;
 
   /** Default body/paragraph text color */
   --jaamd-color-fg:            #3a3a3a;
@@ -54,219 +46,152 @@
   /** Headings, strong, table headers, summary — brighter than fg */
   --jaamd-color-fg-bright:     #1a1a1a;
 
-  /** Accent / primary color (links, active tab label, summary arrow) */
+  /** Accent color (links, active tab label, summary arrow) */
   --jaamd-color-primary:       #2d2d2d;
 
-  /** Slightly lighter accent (link :hover, blockquote text) */
-  --jaamd-color-primary-light: #4a4a4a;
-
-  /** Confirmation colour — the copy button flashes this after a successful copy */
+  /** Confirmation colour — the copy button flashes this after a copy */
   --jaamd-color-success:       #22c55e;
+
+  /** Alert accent hues — the only alert values that cannot be derived */
+  --jaamd-alert-note-color:      #0969da;
+  --jaamd-alert-tip-color:       #1a7f37;
+  --jaamd-alert-important-color: #8250df;
+  --jaamd-alert-warning-color:   #9a6700;
+  --jaamd-alert-caution-color:   #cf222e;
+
+
+  /* ══ DERIVED SCALE ═══════════════════════════════════════ */
+  /* Tints of fg over bg, used by every surface below. */
+
+  --jaamd-surface-1: color-mix(in oklab, var(--jaamd-color-fg)  6%, var(--jaamd-bg));
+  --jaamd-surface-2: color-mix(in oklab, var(--jaamd-color-fg) 10%, var(--jaamd-bg));
+  --jaamd-surface-3: color-mix(in oklab, var(--jaamd-color-fg) 15%, var(--jaamd-bg));
+  --jaamd-surface-4: color-mix(in oklab, var(--jaamd-color-fg) 20%, var(--jaamd-bg));
+  --jaamd-border:        color-mix(in oklab, var(--jaamd-color-fg) 26%, var(--jaamd-bg));
+  --jaamd-border-strong: color-mix(in oklab, var(--jaamd-color-fg) 42%, var(--jaamd-bg));
+
+  /** Slightly lighter accent (link :hover, blockquote text) */
+  --jaamd-color-primary-light: color-mix(in oklab, var(--jaamd-color-primary) 83%, var(--jaamd-bg));
 
 
   /* ── Headings ───────────────────────────────────────────── */
 
-  /** Border-bottom color of h2 */
   --jaamd-heading-border-color: rgb(from var(--jaamd-color-primary) r g b / 0.4);
 
 
   /* ── Inline code (<code> outside a <pre>) ───────────────── */
 
-  /** Background of inline code */
-  --jaamd-code-bg:     #e8e4df;
-
-  /** Border of inline code */
-  --jaamd-code-border: #d0cbc6;
-
-  /** Text color of inline code */
-  --jaamd-code-fg:     #1a1a1a;
+  --jaamd-code-bg:     var(--jaamd-surface-2);
+  --jaamd-code-border: var(--jaamd-surface-4);
+  --jaamd-code-fg:     var(--jaamd-color-fg-bright);
 
 
   /* ── Fenced code blocks (<pre>) ─────────────────────────── */
 
-  /** Background of code blocks (overrides Shiki when not using a Shiki theme) */
-  --jaamd-pre-bg:     #eeeae5;
-
-  /** Border of code blocks */
-  --jaamd-pre-border: #c8c4bf;
-
-  /** Fallback text color inside code blocks */
-  --jaamd-pre-fg:     #2d2d2d;
+  --jaamd-pre-bg:     var(--jaamd-surface-1);
+  --jaamd-pre-border: var(--jaamd-border);
+  --jaamd-pre-fg:     var(--jaamd-color-primary);
 
 
   /* ── Copy-to-clipboard button ───────────────────────────── */
 
-  /** Copy button background (idle) */
-  --jaamd-copy-btn-bg:           #d8d4cf;
-
-  /** Copy button border (idle) */
-  --jaamd-copy-btn-border:       #a8a39e;
-
-  /** Copy button icon color (idle) */
-  --jaamd-copy-btn-fg:           #2d2d2d;
-
-  /** Copy button background on hover */
-  --jaamd-copy-btn-hover-bg:     #c8c4bf;
-
-  /** Copy button border on hover */
-  --jaamd-copy-btn-hover-border: #9a958f;
-
-  /** Copy button icon color on hover */
-  --jaamd-copy-btn-hover-fg:     #1a1a1a;
+  --jaamd-copy-btn-bg:           var(--jaamd-surface-4);
+  --jaamd-copy-btn-border:       var(--jaamd-border-strong);
+  --jaamd-copy-btn-fg:           var(--jaamd-color-primary);
+  --jaamd-copy-btn-hover-bg:     var(--jaamd-border);
+  --jaamd-copy-btn-hover-border: color-mix(in oklab, var(--jaamd-color-fg) 48%, var(--jaamd-bg));
+  --jaamd-copy-btn-hover-fg:     var(--jaamd-color-fg-bright);
 
 
   /* ── Blockquote ─────────────────────────────────────────── */
 
-  /** Blockquote background fill */
-  --jaamd-blockquote-bg:     #eeeae5;
-
-  /** Blockquote left-border accent color */
-  --jaamd-blockquote-border: #5a5a5a;
-
-  /** Blockquote paragraph text color */
-  --jaamd-blockquote-fg:     #4a4a4a;
+  --jaamd-blockquote-bg:     var(--jaamd-surface-1);
+  --jaamd-blockquote-border: color-mix(in oklab, var(--jaamd-color-fg) 81%, var(--jaamd-bg));
+  --jaamd-blockquote-fg:     var(--jaamd-color-primary-light);
 
 
   /* ── Emphasis ───────────────────────────────────────────── */
 
-  /** Color of <em> / italic text */
-  --jaamd-em-fg: #4a4a4a;
+  --jaamd-em-fg: var(--jaamd-color-primary-light);
 
 
   /* ── Horizontal rule (<hr>) ─────────────────────────────── */
 
-  /** Color of the hr border line */
   --jaamd-hr-color: rgb(from var(--jaamd-color-primary) r g b / 0.4);
 
 
   /* ── Tables ─────────────────────────────────────────────── */
 
-  /** Table cell border color (also used for box-shadow outline) */
-  --jaamd-table-border:     #b8b3ae;
-
-  /** <th> header row background */
-  --jaamd-table-header-bg:  #eeeae5;
-
-  /** <tr>:hover background */
-  --jaamd-table-hover-bg:   #e0dcd7;
+  --jaamd-table-border:     color-mix(in oklab, var(--jaamd-color-fg) 34%, var(--jaamd-bg));
+  --jaamd-table-header-bg:  var(--jaamd-surface-1);
+  --jaamd-table-hover-bg:   var(--jaamd-surface-3);
 
 
-  /* ── Code tabs (.code-tabs) ───────────────────────────────── */
+  /* ── Code tabs (.code-tabs) ─────────────────────────────── */
 
-  /** Outer border and tab-strip bottom border */
-  --jaamd-tabs-border:          #c8c4bf;
-
-  /** Tab strip header background */
-  --jaamd-tabs-header-bg:       #e0dcd7;
-
-  /** Inactive tab button :hover background */
-  --jaamd-tabs-btn-hover-bg:    #d0cbc6;
-
-  /** Active tab button background (matches the panel below it) */
-  --jaamd-tabs-btn-active-bg:   #eeeae5;
+  --jaamd-tabs-border:        var(--jaamd-border);
+  --jaamd-tabs-header-bg:     var(--jaamd-surface-3);
+  --jaamd-tabs-btn-hover-bg:  color-mix(in oklab, var(--jaamd-color-fg) 18%, var(--jaamd-bg));
+  --jaamd-tabs-btn-active-bg: var(--jaamd-surface-1);
 
 
-  /* ── Details / Summary ───────────────────────────────────── */
+  /* ── Details / Summary ──────────────────────────────────── */
 
-  /** <details> block background */
-  --jaamd-details-bg:     #eeeae5;
-
-  /** <details> block border */
-  --jaamd-details-border: #c8c4bf;
+  --jaamd-details-bg:     var(--jaamd-surface-1);
+  --jaamd-details-border: var(--jaamd-border);
 
 
-  /* ── Spoiler ─────────────────────────────────────────────── */
+  /* ── Spoiler ────────────────────────────────────────────── */
 
   /** Hidden spoiler text+background color (same value hides text) */
-  --jaamd-spoiler-hidden-color:  #1a1a1a;
-
-  /** Revealed spoiler background */
-  --jaamd-spoiler-revealed-bg:   #eeeae5;
-
-  /** Revealed spoiler text color */
-  --jaamd-spoiler-revealed-fg:   #3a3a3a;
+  --jaamd-spoiler-hidden-color: var(--jaamd-color-fg-bright);
+  --jaamd-spoiler-revealed-bg:  var(--jaamd-surface-1);
+  --jaamd-spoiler-revealed-fg:  var(--jaamd-color-fg);
 
 
-  /* ── Alert blocks (.markdown-alert) ────────────────────── */
+  /* ── Alert blocks (.markdown-alert) ─────────────────────── */
 
-  /* Note */
-  --jaamd-alert-note-color: #0969da;
-  --jaamd-alert-note-bg:    #dff0fd;
-
-  /* Tip */
-  --jaamd-alert-tip-color:  #1a7f37;
-  --jaamd-alert-tip-bg:     #dafbe1;
-
-  /* Important */
-  --jaamd-alert-important-color: #8250df;
-  --jaamd-alert-important-bg:    #fbefff;
-
-  /* Warning */
-  --jaamd-alert-warning-color: #9a6700;
-  --jaamd-alert-warning-bg:    #fff8c5;
-
-  /* Caution */
-  --jaamd-alert-caution-color: #cf222e;
-  --jaamd-alert-caution-bg:    #ffebe9;
+  --jaamd-alert-note-bg:      color-mix(in oklab, var(--jaamd-alert-note-color)      12%, var(--jaamd-bg));
+  --jaamd-alert-tip-bg:       color-mix(in oklab, var(--jaamd-alert-tip-color)       12%, var(--jaamd-bg));
+  --jaamd-alert-important-bg: color-mix(in oklab, var(--jaamd-alert-important-color) 12%, var(--jaamd-bg));
+  --jaamd-alert-warning-bg:   color-mix(in oklab, var(--jaamd-alert-warning-color)   12%, var(--jaamd-bg));
+  --jaamd-alert-caution-bg:   color-mix(in oklab, var(--jaamd-alert-caution-color)   12%, var(--jaamd-bg));
 }
 
-/* ── Dark mode overrides ─────────────────────────────────── */
+/* ── Dark mode ──────────────────────────────────────────────
+   Only the seeds change; every derived token follows. */
 
 html.dark {
+  --jaamd-bg:                  #0d1117;
   --jaamd-color-fg:            #c9d1d9;
   --jaamd-color-fg-bright:     #e6edf3;
   --jaamd-color-primary:       #c9d1d9;
-  --jaamd-color-primary-light: #8b949e;
 
-  --jaamd-heading-border-color: rgb(from var(--jaamd-color-primary) r g b / 0.3);
+  --jaamd-surface-1: color-mix(in oklab, var(--jaamd-color-fg)  7%, var(--jaamd-bg));
+  --jaamd-surface-2: color-mix(in oklab, var(--jaamd-color-fg) 10%, var(--jaamd-bg));
+  --jaamd-surface-3: color-mix(in oklab, var(--jaamd-color-fg) 13%, var(--jaamd-bg));
+  --jaamd-surface-4: color-mix(in oklab, var(--jaamd-color-fg) 18%, var(--jaamd-bg));
+  --jaamd-border:        color-mix(in oklab, var(--jaamd-color-fg) 22%, var(--jaamd-bg));
+  --jaamd-border-strong: color-mix(in oklab, var(--jaamd-color-fg) 36%, var(--jaamd-bg));
 
-  --jaamd-code-bg:     #161b22;
-  --jaamd-code-border: #30363d;
-  --jaamd-code-fg:     #e6edf3;
+  --jaamd-table-border:          var(--jaamd-border);
+  --jaamd-blockquote-border:     var(--jaamd-border-strong);
+  --jaamd-copy-btn-hover-border: var(--jaamd-border-strong);
 
-  --jaamd-pre-bg:     #161b22;
-  --jaamd-pre-border: #30363d;
-  --jaamd-pre-fg:     #c9d1d9;
-
-  --jaamd-copy-btn-bg:           #21262d;
-  --jaamd-copy-btn-border:       #30363d;
-  --jaamd-copy-btn-fg:           #c9d1d9;
-  --jaamd-copy-btn-hover-bg:     #30363d;
-  --jaamd-copy-btn-hover-border: #484f58;
-  --jaamd-copy-btn-hover-fg:     #e6edf3;
-
-  --jaamd-blockquote-bg:     #161b22;
-  --jaamd-blockquote-border: #484f58;
-  --jaamd-blockquote-fg:     #8b949e;
-
-  --jaamd-em-fg: #8b949e;
-  --jaamd-hr-color: rgb(from var(--jaamd-color-primary) r g b / 0.3);
-
-  --jaamd-table-border:     #30363d;
-  --jaamd-table-header-bg:  #161b22;
-  --jaamd-table-hover-bg:   #1c2128;
-
-  --jaamd-tabs-border:          #30363d;
-  --jaamd-tabs-header-bg:       #1c2128;
-  --jaamd-tabs-btn-hover-bg:    #21262d;
-  --jaamd-tabs-btn-active-bg:   #161b22;
-
-  --jaamd-details-bg:     #161b22;
-  --jaamd-details-border: #30363d;
-
-  --jaamd-spoiler-hidden-color:  #e6edf3;
-  --jaamd-spoiler-revealed-bg:   #161b22;
-  --jaamd-spoiler-revealed-fg:   #c9d1d9;
-
-  --jaamd-alert-note-color: #58a6ff;
-  --jaamd-alert-note-bg:    rgba(56, 139, 253, 0.1);
-  --jaamd-alert-tip-color:  #3fb950;
-  --jaamd-alert-tip-bg:     rgba(46, 160, 67, 0.1);
+  --jaamd-alert-note-color:      #58a6ff;
+  --jaamd-alert-tip-color:       #3fb950;
   --jaamd-alert-important-color: #a371f7;
-  --jaamd-alert-important-bg:    rgba(163, 113, 247, 0.1);
-  --jaamd-alert-warning-color: #d29922;
-  --jaamd-alert-warning-bg:    rgba(187, 128, 9, 0.1);
-  --jaamd-alert-caution-color: #f85149;
-  --jaamd-alert-caution-bg:    rgba(248, 81, 73, 0.1);
+  --jaamd-alert-warning-color:   #d29922;
+  --jaamd-alert-caution-color:   #f85149;
+
+  --jaamd-color-primary-light: color-mix(in oklab, var(--jaamd-color-primary) 71%, var(--jaamd-bg));
+  --jaamd-heading-border-color: rgb(from var(--jaamd-color-primary) r g b / 0.3);
+  --jaamd-hr-color:             rgb(from var(--jaamd-color-primary) r g b / 0.3);
+
+  --jaamd-alert-note-bg:      color-mix(in oklab, var(--jaamd-alert-note-color)      10%, var(--jaamd-bg));
+  --jaamd-alert-tip-bg:       color-mix(in oklab, var(--jaamd-alert-tip-color)       10%, var(--jaamd-bg));
+  --jaamd-alert-important-bg: color-mix(in oklab, var(--jaamd-alert-important-color) 10%, var(--jaamd-bg));
+  --jaamd-alert-warning-bg:   color-mix(in oklab, var(--jaamd-alert-warning-color)   10%, var(--jaamd-bg));
+  --jaamd-alert-caution-bg:   color-mix(in oklab, var(--jaamd-alert-caution-color)   10%, var(--jaamd-bg));
 }
 }
