@@ -5,27 +5,11 @@ import "../styles/variables.css";
 import "../styles/markdown.css";
 
 /**
- * MarkdownContent
- *
- * Wraps markdown-rendered HTML. Client-side enhancements are initialised
- * automatically by the jaamd() integration via its injected page script.
- *
- * The full generic Polymorphic<Props> type is declared in MarkdownContent.astro.d.ts
- * and is used automatically by TypeScript when importing this component.
- * The inline Props here is intentionally simplified to avoid Astro's parser
- * misreading TypeScript generics (e.g. <Tag extends HTMLTag>) as HTML tags.
+ * Kept deliberately non-generic: Astro's parser reads `<Tag extends HTMLTag>` as
+ * an HTML tag. The real generic type lives in MarkdownContent.astro.d.ts.
  */
 type Props = {
   as?: HTMLTag;
-  /**
-   * Extra CSS classes to append to the wrapper element.
-   * The `jaamd-content` class is always present — it is the selector used
-   * by the JS enhancements and must not be removed.
-   *
-   * @example
-   * // Renders: <article class="jaamd-content prose mx-auto">
-   * <MarkdownContent as="article" class="prose mx-auto">
-   */
   class?: string;
 };
 

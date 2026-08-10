@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 /**
- * Post-build smoke test for the example site.
+ * Post-build assertions on ./example. A green `astro build` proves nothing:
+ * jaamd only warns when it cannot register its plugins.
  *
- * When jaamd cannot recognise Astro's default markdown processor it logs a
- * warning and skips its remark plugins, and the build still exits 0. So a green
- * build proves nothing about whether alerts and code-tabs rendered. Asserting on
- * the produced HTML is what catches Astro renaming that processor.
- *
- * Usage: node scripts/smoke-test.mjs  (after building ./example)
+ * Usage: node scripts/smoke-test.mjs
  */
 
 import { readFileSync, existsSync } from "node:fs";
@@ -106,8 +102,8 @@ check(
   "markdown.css did not reach the linked stylesheets",
 );
 
-// Shiki emits only --shiki-light/--shiki-dark on spans in dual mode; without the
-// rules that read them, code renders with no colour at all.
+// In dual mode Shiki only sets --shiki-light/--shiki-dark; without these rules
+// code renders with no colour at all.
 check(
   "dual-theme code colours shipped",
   css.includes("var(--shiki-light)") && css.includes("var(--shiki-dark)"),

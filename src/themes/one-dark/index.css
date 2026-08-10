@@ -1,11 +1,4 @@
-/* ============================================================
- * JAAMD Theme — One Dark
- * Pairs with Shiki theme: "one-dark-pro"
- * ============================================================
- *
- * Import:  @import "jaamd/themes/one-dark";
- *          import "jaamd/themes/one-dark";
- * ============================================================ */
+/* JAAMD theme — One Dark. Pairs with Shiki theme "one-dark-pro". */
 
 :root {
   --jaamd-font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;

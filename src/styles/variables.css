@@ -1,25 +1,10 @@
-/* ============================================================
- * JAAMD — Default Variables & Full CSS Variable Reference
- * ============================================================
+/* JAAMD default theme, and the reference for every --jaamd-* variable.
  *
- *  1. FALLBACK THEME:
- *     imported automatically by the integration so all --jaamd-*
- *     vars have values even if you never set any. Opt out with
- *     `noDefault: true` in jaamd({…}).
+ * To rebrand, override the seed tokens below; the rest derive from them via
+ * color-mix(). Any individual token can still be overridden by name.
  *
- *     Defaults live in @layer jaamd.defaults, so any :root rule
- *     you write outside a layer wins regardless of load order.
- *
- *  2. DOCUMENTATION:
- *     every --jaamd-* property is listed with its role.
- *
- * Theming: override the SEED tokens below and the rest follows.
- * Every other value is derived from them with color-mix(). You can
- * still override any individual token by name.
- *
- * Importable as:  import "jaamd/default";
- *                 @import "jaamd/default.css";
- * ============================================================ */
+ * Values live in @layer jaamd.defaults, so an unlayered :root rule always wins.
+ * Opt out entirely with `noDefault: true`. */
 
 @layer jaamd.defaults;
 

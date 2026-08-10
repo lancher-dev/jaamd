@@ -1,12 +1,4 @@
-// ─── Shared DOM utilities ─────────────────────────────────────────────────────
-
-/**
- * Slugify heading text for use as an element id.
- *
- * Keeps any Unicode letter or number, so CJK, Cyrillic, Arabic and accented
- * Latin headings survive instead of collapsing to an empty string under an
- * ASCII-only `\w` filter.
- */
+/** Unicode-aware on purpose: `\w` would collapse CJK and Cyrillic headings to "". */
 export function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -16,8 +8,7 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-/** Appends `-1`, `-2`, ... until the id is free, so repeated headings never
- *  share an anchor. */
+/** Appends `-1`, `-2`, … until the id is free. */
 export function uniqueElementId(base: string): string {
   const seed = base || "section";
   if (!document.getElementById(seed)) return seed;

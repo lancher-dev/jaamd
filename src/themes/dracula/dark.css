@@ -1,11 +1,4 @@
-/* ============================================================
- * JAAMD Theme — Dracula
- * Pairs with Shiki theme: "dracula" or "dracula-soft"
- * ============================================================
- *
- * Import:  @import "jaamd/themes/dracula/dark";
- *          import "jaamd/themes/dracula/dark";
- * ============================================================ */
+/* JAAMD theme — Dracula (dark mode only). Pairs with Shiki theme "dracula" or "dracula-soft". */
 
 html.dark {
   --jaamd-color-fg:            #f8f8f2;
