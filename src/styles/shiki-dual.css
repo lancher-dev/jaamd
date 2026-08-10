@@ -1,15 +1,6 @@
-/* ============================================================
- * JAAMD — Shiki Dual-Theme Switching
- * ============================================================
- *
- * Injected automatically when theme is { light, dark }.
- * Applies the correct Shiki CSS-variable set based on html.dark.
- *
- * Importable as: import "jaamd/shiki-dual";
- *                @import "jaamd/shiki-dual.css";
- * ============================================================ */
+/* Shiki dual-theme switching. Injected when `theme` is { light, dark }. */
 
-/* Light mode (default) — use --shiki-light-* variables */
+/* Light mode (default) */
 .jaamd-content .astro-code span,
 .jaamd-content .shiki span {
   color: var(--shiki-light) !important;
@@ -18,7 +9,7 @@
   text-decoration: var(--shiki-light-text-decoration) !important;
 }
 
-/* Dark mode — switch to --shiki-dark-* variants */
+/* Dark mode */
 html.dark .jaamd-content .astro-code span,
 html.dark .jaamd-content .shiki span {
   color: var(--shiki-dark) !important;

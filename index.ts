@@ -22,13 +22,8 @@ export interface JaamdOptions {
   selector?: string;
 
   /**
-   * Shiki syntax-highlighting theme.
-   *
-   * - **string** — single theme name (e.g. `"github-light"`).
-   * - **{ light, dark }** — enables dual-theme mode. Shiki outputs CSS
-   *   variables for both themes and JAAMD injects the switching CSS.
-   *   Use together with a `.dark` class on `<html>` for dark-mode toggling.
-   *
+   * Shiki theme. `{ light, dark }` enables dual-theme mode, which switches on a
+   * `.dark` class on `<html>`.
    * @default "github-light"
    */
   theme?: string | { light: string; dark: string };
@@ -36,18 +31,8 @@ export interface JaamdOptions {
   /**
    * Skip injecting the default CSS variable fallbacks (`jaamd/default`).
    *
-   * `<MarkdownContent>` already imports `jaamd/default` (and the main
-   * stylesheet) statically in its own frontmatter, so this option has no
-   * effect for consumers using that component — the defaults are always
-   * present there, extracted by Astro/Vite's normal CSS pipeline.
-   *
-   * This flag only affects the fallback copy injected via the client-side
-   * "page" script, which exists for custom wrappers that render markdown
-   * without `<MarkdownContent>`. Note that CSS side-effect imports inside
-   * an injected script are not reliably retained by Rollup in a static
-   * build (confirmed missing from production output in testing) — prefer
-   * importing `jaamd/default` directly in your own wrapper rather than
-   * relying on this option.
+   * Has no effect when rendering through `<MarkdownContent>`, which imports
+   * them statically; it applies to custom wrappers.
    * @default false
    */
   noDefault?: boolean;
@@ -66,12 +51,7 @@ export interface JaamdOptions {
   };
 }
 
-/**
- * jaamd — Just Another Astro Markdown
- *
- * Registers remark plugins and injects the stylesheet automatically.
- * Supports `astro add jaamd`.
- */
+/** Registers jaamd's remark plugins and injects its stylesheets. */
 export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
   const {
     selector  = ".jaamd-content",
@@ -110,12 +90,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         const markdownUpdate: Record<string, any> = { shikiConfig: mergedShikiConfig };
 
-        // Astro pre-fills its default processor here, so seeing this name means
-        // the user did not override it and it is safe to replace.
-        // The name is an implementation detail, not a public API: if Astro
-        // renames it, jaamd stops registering its plugins and only logs a
-        // warning. That is why CI asserts on the rendered HTML, and why the
-        // peer range is capped. Re-verify on every Astro major.
+        // Not public API. If Astro renames it, jaamd silently skips its plugins;
+        // the scheduled CI run against latest Astro is what catches that.
         const ASTRO_DEFAULT_PROCESSOR = "satteri";
 
         const currentProcessor = existingMarkdown.processor;
@@ -131,8 +107,7 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
           const target = isUnified ? currentProcessor : unified();
           const existing: unknown[] = target.options.remarkPlugins ?? [];
 
-          // Registering a remark plugin twice re-registers its micromark
-          // extensions, so skip anything the user already wired up.
+          // Registering a plugin twice re-registers its micromark extensions.
           const nameOf = (p: unknown): string => {
             const fn = Array.isArray(p) ? p[0] : p;
             return typeof fn === "function" ? fn.name : "";
@@ -142,9 +117,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
             (p) => !existing.includes(p) && !existingNames.has(nameOf(p)),
           );
 
-          // A new array rather than an unshift: the processor may be a
-          // module-scope object shared between configs, and mutating it in
-          // place would corrupt it and stack duplicates across setup runs.
+          // New array, not unshift: the processor may be shared between configs,
+          // and mutating it stacks duplicates across setup runs.
           target.options.remarkPlugins = [...missing, ...existing];
           markdownUpdate.processor = target;
 
@@ -155,26 +129,29 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         updateConfig({
           vite: {
-            ssr: {
-              // Ensure jaamd source files (including .astro components) are
-              // processed by Vite transforms (i.e. the Astro compiler) rather
-              // than being treated as pre-bundled external modules.
-              noExternal: ["jaamd"],
-            },
+            // Without this, jaamd's .astro sources are treated as pre-bundled
+            // externals and never reach the Astro compiler.
+            ssr: { noExternal: ["jaamd"] },
           },
           markdown: markdownUpdate,
         });
 
-        // "page" stage: bundled by Vite, tree-shaken, no duplicate injection
         const isDualTheme = typeof theme === "object" && theme.light && theme.dark;
+
+        // Stylesheets go through "page-ssr". CSS imported from the client "page"
+        // stage is dropped by Rollup in static builds.
         injectScript(
-          "page",
+          "page-ssr",
           (!noDefault ? `import "jaamd/default";
 ` : "") +
           (isDualTheme ? `import "jaamd/shiki-dual";
 ` : "") +
           `import "jaamd/styles";
-` +
+`,
+        );
+
+        injectScript(
+          "page",
           `import { initMarkdownEnhancements } from "jaamd/client";
 ` +
           `function __jaamdRun() { initMarkdownEnhancements(${JSON.stringify(selector)}); }

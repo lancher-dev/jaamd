@@ -11,22 +11,11 @@ function escapeHtml(value: string): string {
 }
 
 /**
- * Remark plugin: tabbed code blocks.
+ * Tabbed code blocks: a `:::code-tabs` container wrapping fenced blocks.
+ * The meta string after the language is the tab label, falling back to the
+ * language, then "Tab N".
  *
- * Syntax:
- * :::code-tabs
- * ```bash npm
- * npm install
- * ```
- * ```bash pnpm
- * pnpm install
- * ```
- * :::
- *
- * The meta string (text after the language) becomes the tab label.
- * Falls back to the language identifier, then "Tab N".
- *
- * Requires remark-directive to be registered before this plugin.
+ * Requires remark-directive to run before this plugin.
  */
 const remarkCodeTabs: Plugin<[], Root> = () => {
   return (tree: Root) => {

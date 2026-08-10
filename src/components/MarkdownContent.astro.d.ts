@@ -2,15 +2,8 @@ import type { HTMLTag, Polymorphic } from "astro/types";
 
 export type Props<Tag extends HTMLTag = "div"> = Polymorphic<{
   as: Tag;
-  /**
-   * Extra CSS classes to append to the wrapper element.
-   * The `jaamd-content` class is always present — it is the selector used
-   * by the JS enhancements and must not be removed.
-   *
-   * @example
-   * // Renders: <article class="jaamd-content prose">
-   * <MarkdownContent as="article" class="prose">
-   */
+  /** Appended to the always-present `jaamd-content` class, which the JS
+   *  enhancements select on. */
   class?: string;
 }>;
 

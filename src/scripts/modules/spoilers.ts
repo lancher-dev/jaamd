@@ -1,13 +1,7 @@
 import { qsa } from "../utils.js";
 
-// ─── Spoilers ─────────────────────────────────────────────────────────────────
-
-/**
- * `.spoiler` is authored as plain markup (e.g. `<span class="spoiler">`) and so
- * carries no semantics. Promote it to a button: focusable, operable with
- * Enter/Space, and reporting its state. Without this the content is
- * unreachable without a mouse.
- */
+/** `.spoiler` is authored as plain markup; this gives it button semantics so it
+ *  is reachable without a mouse. */
 export function initSpoilers(selector: string): void {
   qsa<HTMLElement>(document, `${selector} .spoiler`).forEach((el) => {
     if (el.dataset.spoilerInit) return;

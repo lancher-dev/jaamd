@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
 
 jobs:
   typecheck:
@@ -26,8 +29,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: pnpm
-          cache-dependency-path: example/pnpm-lock.yaml
       - working-directory: example
         run: pnpm install
       - working-directory: example
@@ -38,4 +39,27 @@ jobs:
       # This asserts on the rendered HTML, which is what would catch Astro
       # renaming its default markdown processor out from under us.
       - name: Smoke test rendered output
+        run: node scripts/smoke-test.mjs
+
+  # `example/` pins astro ^7, so the job above never sees a new major.
+  # Red here means the next Astro major needs checking, not that main is broken.
+  astro-latest:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - working-directory: example
+        run: pnpm install
+      - working-directory: example
+        run: pnpm add astro@latest
+      - working-directory: example
+        run: pnpm build
+      - name: Smoke test rendered output against latest Astro
         run: node scripts/smoke-test.mjs

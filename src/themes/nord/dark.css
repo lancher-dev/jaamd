@@ -1,11 +1,4 @@
-/* ============================================================
- * JAAMD Theme — Nord
- * Pairs with Shiki theme: "nord"
- * ============================================================
- *
- * Import:  @import "jaamd/themes/nord/dark";
- *          import "jaamd/themes/nord/dark";
- * ============================================================ */
+/* JAAMD theme — Nord (dark mode only). Pairs with Shiki theme "nord". */
 
 html.dark {
   --jaamd-color-fg:            #d8dee9;

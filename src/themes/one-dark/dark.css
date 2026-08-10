@@ -1,11 +1,4 @@
-/* ============================================================
- * JAAMD Theme — One Dark
- * Pairs with Shiki theme: "one-dark-pro"
- * ============================================================
- *
- * Import:  @import "jaamd/themes/one-dark/dark";
- *          import "jaamd/themes/one-dark/dark";
- * ============================================================ */
+/* JAAMD theme — One Dark (dark mode only). Pairs with Shiki theme "one-dark-pro". */
 
 html.dark {
   --jaamd-color-fg:            #abb2bf;
