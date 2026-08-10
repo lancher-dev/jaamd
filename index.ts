@@ -36,18 +36,8 @@ export interface JaamdOptions {
   /**
    * Skip injecting the default CSS variable fallbacks (`jaamd/default`).
    *
-   * `<MarkdownContent>` already imports `jaamd/default` (and the main
-   * stylesheet) statically in its own frontmatter, so this option has no
-   * effect for consumers using that component — the defaults are always
-   * present there, extracted by Astro/Vite's normal CSS pipeline.
-   *
-   * This flag only affects the fallback copy injected via the client-side
-   * "page" script, which exists for custom wrappers that render markdown
-   * without `<MarkdownContent>`. Note that CSS side-effect imports inside
-   * an injected script are not reliably retained by Rollup in a static
-   * build (confirmed missing from production output in testing) — prefer
-   * importing `jaamd/default` directly in your own wrapper rather than
-   * relying on this option.
+   * Has no effect when rendering through `<MarkdownContent>`, which imports
+   * them statically; it applies to custom wrappers.
    * @default false
    */
   noDefault?: boolean;
@@ -165,16 +155,22 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
           markdown: markdownUpdate,
         });
 
-        // "page" stage: bundled by Vite, tree-shaken, no duplicate injection
         const isDualTheme = typeof theme === "object" && theme.light && theme.dark;
+
+        // Stylesheets go through "page-ssr". CSS imported from the client "page"
+        // stage is dropped by Rollup in static builds.
         injectScript(
-          "page",
+          "page-ssr",
           (!noDefault ? `import "jaamd/default";
 ` : "") +
           (isDualTheme ? `import "jaamd/shiki-dual";
 ` : "") +
           `import "jaamd/styles";
-` +
+`,
+        );
+
+        injectScript(
+          "page",
           `import { initMarkdownEnhancements } from "jaamd/client";
 ` +
           `function __jaamdRun() { initMarkdownEnhancements(${JSON.stringify(selector)}); }

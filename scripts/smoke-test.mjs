@@ -13,7 +13,8 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-const PAGE = join(process.cwd(), "example", "dist", "demo", "index.html");
+const DIST = join(process.cwd(), "example", "dist");
+const PAGE = join(DIST, "demo", "index.html");
 
 if (!existsSync(PAGE)) {
   console.error(`✗ built page not found: ${PAGE}\n  Did \`npm run build\` run in ./example?`);
@@ -21,6 +22,13 @@ if (!existsSync(PAGE)) {
 }
 
 const html = readFileSync(PAGE, "utf8");
+
+// Stylesheets the page actually links, concatenated.
+const css = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)]
+  .map((m) => join(DIST, m[1].replace(/^\//, "")))
+  .filter(existsSync)
+  .map((f) => readFileSync(f, "utf8"))
+  .join("\n");
 
 /** @type {{ name: string, ok: boolean, hint: string }[]} */
 const results = [];
@@ -90,6 +98,20 @@ check(
   "stylesheet linked",
   /<link[^>]+rel="stylesheet"/.test(html),
   "no stylesheet reached the page; the CSS import chain is broken",
+);
+
+check(
+  "markdown styles shipped",
+  css.includes("--jaamd-"),
+  "markdown.css did not reach the linked stylesheets",
+);
+
+// Shiki emits only --shiki-light/--shiki-dark on spans in dual mode; without the
+// rules that read them, code renders with no colour at all.
+check(
+  "dual-theme code colours shipped",
+  css.includes("var(--shiki-light)") && css.includes("var(--shiki-dark)"),
+  "shiki-dual.css did not reach the CSS; inject it at the page-ssr stage, not page",
 );
 
 check(
