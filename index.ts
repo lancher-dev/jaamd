@@ -3,6 +3,7 @@ import type { AstroIntegration } from "astro";
 import remarkDirective from "remark-directive";
 import { remarkAlert } from "./src/plugins/remark-alert.js";
 import remarkCodeTabs from "./src/plugins/remark-code-tabs.js";
+import { paths } from "./src/paths.js";
 
 // `@astrojs/markdown-remark`'s `.d.ts` doesn't declare these yet, though the runtime exports them.
 const { unified, isUnifiedProcessor } = astroMarkdownRemark as unknown as {
@@ -142,17 +143,17 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         // stage is dropped by Rollup in static builds.
         injectScript(
           "page-ssr",
-          (!noDefault ? `import "jaamd/default";
+          (!noDefault ? `import ${paths.variables};
 ` : "") +
-          (isDualTheme ? `import "jaamd/shiki-dual";
+          (isDualTheme ? `import ${paths.shikiDual};
 ` : "") +
-          `import "jaamd/styles";
+          `import ${paths.markdown};
 `,
         );
 
         injectScript(
           "page",
-          `import { initMarkdownEnhancements } from "jaamd/client";
+          `import { initMarkdownEnhancements } from ${paths.client};
 ` +
           `function __jaamdRun() { initMarkdownEnhancements(${JSON.stringify(selector)}); }
 ` +
