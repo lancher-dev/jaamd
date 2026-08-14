@@ -1,7 +1,8 @@
 import { fileURLToPath } from "node:url";
 
-/** Injected scripts resolve from the consumer's project, where a bare "jaamd/…"
- *  specifier is unreachable when jaamd is a transitive dependency. */
+/** Injected scripts resolve from the consumer's project, where a bare
+ *  "@lancher-dev/jaamd/…" specifier is unreachable when jaamd is a transitive
+ *  dependency. */
 const own = (relative: string): string =>
   JSON.stringify(fileURLToPath(new URL(relative, import.meta.url)));
 

@@ -9,7 +9,7 @@
     "check": "astro check"
   },
   "dependencies": {
-    "astro": "^7.2.0",
-    "jaamd": "file:.."
+    "@lancher-dev/jaamd": "file:..",
+    "astro": "^7.2.0"
   }
 }
