@@ -4,15 +4,30 @@ import remarkDirective from "remark-directive";
 import { remarkAlert } from "./src/plugins/remark-alert.js";
 import remarkCodeTabs from "./src/plugins/remark-code-tabs.js";
 import { paths } from "./src/paths.js";
+import { DEFAULT_SELECTOR } from "./src/scripts/utils.js";
+
+interface MarkdownProcessor {
+  name: string;
+  options: { remarkPlugins?: unknown[]; rehypePlugins?: unknown[]; remarkRehype?: unknown };
+}
 
 // `@astrojs/markdown-remark`'s `.d.ts` doesn't declare these yet, though the runtime exports them.
 const { unified, isUnifiedProcessor } = astroMarkdownRemark as unknown as {
-  unified: (opts?: { remarkPlugins?: unknown[]; rehypePlugins?: unknown[]; remarkRehype?: unknown }) => {
-    name: string;
-    options: { remarkPlugins: unknown[]; rehypePlugins: unknown[]; remarkRehype: unknown };
-  };
+  unified: (opts?: { remarkPlugins?: unknown[]; rehypePlugins?: unknown[]; remarkRehype?: unknown }) => MarkdownProcessor;
   isUnifiedProcessor: (p: unknown) => boolean;
 };
+
+interface ShikiConfig {
+  theme?: string;
+  themes?: { light: string; dark: string };
+  defaultColor?: string | false;
+  wrap?: boolean;
+}
+
+interface MarkdownConfig {
+  processor?: MarkdownProcessor;
+  shikiConfig?: ShikiConfig;
+}
 
 export interface JaamdOptions {
   /**
@@ -55,7 +70,7 @@ export interface JaamdOptions {
 /** Registers jaamd's remark plugins and injects its stylesheets. */
 export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
   const {
-    selector  = ".jaamd-content",
+    selector  = DEFAULT_SELECTOR,
     theme     = "github-light",
     noDefault = false,
     plugins   = {},
@@ -66,20 +81,25 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
     name: "jaamd",
     hooks: {
       "astro:config:setup": ({ config, updateConfig, injectScript, logger }) => {
-        const jaamdRemarkPlugins: any[] = [];
+        const jaamdRemarkPlugins: unknown[] = [];
         if (alerts) jaamdRemarkPlugins.push(remarkAlert);
         // directive must come before codeTabs
         if (directive || codeTabs) jaamdRemarkPlugins.push(remarkDirective);
         if (codeTabs) jaamdRemarkPlugins.push(remarkCodeTabs);
 
-        const existingMarkdown = (config.markdown as any) ?? {};
-        const existingShikiConfig: any = existingMarkdown.shikiConfig ?? {};
+        // Astro types both of these more precisely than jaamd needs; narrow them
+        // once here to the handful of keys the integration actually touches.
+        const mergedShikiConfig = {
+          ...config.markdown?.shikiConfig,
+        } as unknown as ShikiConfig;
+        const currentProcessor = config.markdown?.processor as
+          | MarkdownProcessor
+          | undefined;
 
-        // `wrap` and other keys are only filled in when absent.
-        const mergedShikiConfig: any = { ...existingShikiConfig };
+        const isDualTheme = typeof theme === "object" && !!theme.light && !!theme.dark;
 
         // Dual-theme mode: { light, dark } → Shiki "themes" with CSS variables
-        if (typeof theme === "object" && theme.light && theme.dark) {
+        if (isDualTheme) {
           delete mergedShikiConfig.theme;
           mergedShikiConfig.themes = { light: theme.light, dark: theme.dark };
           mergedShikiConfig.defaultColor = false;
@@ -89,13 +109,12 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         if (mergedShikiConfig.wrap === undefined) mergedShikiConfig.wrap = true;
 
-        const markdownUpdate: Record<string, any> = { shikiConfig: mergedShikiConfig };
+        const markdownUpdate: MarkdownConfig = { shikiConfig: mergedShikiConfig };
 
         // Not public API. If Astro renames it, jaamd silently skips its plugins;
         // the scheduled CI run against latest Astro is what catches that.
         const ASTRO_DEFAULT_PROCESSOR = "satteri";
 
-        const currentProcessor = existingMarkdown.processor;
         const isUnified = !!currentProcessor && isUnifiedProcessor(currentProcessor);
         const isDefault =
           !currentProcessor || currentProcessor.name === ASTRO_DEFAULT_PROCESSOR;
@@ -137,29 +156,25 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
           markdown: markdownUpdate,
         });
 
-        const isDualTheme = typeof theme === "object" && theme.light && theme.dark;
-
         // Stylesheets go through "page-ssr". CSS imported from the client "page"
         // stage is dropped by Rollup in static builds.
         injectScript(
           "page-ssr",
-          (!noDefault ? `import ${paths.variables};
-` : "") +
-          (isDualTheme ? `import ${paths.shikiDual};
-` : "") +
-          `import ${paths.markdown};
-`,
+          [
+            ...(noDefault ? [] : [`import ${paths.variables};`]),
+            ...(isDualTheme ? [`import ${paths.shikiDual};`] : []),
+            `import ${paths.markdown};`,
+          ].join("\n"),
         );
 
         injectScript(
           "page",
-          `import { initMarkdownEnhancements } from ${paths.client};
-` +
-          `function __jaamdRun() { initMarkdownEnhancements(${JSON.stringify(selector)}); }
-` +
-          `__jaamdRun();
-` +
-          `document.addEventListener("astro:page-load", __jaamdRun);`,
+          [
+            `import { initMarkdownEnhancements } from ${paths.client};`,
+            `function __jaamdRun() { initMarkdownEnhancements(${JSON.stringify(selector)}); }`,
+            `__jaamdRun();`,
+            `document.addEventListener("astro:page-load", __jaamdRun);`,
+          ].join("\n"),
         );
 
         logger.info("jaamd: markdown enhancements ready");
