@@ -1,7 +1,5 @@
 import { qs, qsa, slugify, uniqueElementId } from "../utils.js";
 
-// ─── Heading anchor links ─────────────────────────────────────────────────────
-
 export function addHeadingLinks(selector: string): void {
   qsa<HTMLElement>(document, `${selector} h1, ${selector} h2, ${selector} h3`).forEach(
     (header) => {
@@ -12,9 +10,9 @@ export function addHeadingLinks(selector: string): void {
 
       const a = document.createElement("a");
       a.className = "jaamd-heading-link";
-      a.setAttribute("aria-label", `Link to section: ${header.textContent}`);
+      a.setAttribute("aria-label", `Copy link to section: ${header.textContent}`);
       a.setAttribute("href", `#${header.id}`);
-      a.title = "Copy link";
+      a.title = "Copy link to section";
       a.innerHTML =
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" ` +
         `stroke="currentColor" stroke-width="2" stroke-linecap="round" ` +
@@ -23,13 +21,12 @@ export function addHeadingLinks(selector: string): void {
         `<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>` +
         `</svg>`;
 
-      a.addEventListener("click", async (e) => {
-        e.preventDefault();
+      a.addEventListener("click", async () => {
         const url = `${location.origin}${location.pathname}#${header.id}`;
         try {
           await navigator.clipboard.writeText(url);
         } catch {
-          // clipboard not available (e.g. non-secure context) — fail silently
+          // clipboard unavailable (e.g. non-secure context) — fail silently
         }
       });
 
