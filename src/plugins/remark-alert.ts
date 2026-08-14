@@ -1,16 +1,15 @@
 /**
- * Inlined implementation of GitHub-style blockquote alerts.
- * Based on remark-github-blockquote-alert (MIT).
+ * GitHub-style blockquote alerts, inlined from remark-github-blockquote-alert
+ * (MIT) so that consumers of this source-distributed package do not have to
+ * install it themselves.
  * https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts
- *
- * Inlined to avoid a transitive dependency that consumers would need to install
- * themselves when using jaamd as a source-distributed package.
  */
 
 import { visit } from "unist-util-visit";
 import type { Root } from "mdast";
 
 const alertRegex = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i;
+const alertLegacyRegex = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)(\/.*)?]/i;
 
 export interface RemarkAlertOptions {
   /** Use legacy title format (allows optional slash-suffix). @default false */
@@ -21,47 +20,35 @@ export interface RemarkAlertOptions {
 
 export function remarkAlert(options: RemarkAlertOptions = {}) {
   const { legacyTitle = false, tagName = "div" } = options;
-  const alertLegacyRegex = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)(\/.*)?]/i;
+  const marker = legacyTitle ? alertLegacyRegex : alertRegex;
 
   return (tree: Root) => {
     visit(tree, "blockquote", (node: any) => {
-      let alertType = "";
-      let title = "";
-      let isNext = true;
+      for (const paragraph of node.children) {
+        if (paragraph.type !== "paragraph") continue;
 
-      const child = node.children.map((item: any) => {
-        if (isNext && item.type === "paragraph") {
-          const firstNode = item.children[0];
-          const text = firstNode.type === "text" ? firstNode.value : "";
-          const reg = legacyTitle ? alertLegacyRegex : alertRegex;
-          const match = text.match(reg);
-          if (match) {
-            isNext = false;
-            alertType = match[1].toLocaleLowerCase();
-            title = legacyTitle
-              ? match[2] || alertType.toLocaleUpperCase()
-              : alertType.toLocaleUpperCase();
+        const first = paragraph.children[0];
+        const match = first?.type === "text" ? first.value.match(marker) : null;
+        if (!match) continue;
 
-            if (text.includes("\n")) {
-              item.children[0] = {
-                type: "text",
-                value: text.replace(reg, "").replace(/^\n+/, ""),
-              };
-            } else {
-              const itemChild: any[] = [];
-              item.children.forEach((c: any, idx: number) => {
-                if (idx === 0) return;
-                if (idx === 1 && c.type === "break") return;
-                itemChild.push(c);
-              });
-              item.children = itemChild;
-            }
-          }
+        const alertType = match[1].toLowerCase();
+        const title = (
+          legacyTitle && match[2] ? match[2] : alertType.toUpperCase()
+        ).replace(/^\//, "");
+
+        if (first.value.includes("\n")) {
+          paragraph.children[0] = {
+            type: "text",
+            value: first.value.replace(marker, "").replace(/^\n+/, ""),
+          };
+        } else {
+          // The marker is the whole first line, so remove it and the following break if present.
+          paragraph.children.splice(
+            0,
+            paragraph.children[1]?.type === "break" ? 2 : 1,
+          );
         }
-        return item;
-      });
 
-      if (alertType) {
         node.data = {
           hName: tagName,
           hProperties: {
@@ -69,19 +56,15 @@ export function remarkAlert(options: RemarkAlertOptions = {}) {
             dir: "auto",
           },
         };
-        child.unshift({
+        node.children.unshift({
           type: "paragraph",
-          children: [
-            getAlertIcon(alertType),
-            { type: "text", value: title.replace(/^\//, "") },
-          ],
+          children: [getAlertIcon(alertType), { type: "text", value: title }],
           data: {
             hProperties: { className: "markdown-alert-title", dir: "auto" },
           },
         });
+        return;
       }
-
-      node.children = child;
     });
   };
 }
