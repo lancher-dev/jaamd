@@ -19,11 +19,9 @@ const pageTitle = frontmatter?.title ?? title ?? "JAAMD Example";
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
     <script is:inline>
-      (function () {
-        var t = localStorage.getItem("theme");
-        if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches))
-          document.documentElement.classList.add("dark");
-      })();
+      const t = localStorage.getItem("theme");
+      if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches))
+        document.documentElement.classList.add("dark");
     </script>
     <style>
       body {
@@ -71,7 +69,7 @@ const pageTitle = frontmatter?.title ?? title ?? "JAAMD Example";
     </main>
     <script is:inline>
       document.getElementById("theme-toggle").addEventListener("click", function () {
-        var isDark = document.documentElement.classList.toggle("dark");
+        const isDark = document.documentElement.classList.toggle("dark");
         localStorage.setItem("theme", isDark ? "dark" : "light");
       });
     </script>
