@@ -5,9 +5,10 @@ import { wrapTables } from "./modules/tables.js";
 import { initCodeTabs } from "./modules/code-tabs.js";
 import { initSpoilers } from "./modules/spoilers.js";
 import { initDetails } from "./modules/details.js";
+import { DEFAULT_SELECTOR } from "./utils.js";
 
 export function initMarkdownEnhancements(
-  selector: string = ".jaamd-content",
+  selector: string = DEFAULT_SELECTOR,
 ): void {
   addHeadingLinks(selector);
   addCopyButtons(selector);

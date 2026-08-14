@@ -1,3 +1,6 @@
+/** Wrapper class the integration and the client enhancements agree on. */
+export const DEFAULT_SELECTOR = ".jaamd-content";
+
 /** Unicode-aware on purpose: `\w` would collapse CJK and Cyrillic headings to "". */
 export function slugify(text: string): string {
   return text
@@ -8,7 +11,6 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-/** Appends `-1`, `-2`, … until the id is free. */
 export function uniqueElementId(base: string): string {
   const seed = base || "section";
   if (!document.getElementById(seed)) return seed;

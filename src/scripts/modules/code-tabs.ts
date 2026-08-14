@@ -1,13 +1,11 @@
 import { qsa } from "../utils.js";
 
-// ─── Code tabs ────────────────────────────────────────────────────────────────
-
 /**
  * Wires up the tablists emitted by the `:::code-tabs` remark plugin, following
  * the WAI-ARIA tabs pattern: class, `aria-selected` and the roving `tabindex`
  * always change together, and Arrow/Home/End move between tabs.
  */
-export function initCodeTabs(selector: string = ".jaamd-content"): void {
+export function initCodeTabs(selector: string): void {
   qsa<HTMLElement>(document, `${selector} .code-tabs`).forEach((group) => {
     if (group.dataset.tabsInit) return;
     group.dataset.tabsInit = "1";
@@ -50,8 +48,7 @@ export function initCodeTabs(selector: string = ".jaamd-content"): void {
       });
     });
 
-    // Re-assert so class, aria-selected and tabindex agree even if the markup
-    // came from an older version of the plugin.
+    // Re-assert so class, aria-selected and tabindex start out in agreement.
     const initial = buttons.findIndex((b) => b.classList.contains("active"));
     select(initial === -1 ? 0 : initial, false);
   });
