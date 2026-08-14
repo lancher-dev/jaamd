@@ -1,7 +1,7 @@
 {
   "name": "@lancher-dev/jaamd",
   "version": "0.7.0",
-  "description": "Just Another Astro Markdown",
+  "description": "Add remark plugins, client-side enhancements and styles as a single Astro integration for Markdown content.",
   "type": "module",
   "license": "MIT",
   "author": "Kasui92 <info@lucapattocchio.dev>",
