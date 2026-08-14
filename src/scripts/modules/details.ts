@@ -1,7 +1,5 @@
 import { qs, qsa, prefersReducedMotion } from "../utils.js";
 
-// ─── Details / Summary animation ─────────────────────────────────────────────
-
 export function initDetails(selector: string): void {
   qsa<HTMLDetailsElement>(document, `${selector} details`).forEach(
     (details) => {
@@ -37,38 +35,37 @@ export function initDetails(selector: string): void {
         e.preventDefault();
         if (animating) return;
 
-        const duration = prefersReducedMotion() ? 0 : 280;
+        const closing = details.open;
+        if (!closing) details.setAttribute("open", "");
 
-        if (details.open) {
-          // closing
-          const startH = wrapper.scrollHeight;
-          wrapper.style.overflow = "hidden";
-          animating = true;
-          const anim = wrapper.animate(
-            [{ height: `${startH}px` }, { height: "0px" }],
-            { duration, easing: "ease" },
-          );
-          anim.onfinish = () => {
-            wrapper.style.height = "0px";
-            details.removeAttribute("open");
+        const height = `${wrapper.scrollHeight}px`;
+        const frames = closing
+          ? [{ height }, { height: "0px" }]
+          : [{ height: "0px" }, { height }];
+
+        wrapper.style.overflow = "hidden";
+        animating = true;
+
+        const anim = wrapper.animate(frames, {
+          duration: prefersReducedMotion() ? 0 : 280,
+          easing: "ease",
+        });
+
+        // `finished` settles on cancel too. With `onfinish` alone, an animation
+        // cancelled mid-flight — a View Transition swapping the node out, say —
+        // would leave `animating` true and wedge the toggle for good.
+        anim.finished
+          .catch(() => {})
+          .then(() => {
+            if (closing) {
+              wrapper.style.height = "0px";
+              details.removeAttribute("open");
+            } else {
+              wrapper.style.height = "auto";
+              wrapper.style.overflow = "";
+            }
             animating = false;
-          };
-        } else {
-          // opening
-          details.setAttribute("open", "");
-          const endH = wrapper.scrollHeight;
-          wrapper.style.overflow = "hidden";
-          animating = true;
-          const anim = wrapper.animate(
-            [{ height: "0px" }, { height: `${endH}px` }],
-            { duration, easing: "ease" },
-          );
-          anim.onfinish = () => {
-            wrapper.style.height = "auto";
-            wrapper.style.overflow = "";
-            animating = false;
-          };
-        }
+          });
       });
     },
   );
