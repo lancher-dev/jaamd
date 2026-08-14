@@ -7,5 +7,6 @@ export type Props<Tag extends HTMLTag = "div"> = Polymorphic<{
   class?: string;
 }>;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const MarkdownContent: <Tag extends HTMLTag = "div">(_props: Props<Tag>) => any;
 export default MarkdownContent;

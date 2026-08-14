@@ -1,7 +1,5 @@
 import { qs, qsa } from "../utils.js";
 
-// ─── Image lightbox ───────────────────────────────────────────────────────────
-
 /** Opt out with `data-no-lightbox`. Linked images are skipped: a click on
  *  `[![alt](src)](href)` must follow the link. */
 export function addImageLightbox(selector: string): void {
@@ -71,7 +69,7 @@ function openLightbox(src: string, alt: string): void {
 
   const image = qs<HTMLImageElement>(lb, ".jaamd-lightbox__img")!;
   image.src = src;
-  image.alt = alt ?? "";
+  image.alt = alt;
 
   previousBodyOverflow = document.body.style.overflow;
   lb.classList.remove("jaamd-lightbox--hidden");

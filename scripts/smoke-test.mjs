@@ -2,8 +2,6 @@
 /**
  * Post-build assertions on ./example. A green `astro build` proves nothing:
  * jaamd only warns when it cannot register its plugins.
- *
- * Usage: node scripts/smoke-test.mjs
  */
 
 import { readFileSync, existsSync } from "node:fs";

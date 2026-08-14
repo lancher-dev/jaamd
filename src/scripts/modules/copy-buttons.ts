@@ -1,7 +1,5 @@
 import { qs, qsa } from "../utils.js";
 
-// ─── Code copy buttons ────────────────────────────────────────────────────────
-
 export function addCopyButtons(selector: string): void {
   qsa<HTMLElement>(document, `${selector} pre`).forEach((pre) => {
     if (qs(pre, ".jaamd-copy-btn")) return;
@@ -33,7 +31,7 @@ export function addCopyButtons(selector: string): void {
           btn.setAttribute("aria-label", "Copy code to clipboard");
         }, 2000);
       } catch {
-        // fail silently
+        // clipboard unavailable (e.g. non-secure context) — fail silently
       }
     });
 
