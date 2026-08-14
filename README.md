@@ -26,9 +26,9 @@
 ## Installation
 
 ```bash
-npm install jaamd
+npm install @lancher-dev/jaamd
 # or
-npx astro add jaamd
+npx astro add @lancher-dev/jaamd
 ```
 
 ## Requirements
@@ -50,7 +50,7 @@ Add the integration to your Astro config:
 ```ts
 // astro.config.mjs
 import { defineConfig } from "astro/config";
-import jaamd from "jaamd";
+import jaamd from "@lancher-dev/jaamd";
 
 export default defineConfig({
   integrations: [jaamd()],
@@ -62,7 +62,7 @@ Wrap your markdown content with the `MarkdownContent` component in your layout:
 ```astro
 ---
 // src/layouts/BlogPost.astro
-import MarkdownContent from "jaamd/components";
+import MarkdownContent from "@lancher-dev/jaamd/components";
 ---
 <MarkdownContent>
   <slot />
@@ -78,8 +78,8 @@ automatically. No other configuration is required.
 >
 > ```astro
 > ---
-> import "jaamd/default.css";
-> import "jaamd/styles.css";
+> import "@lancher-dev/jaamd/default.css";
+> import "@lancher-dev/jaamd/styles.css";
 > ---
 > ```
 
@@ -89,7 +89,7 @@ automatically. No other configuration is required.
 jaamd({
   selector:   ".jaamd-content", // CSS selector for the JS enhancements
   theme:      "github-light",   // Shiki theme name (or { light, dark })
-  noDefault:  false,            // skip injecting jaamd/default variable fallbacks
+  noDefault:  false,            // skip injecting @lancher-dev/jaamd/default variable fallbacks
   plugins: {
     codeTabs:  true,            // :::code-tabs directive blocks
     alerts:    true,            // > [!NOTE] / [!WARNING] blockquote alerts
@@ -111,7 +111,7 @@ It does not affect the CSS file, which always uses `.jaamd-content`.
 
 Set to `true` when you supply a complete `--jaamd-*` variable set of your own.
 It has no effect on `<MarkdownContent>`, which imports the defaults directly;
-with a custom wrapper, control them by importing `jaamd/default` or not.
+with a custom wrapper, control them by importing `@lancher-dev/jaamd/default` or not.
 
 ## Markdown Syntax
 
@@ -166,7 +166,7 @@ Any element with the `spoiler` class is hidden until activated:
 and accepts any valid HTML tag via the `as` prop.
 
 ```ts
-import MarkdownContent from "jaamd/components";
+import MarkdownContent from "@lancher-dev/jaamd/components";
 ```
 
 ### Props
@@ -182,7 +182,7 @@ selector used by the JS enhancements and must not be removed.
 
 ```astro
 ---
-import MarkdownContent from "jaamd/components";
+import MarkdownContent from "@lancher-dev/jaamd/components";
 ---
 
 <!-- Default: renders as <div class="jaamd-content"> -->
@@ -244,7 +244,7 @@ Opt a standalone image out with `data-no-lightbox`:
 ## Theming
 
 All styles are driven by CSS custom properties prefixed with `--jaamd-*`. The
-default set (`jaamd/default`) is injected automatically.
+default set (`@lancher-dev/jaamd/default`) is injected automatically.
 
 ### Customizing variables
 
@@ -279,9 +279,9 @@ schemes:
 
 | Preset | Import | Recommended Shiki theme |
 |--------|--------|------------------------|
-| Dracula | `jaamd/themes/dracula` | `dracula` |
-| Nord | `jaamd/themes/nord` | `nord` |
-| One Dark | `jaamd/themes/one-dark` | `one-dark-pro` |
+| Dracula | `@lancher-dev/jaamd/themes/dracula` | `dracula` |
+| Nord | `@lancher-dev/jaamd/themes/nord` | `nord` |
+| One Dark | `@lancher-dev/jaamd/themes/one-dark` | `one-dark-pro` |
 
 As a standalone theme, replacing the default light theme:
 
@@ -290,18 +290,18 @@ jaamd({ theme: "dracula", noDefault: true })
 ```
 
 ```css
-@import "jaamd/themes/dracula.css";
-@import "jaamd/styles.css";
+@import "@lancher-dev/jaamd/themes/dracula.css";
+@import "@lancher-dev/jaamd/styles.css";
 ```
 
 Scoped to `html.dark` via the `/dark` variant:
 
 ```css
-@import "jaamd/themes/dracula/dark.css";
+@import "@lancher-dev/jaamd/themes/dracula/dark.css";
 ```
 
 ```ts
-import "jaamd/themes/dracula/dark";
+import "@lancher-dev/jaamd/themes/dracula/dark";
 ```
 
 Copy any preset from `src/themes/` to customise it.
@@ -338,7 +338,7 @@ processor from `@astrojs/markdown-remark` explicitly:
 ```ts
 // astro.config.mjs
 import { unified } from "@astrojs/markdown-remark";
-import { remarkCodeTabs, remarkAlert, remarkDirective } from "jaamd";
+import { remarkCodeTabs, remarkAlert, remarkDirective } from "@lancher-dev/jaamd";
 
 export default defineConfig({
   markdown: {
@@ -351,14 +351,14 @@ export default defineConfig({
 
 ```astro
 ---
-import "jaamd/default";  // variable fallbacks; omit if you provide your own
-import "jaamd/styles";
+import "@lancher-dev/jaamd/default";  // variable fallbacks; omit if you provide your own
+import "@lancher-dev/jaamd/styles";
 ---
 <div class="jaamd-content">
   <slot />
 </div>
 <script>
-  import { initMarkdownEnhancements } from "jaamd/client";
+  import { initMarkdownEnhancements } from "@lancher-dev/jaamd/client";
   function run() { initMarkdownEnhancements(".jaamd-content"); }
   run();
   document.addEventListener("astro:page-load", run);
@@ -368,6 +368,6 @@ import "jaamd/styles";
 The CSS files can also be imported from plain `.css`:
 
 ```css
-@import "jaamd/default.css";
-@import "jaamd/styles.css";
+@import "@lancher-dev/jaamd/default.css";
+@import "@lancher-dev/jaamd/styles.css";
 ```
