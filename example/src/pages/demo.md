@@ -110,3 +110,46 @@ Click the blurred text, or focus it with <kbd>Tab</kbd> and press
 | Alerts           | ✅ Done  | GitHub-style `> [!NOTE]`      |
 | Details animate  | ✅ Done  | Smooth height transition      |
 | Spoilers         | ✅ Done  | Click to reveal               |
+
+---
+
+## Typography scale
+
+Every construct that carries a `--jaamd-font-size-*` token, so the whole scale
+can be checked at once. Set `--jaamd-font-size` on an unlayered `:root` and all
+of this moves together; set one per-element token and only its own rows move.
+
+### Third level
+
+#### Fourth level
+
+##### Fifth level
+
+###### Sixth level
+
+A paragraph, for the baseline size, with some `inline code` in it and a
+[link](https://example.com) for good measure.
+
+- A tight list item
+- Another one, with `code` inside it
+  - And a nested one
+
+1. A tight ordered item
+2. Followed by a loose list, whose items are wrapped in paragraphs:
+
+- Loose items are `<li><p>…</p></li>`, so they read the paragraph token
+  rather than the list one.
+
+- That difference is the point of having both.
+
+> A blockquote's first paragraph.
+>
+> And a second one. Both follow the blockquote's own size, not the paragraph
+> token — the block that owns a token governs what is inside it.
+
+Footnotes sit in their own block with their own size,[^1] paragraphs and list
+items included.[^2]
+
+[^1]: The first note.
+
+[^2]: The second one, with `code` in it.
