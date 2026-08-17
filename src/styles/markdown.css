@@ -75,26 +75,35 @@
 }
 
 .jaamd-content h1 {
-  font-size: calc(var(--jaamd-font-size) * 2.22);
+  font-size: var(--jaamd-font-size-h1, calc(var(--jaamd-font-size) * 2.22));
   margin-top: 0;
 }
 
 .jaamd-content h2 {
-  font-size: calc(var(--jaamd-font-size) * 1.67);
+  font-size: var(--jaamd-font-size-h2, calc(var(--jaamd-font-size) * 1.67));
   border-bottom-width: 2px;
   border-bottom-color: var(--jaamd-heading-border-color);
   padding-bottom: 0.5rem;
 }
 
 .jaamd-content h3 {
-  font-size: calc(var(--jaamd-font-size) * 1.33);
+  font-size: var(--jaamd-font-size-h3, calc(var(--jaamd-font-size) * 1.33));
 }
 
 .jaamd-content h4 {
-  font-size: calc(var(--jaamd-font-size) * 1.11);
+  font-size: var(--jaamd-font-size-h4, calc(var(--jaamd-font-size) * 1.11));
+}
+
+.jaamd-content h5 {
+  font-size: var(--jaamd-font-size-h5, inherit);
+}
+
+.jaamd-content h6 {
+  font-size: var(--jaamd-font-size-h6, inherit);
 }
 
 .jaamd-content p {
+  font-size: var(--jaamd-font-size-p, inherit);
   margin-bottom: 1rem;
 }
 
@@ -121,7 +130,7 @@
   border-color: var(--jaamd-code-border);
   border-radius: 0.25rem;
   color: var(--jaamd-code-fg);
-  font-size: calc(var(--jaamd-font-size) * 0.78);
+  font-size: var(--jaamd-font-size-code, calc(var(--jaamd-font-size) * 0.78));
   font-family: var(--jaamd-font-mono);
   white-space: nowrap;
 }
@@ -190,7 +199,10 @@
   border: none;
   padding: 0;
   color: var(--jaamd-pre-fg);
-  font-size: calc(var(--jaamd-font-size) * 0.85);
+  font-size: var(
+    --jaamd-font-size-code-block,
+    calc(var(--jaamd-font-size) * 0.85)
+  );
   white-space: pre;
   word-break: normal;
   word-wrap: normal;
@@ -212,6 +224,7 @@
 }
 
 .jaamd-content blockquote {
+  font-size: var(--jaamd-font-size-blockquote, inherit);
   border-left-width: 4px;
   border-left-color: var(--jaamd-blockquote-border);
   background-color: var(--jaamd-blockquote-bg);
@@ -226,7 +239,10 @@
   position: relative;
 }
 
+/* Outranks `.jaamd-content p`, so the blockquote's own size wins inside it even
+   when --jaamd-font-size-p is set. */
 .jaamd-content blockquote p {
+  font-size: inherit;
   margin: 0;
   font-style: italic;
   color: var(--jaamd-blockquote-fg);
@@ -264,6 +280,7 @@
 }
 
 .jaamd-content li {
+  font-size: var(--jaamd-font-size-li, inherit);
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   line-height: var(--jaamd-line-height);
@@ -333,12 +350,12 @@
   background-color: var(--jaamd-table-header-bg);
   color: var(--jaamd-color-fg-bright);
   font-weight: 600;
-  font-size: calc(var(--jaamd-font-size) * 0.78);
+  font-size: var(--jaamd-font-size-table, calc(var(--jaamd-font-size) * 0.78));
 }
 
 .jaamd-content td {
   color: var(--jaamd-color-fg);
-  font-size: calc(var(--jaamd-font-size) * 0.78);
+  font-size: var(--jaamd-font-size-table, calc(var(--jaamd-font-size) * 0.78));
 }
 
 .jaamd-content td code {
@@ -538,7 +555,10 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: calc(var(--jaamd-font-size) * 0.89);
+  font-size: var(
+    --jaamd-font-size-summary,
+    calc(var(--jaamd-font-size) * 0.89)
+  );
   user-select: none;
 }
 
@@ -583,7 +603,10 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 700;
-  font-size: calc(var(--jaamd-font-size) * 0.83);
+  font-size: var(
+    --jaamd-font-size-alert-title,
+    calc(var(--jaamd-font-size) * 0.83)
+  );
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
@@ -685,12 +708,20 @@
   margin-top: 2.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--jaamd-table-border);
-  font-size: calc(var(--jaamd-font-size) * 0.85);
+  font-size: var(
+    --jaamd-font-size-footnotes,
+    calc(var(--jaamd-font-size) * 0.85)
+  );
   color: var(--jaamd-color-fg);
 }
 
 .jaamd-content .footnotes ol {
   padding-left: 1.25rem;
+}
+
+.jaamd-content .footnotes p,
+.jaamd-content .footnotes li {
+  font-size: inherit;
 }
 
 .jaamd-content .footnotes li {

@@ -100,6 +100,15 @@ check(
   "markdown.css did not reach the linked stylesheets",
 );
 
+// Per-element sizes are opt-in fallbacks, so a minifier dropping them would go
+// unnoticed until someone tried to set one.
+check(
+  "per-element font size tokens shipped",
+  css.includes("--jaamd-font-size-h1") &&
+    css.includes("--jaamd-font-size-code-block"),
+  "the font-size fallbacks did not survive into the built CSS",
+);
+
 // In dual mode Shiki only sets --shiki-light/--shiki-dark; without these rules
 // code renders with no colour at all.
 check(

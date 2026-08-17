@@ -18,6 +18,21 @@
   --jaamd-font-size:  1.125rem;
   --jaamd-line-height: 1.6;
 
+  /* Per-element sizes are deliberately NOT declared here. Each one is read as
+   * var(--jaamd-font-size-<x>, <its current value>) in markdown.css, so leaving
+   * them unset is what makes --jaamd-font-size above the single knob that moves
+   * the whole scale. Declare one only to break it out:
+   *
+   *   --jaamd-font-size-h1  -h2  -h3  -h4  -h5  -h6
+   *   --jaamd-font-size-p   -li  -blockquote
+   *   --jaamd-font-size-code          (inline `code`)
+   *   --jaamd-font-size-code-block    (fenced blocks)
+   *   --jaamd-font-size-table         (th and td)
+   *   --jaamd-font-size-summary
+   *   --jaamd-font-size-alert-title
+   *   --jaamd-font-size-footnotes
+   */
+
 
   /* ══ SEED TOKENS ═════════════════════════════════════════ */
   /* Override these to rebrand. Everything below derives from them. */
