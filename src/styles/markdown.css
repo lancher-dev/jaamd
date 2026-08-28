@@ -319,14 +319,14 @@
 }
 
 .jaamd-content table {
+  --jaamd-table-radius: 0.5rem;
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 0 0 1px var(--jaamd-table-border);
+  border: 1px solid var(--jaamd-table-border);
+  border-radius: var(--jaamd-table-radius);
 }
 
 .jaamd-content th,
@@ -337,13 +337,37 @@
   border-right: 1px solid var(--jaamd-table-border);
 }
 
-.jaamd-content th:last-child,
-.jaamd-content td:last-child {
+/* The table border already draws the outer edges. */
+.jaamd-content tr > *:last-child {
   border-right: none;
 }
 
-.jaamd-content tbody tr:last-child td {
+.jaamd-content table > tbody:last-child > tr:last-child > *,
+.jaamd-content tfoot > tr:last-child > * {
   border-bottom: none;
+}
+
+/* Corner cells are rounded by hand: `overflow: hidden` on a table is not
+   reliable, and it would break sticky headers. `tbody:first-child` covers
+   tables without a `thead`. */
+.jaamd-content thead > tr:first-child > *:first-child,
+.jaamd-content table > tbody:first-child > tr:first-child > *:first-child {
+  border-top-left-radius: calc(var(--jaamd-table-radius) - 1px);
+}
+
+.jaamd-content thead > tr:first-child > *:last-child,
+.jaamd-content table > tbody:first-child > tr:first-child > *:last-child {
+  border-top-right-radius: calc(var(--jaamd-table-radius) - 1px);
+}
+
+.jaamd-content table > tbody:last-child > tr:last-child > *:first-child,
+.jaamd-content tfoot > tr:last-child > *:first-child {
+  border-bottom-left-radius: calc(var(--jaamd-table-radius) - 1px);
+}
+
+.jaamd-content table > tbody:last-child > tr:last-child > *:last-child,
+.jaamd-content tfoot > tr:last-child > *:last-child {
+  border-bottom-right-radius: calc(var(--jaamd-table-radius) - 1px);
 }
 
 .jaamd-content th {
@@ -362,7 +386,7 @@
   line-height: 2;
 }
 
-.jaamd-content tbody tr:hover {
+.jaamd-content tbody > tr:hover > td {
   background-color: var(--jaamd-table-hover-bg);
 }
 
