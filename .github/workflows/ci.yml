@@ -8,62 +8,65 @@ on:
     - cron: '0 6 * * 1'
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  static:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - run: npm ci
-      - run: npx tsc --noEmit
-      - run: npm run lint
 
-      # The client-side id fallback has to agree with the ids Astro emits.
-      - run: npm run test:slug
-
-  example-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 10
+
+      # The slug parity test imports a .ts file, which needs Node's native type
+      # stripping.
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - working-directory: example
-        run: pnpm install
-      - working-directory: example
-        run: pnpm build
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+      - run: pnpm lint
+
+      # The client-side id fallback has to agree with the ids Astro emits.
+      - run: pnpm test:slug
+
+      - run: pnpm build
 
       # `astro build` exits 0 even when jaamd skips its remark plugins (it only
       # logs a warning), so a green build is not evidence that the pipeline ran.
       # This asserts on the rendered HTML, which is what would catch Astro
       # renaming its default markdown processor out from under us.
-      - name: Smoke test rendered output
-        run: node scripts/smoke-test.mjs
+      - name: Assertions on the built site
+        run: pnpm smoke
 
-  # `example/` pins astro ^7, so the job above never sees a new major.
-  # Red here means the next Astro major needs checking, not that main is broken.
+  # `www` pins astro ^7, so the job above never sees a new major. Red here means
+  # the next Astro major needs checking, not that main is broken.
   astro-latest:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10
+
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - working-directory: example
-        run: pnpm install
-      - working-directory: example
-        run: pnpm add astro@latest
-      - working-directory: example
-        run: pnpm build
-      - name: Smoke test rendered output against latest Astro
-        run: node scripts/smoke-test.mjs
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter www add astro@latest
+      - run: pnpm build
+
+      - name: Assertions against the latest Astro
+        run: pnpm smoke
