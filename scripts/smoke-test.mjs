@@ -80,6 +80,59 @@ check(
   "unselected tabs must be removed from the tab order",
 );
 
+// ─── declared table of contents ──────────────────────────────────────────────
+
+const tocNav = html.match(/<nav class="jaamd-toc"[^>]*>[\s\S]*?<\/nav>/)?.[0] ?? "";
+
+check(
+  "toc: nav landmark rendered",
+  /<nav class="jaamd-toc" aria-label="[^"]+"/.test(tocNav),
+  "remarkToc did not run; it must be registered after remark-directive",
+);
+
+check(
+  "toc: label rendered as a paragraph",
+  tocNav.includes('<p class="jaamd-toc-title">'),
+  "the label must not become a heading; it would show up in getHeadings()",
+);
+
+check(
+  "toc: author's list left intact",
+  tocNav.includes("<ul>") && tocNav.includes("<ul>\n<li><a href=\"#third-level\""),
+  "the nested list should pass through untouched",
+);
+
+// Every entry has to land somewhere.
+const tocTargets = [...tocNav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+const dangling = tocTargets.filter(
+  (id) => !html.includes(`id="${id}"`),
+);
+
+check(
+  `toc: all ${tocTargets.length} anchors resolve`,
+  tocTargets.length > 0 && dangling.length === 0,
+  `no element carries the id(s): ${dangling.join(", ") || "(none found — the TOC is empty)"}`,
+);
+
+check(
+  "every heading carries an id",
+  [...html.matchAll(/<h[1-6](\s[^>]*)?>/g)].every((m) => /\sid="/.test(m[0])),
+  "a heading without an id cannot be linked from a TOC",
+);
+
+check(
+  "toc: scroll offset applies to every heading level",
+  css.includes("scroll-margin-top:var(--jaamd-scroll-margin-top,80px)") ||
+    css.includes("scroll-margin-top: var(--jaamd-scroll-margin-top, 80px)"),
+  "anchored h3-h6 would land flush with the viewport top",
+);
+
+check(
+  "toc: heading-link hover covers h3-h6",
+  css.includes("h6:hover .jaamd-heading-link"),
+  "the anchor icon stays invisible on the deeper levels",
+);
+
 // ─── the rest of the pipeline still ships ────────────────────────────────────
 
 check(
