@@ -1,7 +1,8 @@
 This page is rendered with JAAMD, and exercises every component it ships. What
-you see below is the integration's own output, unstyled by the site.
+you see below is the integration's own output.
 
 :::toc[Components]
+- [Installation](#installation)
 - [Table of contents](#table-of-contents)
 - [Alerts](#alerts)
 - [Code tabs](#code-tabs)
@@ -17,6 +18,25 @@ you see below is the integration's own output, unstyled by the site.
   - [Fifth level](#fifth-level)
   - [Sixth level](#sixth-level)
 :::
+
+---
+
+## Installation
+
+```bash
+npx astro add @lancher-dev/jaamd
+```
+
+Then wrap your content, and everything below this line is what you get.
+
+```astro
+---
+import MarkdownContent from "@lancher-dev/jaamd/components";
+---
+<MarkdownContent>
+  <slot />
+</MarkdownContent>
+```
 
 ---
 
