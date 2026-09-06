@@ -6,8 +6,8 @@ export function addHeadingLinks(selector: string): void {
 
   qsa<HTMLElement>(document, levels).forEach(
     (header) => {
-      // Astro normally assigns heading ids itself; this only fills the gap for
-      // markup that arrived without them.
+      // Astro assigns heading ids itself; this fills the gap for markup that
+      // arrived without them.
       if (!header.id) header.id = uniqueElementId(slugify(header.textContent ?? ""));
       if (qs(header, ".jaamd-heading-link")) return;
 
@@ -29,7 +29,7 @@ export function addHeadingLinks(selector: string): void {
         try {
           await navigator.clipboard.writeText(url);
         } catch {
-          // clipboard unavailable (e.g. non-secure context) — fail silently
+          // clipboard unavailable (e.g. non-secure context): fail silently
         }
       });
 

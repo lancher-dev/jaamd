@@ -1,6 +1,5 @@
 /* Chrome of the showcase: base, header, hero, footer. Mirrors JAAD's site.css
-   without Tailwind. The markdown body itself is left to JAAMD — that is what
-   the page is for. */
+   without Tailwind. The markdown body is left to JAAMD. */
 
 :root {
   --site-content-width: var(--identity-content-width);

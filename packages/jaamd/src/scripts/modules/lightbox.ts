@@ -49,9 +49,9 @@ function closeLightbox(): void {
   document.body.style.overflow = previousBodyOverflow;
 }
 
-// The overlay lives in <body>, which a View Transitions swap replaces. Binding
-// Escape to the element would leak a listener and a detached node per
-// navigation, so it is delegated to `document` and registered once.
+// Escape is delegated to `document` and bound once. The overlay lives in
+// <body>, which a View Transitions swap replaces: binding to the element leaks
+// a listener and a detached node per navigation.
 let keydownBound = false;
 
 function openLightbox(src: string, alt: string): void {

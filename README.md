@@ -45,7 +45,7 @@ pnpm dev            # the showcase, on localhost:4321
 pnpm build && pnpm smoke
 ```
 
-Adding a theme is a directory and a manifest entry — see [CONTRIBUTING.md](/CONTRIBUTING.md#themes).
+Adding a theme is a directory and a manifest entry: see [CONTRIBUTING.md](/CONTRIBUTING.md#themes).
 
 ## License
 

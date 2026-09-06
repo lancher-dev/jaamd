@@ -18,10 +18,10 @@
   --jaamd-font-size:  1.125rem;
   --jaamd-line-height: 1.6;
 
-  /* Per-element sizes are deliberately NOT declared here. Each one is read as
-   * var(--jaamd-font-size-<x>, <its current value>) in markdown.css, so leaving
-   * them unset is what makes --jaamd-font-size above the single knob that moves
-   * the whole scale. Declare one only to break it out:
+  /* Per-element sizes are not declared here. Each is read as
+   * var(--jaamd-font-size-<x>, <current value>) in markdown.css, so unset they
+   * leave --jaamd-font-size the single knob for the whole scale. Declare one
+   * to break it out:
    *
    *   --jaamd-font-size-h1  -h2  -h3  -h4  -h5  -h6
    *   --jaamd-font-size-p   -li  -blockquote
@@ -43,16 +43,16 @@
   /** Default body/paragraph text color */
   --jaamd-color-fg:            #3a3a3a;
 
-  /** Headings, strong, table headers, summary — brighter than fg */
+  /** Headings, strong, table headers, summary. Brighter than fg */
   --jaamd-color-fg-bright:     #1a1a1a;
 
   /** Accent color (links, active tab label, summary arrow) */
   --jaamd-color-primary:       #2d2d2d;
 
-  /** Confirmation colour — the copy button flashes this after a copy */
+  /** Confirmation colour: the copy button flashes it after a copy */
   --jaamd-color-success:       #22c55e;
 
-  /** Alert accent hues — the only alert values that cannot be derived */
+  /** Alert accent hues: the only alert values that cannot be derived */
   --jaamd-alert-note-color:      #0969da;
   --jaamd-alert-tip-color:       #1a7f37;
   --jaamd-alert-important-color: #8250df;

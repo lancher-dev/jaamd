@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * `dark.css` is `index.css` under `html.dark`. Generated rather than kept in
- * sync by hand: the two share every token, and a typo in one used to show up in
- * only one mode.
+ * `dark.css` is `index.css` under `html.dark`, generated rather than kept in
+ * sync by hand.
  *
  * `--check` verifies the committed files instead of writing them.
  */
@@ -15,13 +14,13 @@ import { themes } from "../packages/jaamd/src/themes/index.ts";
 
 const THEMES = join(process.cwd(), "packages", "jaamd", "src", "themes");
 
-/** A dual theme carries both palettes already; a dark-only variant is meaningless. */
+/** A dual theme carries both palettes; it gets no dark variant. */
 const isDual = (slug) => themes.find((t) => t.slug === slug)?.mode === "dual";
 
 /** The dark variant of a theme's source. */
 export function darkVariant(source) {
   return source
-    .replace(/^(\/\* JAAMD theme — [^.]+)\./m, "$1 (dark mode only).")
+    .replace(/^(\/\* JAAMD theme: [^.]+)\./m, "$1 (dark mode only).")
     .replace(/^:root \{$/m, "html.dark {");
 }
 

@@ -1,6 +1,6 @@
 /* Shared identity with JAAD (jaad.lancher.dev): same palette, same type, same
-   derivation. Kept as plain custom properties so it can be lifted between the
-   two repositories without either depending on the other. */
+   derivation. Plain custom properties, so it can be lifted between the two
+   repositories without either depending on the other. */
 
 :root {
   color-scheme: light;

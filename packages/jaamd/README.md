@@ -161,7 +161,7 @@ pnpm install
 ### Table of contents
 
 A `:::toc` block wraps the list you write in a navigation landmark. Nothing is
-generated — entries, order, wording and depth are whatever the markdown says.
+generated: entries, order, wording and depth are whatever the markdown says.
 The text in brackets is an optional title.
 
 ```markdown
@@ -194,9 +194,9 @@ Heading ids come from Astro, slugged with
 | Heading | Anchor |
 |---|---|
 | `## Getting started` | `#getting-started` |
-| `## Details / accordion` | `#details--accordion` — one dash per space, the `/` dropped between them |
-| `## What's new?` | `#whats-new` — punctuation removed, not replaced |
-| `## snake_case` | `#snake_case` — underscores survive |
+| `## Details / accordion` | `#details--accordion` (one dash per space, the `/` dropped between them) |
+| `## What's new?` | `#whats-new` (punctuation removed, not replaced) |
+| `## snake_case` | `#snake_case` (underscores survive) |
 | a second `## Setup` | `#setup-1` |
 
 The client-side fallback follows the same rules, so ids match for markdown that
@@ -230,8 +230,8 @@ import MarkdownContent from "@lancher-dev/jaamd/components";
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `as` | `HTMLTag` | `"div"` | The HTML element to render as. |
-| `class` | `string` | – | Extra CSS classes appended to the wrapper. |
-| *...rest* | – | – | All standard HTML attributes for the chosen `as` element (e.g. `id`, `data-*`, `aria-*`). |
+| `class` | `string` | - | Extra CSS classes appended to the wrapper. |
+| *...rest* | - | - | All standard HTML attributes for the chosen `as` element (e.g. `id`, `data-*`, `aria-*`). |
 
 The `jaamd-content` class is always present on the wrapper element. It is the
 selector used by the JS enhancements and must not be removed.
@@ -336,7 +336,7 @@ derived from it, so moving it moves the entire scale in proportion:
 ```
 
 To break a single element out of that scale, set its own token. Each is read
-with the derived value as its fallback, so **an unset token changes nothing** —
+with the derived value as its fallback, so **an unset token changes nothing**;
 they are opt-in, one at a time:
 
 ```css
@@ -365,8 +365,8 @@ they are opt-in, one at a time:
 A block that owns a token governs what is inside it: paragraphs in a blockquote
 follow `-blockquote`, not `-p`. Alert bodies have no token of their own and
 follow `-p`; only their title is separate. The copy button, code-tab labels and
-heading-link icons stay tied to `--jaamd-font-size`, they are JAAMD's own
-chrome, not your document's typography.
+heading-link icons stay tied to `--jaamd-font-size`: they are JAAMD's chrome,
+not your document's typography.
 
 ### Dark mode
 
@@ -417,11 +417,10 @@ import "@lancher-dev/jaamd/themes/dracula/dark";
 > [!IMPORTANT]
 > A preset declares a palette, not the whole variable set: surfaces, borders and
 > the table-of-contents card are derived from it by `default.css`. Load the
-> defaults alongside it — do **not** pair a preset with `noDefault: true`, or
-> those derived tokens fall back to the light palette.
+> defaults alongside it. Do **not** pair a preset with `noDefault: true`: those
+> derived tokens fall back to the light palette.
 
-Each theme also declares itself, so a picker can be built from data rather than a
-hardcoded list:
+Each theme declares itself, so a picker can be built from data:
 
 ```ts
 import { themes } from "@lancher-dev/jaamd/themes";

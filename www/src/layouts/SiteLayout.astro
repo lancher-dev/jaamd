@@ -21,8 +21,8 @@ const require = createRequire(import.meta.url);
 
 /**
  * Shiki bakes one variable per configured key; this picks which one the code
- * reads. `.dark` / `:not(.dark)` is not decoration — without it the selector
- * ties with shiki-dual.css and injection order would decide the winner.
+ * reads. `.dark` / `:not(.dark)` raises specificity: without it the selector
+ * ties with shiki-dual.css and injection order decides the winner.
  */
 function shikiRule(scope: string, key: string) {
   return `${scope} .jaamd-content .astro-code span,
@@ -34,8 +34,8 @@ ${scope} .jaamd-content .shiki span {
 }`;
 }
 
-// Themes are authored on :root, so importing more than one would just let the
-// last win. Re-scoped here, at build time, so they can coexist and be switched.
+// Themes are authored on :root: importing more than one lets the last win.
+// Re-scoped at build time so they coexist and can be switched.
 const themeCss = packageThemes
   .map((theme: JaamdTheme) => {
     const { slug } = theme;

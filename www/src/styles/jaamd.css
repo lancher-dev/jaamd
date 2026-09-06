@@ -20,9 +20,8 @@ html[data-jaamd-theme="default"] {
   --jaamd-color-primary: var(--identity-primary);
 }
 
-/* Every package theme, in reverse: the chrome follows the article rather than the
-   site knowing each palette. Borders and muted text derive from these in
-   identity.css, so four seeds are enough. */
+/* Every package theme, in reverse: the chrome follows the article. Borders and
+   muted text derive from these in identity.css, so four seeds are enough. */
 html[data-jaamd-theme]:not([data-jaamd-theme="default"]) {
   --identity-background: var(--jaamd-bg);
   --identity-foreground: var(--jaamd-color-fg);

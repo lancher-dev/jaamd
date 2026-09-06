@@ -44,9 +44,9 @@ import MarkdownContent from "@lancher-dev/jaamd/components";
 ## Themes
 
 The picker in the header switches between JAAMD's own palette, which follows your
-system, and the presets the package ships. The whole page follows — including the
-syntax colours, because Shiki bakes one variable per theme at build time and the
-switch is pure CSS.
+system, and the presets the package ships. The whole page follows, syntax colours
+included: Shiki bakes one variable per theme at build time and the switch is pure
+CSS.
 
 ```css
 @import "@lancher-dev/jaamd/default.css";
@@ -72,7 +72,7 @@ the entry whose section is on screen is marked as current.
 :::
 ```
 
-Anchors come from Astro's heading ids, slugged with `github-slugger` — one dash
+Anchors come from Astro's heading ids, slugged with `github-slugger`: one dash
 per space, punctuation dropped, underscores kept.
 
 ---
@@ -222,12 +222,12 @@ A paragraph, for the baseline size, with some `inline code` in it and a
 - Loose items are `<li><p>…</p></li>`, so they read the paragraph token
   rather than the list one.
 
-- That difference is the point of having both.
+- Tight items carry no `<p>`, so they read the list token instead.
 
 > A blockquote's first paragraph.
 >
 > And a second one. Both follow the blockquote's own size, not the paragraph
-> token — the block that owns a token governs what is inside it.
+> token: the block that owns a token governs what is inside it.
 
 Footnotes sit in their own block with their own size,[^1] paragraphs and list
 items included.[^2]

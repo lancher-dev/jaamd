@@ -10,8 +10,8 @@ export function initDetails(selector: string): void {
       if (!summary) return;
 
       // Two-level wrap:
-      //   wrapper — animates height only
-      //   inner   — holds padding so it's baked into scrollHeight (no jump)
+      //   wrapper: animates height only
+      //   inner:   holds padding, baked into scrollHeight (no jump)
       const wrapper = document.createElement("div");
       wrapper.className = "jaamd-details-wrapper";
       const inner = document.createElement("div");
@@ -52,8 +52,8 @@ export function initDetails(selector: string): void {
         });
 
         // `finished` settles on cancel too. With `onfinish` alone, an animation
-        // cancelled mid-flight — a View Transition swapping the node out, say —
-        // would leave `animating` true and wedge the toggle for good.
+        // cancelled mid-flight (a View Transition swapping the node out) leaves
+        // `animating` true and the toggle stuck.
         anim.finished
           .catch(() => {})
           .then(() => {

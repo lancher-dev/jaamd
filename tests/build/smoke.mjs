@@ -113,7 +113,7 @@ const dangling = tocTargets.filter(
 check(
   `toc: all ${tocTargets.length} anchors resolve`,
   tocTargets.length > 0 && dangling.length === 0,
-  `no element carries the id(s): ${dangling.join(", ") || "(none found — the TOC is empty)"}`,
+  `no element carries the id(s): ${dangling.join(", ") || "(none found: the TOC is empty)"}`,
 );
 
 // Scoped to the markdown: the site chrome around it is not Astro's to slug.
@@ -165,8 +165,8 @@ check(
   "an unscoped bridge outranks the themes, so only secondary colours would change",
 );
 
-// One Shiki variable per key is what lets code follow the switch; a dual theme
-// needs two, or one of its two modes keeps the previous theme's syntax colours.
+// One Shiki variable per key lets code follow the switch. A dual theme needs
+// two; otherwise one mode keeps the previous theme's syntax colours.
 for (const theme of themes) {
   const keys =
     theme.mode === "dual" ? [theme.slug, `${theme.slug}-dark`] : [theme.slug];
@@ -205,8 +205,8 @@ check(
   "markdown.css did not reach the linked stylesheets",
 );
 
-// Per-element sizes are opt-in fallbacks, so a minifier dropping them would go
-// unnoticed until someone tried to set one.
+// Per-element sizes are opt-in fallbacks: a minifier dropping them goes
+// unnoticed until someone sets one.
 check(
   "per-element font size tokens shipped",
   css.includes("--jaamd-font-size-h1") &&

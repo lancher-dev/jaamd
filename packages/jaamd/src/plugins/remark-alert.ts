@@ -1,7 +1,6 @@
 /**
- * GitHub-style blockquote alerts, inlined from remark-github-blockquote-alert
- * (MIT) so that consumers of this source-distributed package do not have to
- * install it themselves.
+ * GitHub-style blockquote alerts. Inlined from remark-github-blockquote-alert
+ * (MIT) to keep it out of consumer dependencies.
  * https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts
  */
 
@@ -42,7 +41,7 @@ export function remarkAlert(options: RemarkAlertOptions = {}) {
             value: first.value.replace(marker, "").replace(/^\n+/, ""),
           };
         } else {
-          // The marker is the whole first line, so remove it and the following break if present.
+          // Marker is the whole first line: drop it and the following break.
           paragraph.children.splice(
             0,
             paragraph.children[1]?.type === "break" ? 2 : 1,

@@ -48,8 +48,8 @@ export interface JaamdOptions {
   /**
    * Skip injecting the default CSS variable fallbacks (`@lancher-dev/jaamd/default`).
    *
-   * Has no effect when rendering through `<MarkdownContent>`, which imports
-   * them statically; it applies to custom wrappers.
+   * No effect with `<MarkdownContent>`, which imports them statically.
+   * Applies to custom wrappers.
    * @default false
    */
   noDefault?: boolean;
@@ -59,9 +59,9 @@ export interface JaamdOptions {
    * All enabled by default.
    */
   plugins?: {
-    /** :::code-tabs directive — requires `directive: true` */
+    /** :::code-tabs directive. Requires `directive: true`. */
     codeTabs?: boolean;
-    /** :::toc directive — requires `directive: true` */
+    /** :::toc directive. Requires `directive: true`. */
     toc?: boolean;
     /** GitHub-style > [!NOTE] / [!WARNING] alerts */
     alerts?: boolean;
@@ -91,8 +91,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
         if (codeTabs) jaamdRemarkPlugins.push(remarkCodeTabs);
         if (toc) jaamdRemarkPlugins.push(remarkToc);
 
-        // Astro types both of these more precisely than jaamd needs; narrow them
-        // once here to the handful of keys the integration actually touches.
+        // Astro types these more precisely than jaamd needs; narrowed once to
+        // the keys the integration touches.
         const mergedShikiConfig = {
           ...config.markdown?.shikiConfig,
         } as unknown as ShikiConfig;
@@ -115,8 +115,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         const markdownUpdate: MarkdownConfig = { shikiConfig: mergedShikiConfig };
 
-        // Not public API. If Astro renames it, jaamd silently skips its plugins;
-        // the scheduled CI run against latest Astro is what catches that.
+        // Not public API. On rename jaamd skips its plugins silently; the
+        // scheduled CI run against latest Astro catches it.
         const ASTRO_DEFAULT_PROCESSOR = "satteri";
 
         const isUnified = !!currentProcessor && isUnifiedProcessor(currentProcessor);
@@ -141,8 +141,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
             (p) => !existing.includes(p) && !existingNames.has(nameOf(p)),
           );
 
-          // New array, not unshift: the processor may be shared between configs,
-          // and mutating it stacks duplicates across setup runs.
+          // New array, not unshift: the processor can be shared between
+          // configs; mutating it stacks duplicates across setup runs.
           target.options.remarkPlugins = [...missing, ...existing];
           markdownUpdate.processor = target;
 
@@ -153,8 +153,8 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
         updateConfig({
           vite: {
-            // Without this, jaamd's .astro sources are treated as pre-bundled
-            // externals and never reach the Astro compiler.
+            // Without this, jaamd's .astro sources stay pre-bundled externals
+            // and never reach the Astro compiler.
             ssr: { noExternal: ["@lancher-dev/jaamd"] },
           },
           markdown: markdownUpdate,

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * The theme contract. Without this, a theme that omits a token still builds and
- * the defect only shows up on screen months later — which is exactly how the
- * `:::toc` card ended up unstyled under every preset.
+ * The theme contract. A theme that omits a token still builds; the defect only
+ * shows up on screen.
  */
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
@@ -71,8 +70,8 @@ for (const slug of slugs) {
 
   const source = readFileSync(indexPath, "utf8");
 
-  // A dual theme must carry the seeds in both of its blocks, or one mode silently
-  // borrows the other's background.
+  // A dual theme carries the seeds in both blocks; otherwise one mode borrows
+  // the other's background.
   const blocks = dual
     ? source.split(/^html\.dark \{$/m)
     : [source];
@@ -90,7 +89,7 @@ for (const slug of slugs) {
   check(
     `${slug}: declares every required seed`,
     missing.length === 0,
-    `missing ${missing.join(", ")} — derived tokens would fall back to the default palette`,
+    `missing ${missing.join(", ")}: derived tokens fall back to the default palette`,
   );
 
   check(

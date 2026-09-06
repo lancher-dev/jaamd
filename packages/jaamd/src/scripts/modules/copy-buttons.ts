@@ -22,8 +22,8 @@ export function addCopyButtons(selector: string): void {
         // The icon swap alone gives screen readers no feedback.
         btn.setAttribute("aria-label", "Code copied to clipboard");
 
-        // Restart on every click, so an earlier timer cannot revert a button
-        // that still reads as "copied".
+        // Restart on every click: an earlier timer would revert a button that
+        // still reads as "copied".
         clearTimeout(resetTimer);
         resetTimer = setTimeout(() => {
           btn.innerHTML = iconCopy();
@@ -31,7 +31,7 @@ export function addCopyButtons(selector: string): void {
           btn.setAttribute("aria-label", "Copy code to clipboard");
         }, 2000);
       } catch {
-        // clipboard unavailable (e.g. non-secure context) — fail silently
+        // clipboard unavailable (e.g. non-secure context): fail silently
       }
     });
 

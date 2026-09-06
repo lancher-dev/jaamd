@@ -702,9 +702,8 @@
     background-color 0.25s ease;
 }
 
-/* Explicit action only. Hover is deliberately not a reveal: it would spoil the
-   content by moving the pointer across it, and on touch the state sticks after
-   the tap. */
+/* Explicit action only. Hover is not a reveal: it spoils the content on pointer
+   pass-through, and on touch the state sticks after the tap. */
 .jaamd-content .spoiler.revealed {
   background-color: var(--jaamd-spoiler-revealed-bg);
   color: var(--jaamd-spoiler-revealed-fg);
@@ -813,7 +812,7 @@
   margin-bottom: 0;
 }
 
-/* `ul` drops its bullets; `ol` keeps its numbers — writing `1.` is a choice. */
+/* `ul` drops its bullets; `ol` keeps its numbers. */
 .jaamd-content .jaamd-toc ul {
   list-style: none;
   padding-left: 0;
