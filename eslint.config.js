@@ -24,24 +24,29 @@ export default tseslint.config(
   },
 
   {
-    files: ["index.ts", "src/paths.ts", "src/plugins/**/*.ts", "scripts/**/*.mjs"],
+    files: [
+      "packages/jaamd/index.ts",
+      "packages/jaamd/src/paths.ts",
+      "packages/jaamd/src/plugins/**/*.ts",
+      "tests/**/*.mjs",
+    ],
     languageOptions: { globals: globals.node },
   },
 
   {
-    files: ["src/scripts/**/*.ts"],
+    files: ["packages/jaamd/src/scripts/**/*.ts", "www/src/**/*.astro"],
     languageOptions: { globals: globals.browser },
   },
 
   // Remark works on mdast nodes carrying `data.hName`/`data.hProperties`, which
   // @types/mdast does not model.
   {
-    files: ["src/plugins/**/*.ts"],
+    files: ["packages/jaamd/src/plugins/**/*.ts"],
     rules: { "@typescript-eslint/no-explicit-any": "off" },
   },
 
   {
-    files: ["scripts/**/*.mjs"],
+    files: ["tests/**/*.mjs"],
     rules: { "no-console": "off" },
   },
 );

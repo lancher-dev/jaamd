@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /**
- * Post-build assertions on ./example. A green `astro build` proves nothing:
- * jaamd only warns when it cannot register its plugins.
+ * Post-build assertions on ./www. A green `astro build` proves nothing: jaamd
+ * only warns when it cannot register its plugins.
  */
 
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-const DIST = join(process.cwd(), "example", "dist");
-const PAGE = join(DIST, "demo", "index.html");
+const DIST = join(process.cwd(), "www", "dist");
+const PAGE = join(DIST, "index.html");
 
 if (!existsSync(PAGE)) {
-  console.error(`✗ built page not found: ${PAGE}\n  Did \`npm run build\` run in ./example?`);
+  console.error(`✗ built page not found: ${PAGE}\n  Did \`pnpm build\` run?`);
   process.exit(1);
 }
 
@@ -51,7 +51,7 @@ check(
 check(
   "code-tabs: one panel per code block",
   countOf(/class="code-tab-panel/g) === 3,
-  "expected the 3 tabs authored in example/src/pages/demo.md",
+  "expected the 3 tabs authored in www/src/content/showcase.md",
 );
 
 // ─── accessibility wiring the client script relies on ────────────────────────
@@ -114,9 +114,14 @@ check(
   `no element carries the id(s): ${dangling.join(", ") || "(none found — the TOC is empty)"}`,
 );
 
+// Scoped to the markdown: the site chrome around it is not Astro's to slug.
+const article =
+  html.match(/<article class="jaamd-content"[^>]*>[\s\S]*<\/article>/)?.[0] ?? "";
+
 check(
-  "every heading carries an id",
-  [...html.matchAll(/<h[1-6](\s[^>]*)?>/g)].every((m) => /\sid="/.test(m[0])),
+  "every markdown heading carries an id",
+  article !== "" &&
+    [...article.matchAll(/<h[1-6](\s[^>]*)?>/g)].every((m) => /\sid="/.test(m[0])),
   "a heading without an id cannot be linked from a TOC",
 );
 
