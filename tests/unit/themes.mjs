@@ -35,16 +35,30 @@ for (const slug of slugs) {
   );
   if (!entry) continue;
 
+  const dual = entry.mode === "dual";
+
   check(
-    `${slug}: mode is light or dark`,
-    entry.mode === "light" || entry.mode === "dark",
-    `mode was ${JSON.stringify(entry.mode)}; consumers use it to set html.dark`,
+    `${slug}: mode is light, dark or dual`,
+    ["light", "dark", "dual"].includes(entry.mode),
+    `mode was ${JSON.stringify(entry.mode)}; consumers use it to decide html.dark`,
+  );
+
+  const shiki =
+    typeof entry.shiki === "string" ? [entry.shiki] : Object.values(entry.shiki ?? {});
+  const unknown = shiki.filter((name) => !Object.hasOwn(bundledThemes, name));
+
+  check(
+    `${slug}: pairs with real Shiki theme(s)`,
+    shiki.length > 0 && unknown.length === 0,
+    unknown.length
+      ? `not bundled by Shiki: ${unknown.join(", ")}`
+      : "no Shiki theme declared",
   );
 
   check(
-    `${slug}: pairs with a real Shiki theme`,
-    Object.hasOwn(bundledThemes, entry.shiki),
-    `"${entry.shiki}" is not a bundled Shiki theme`,
+    `${slug}: a dual theme declares a Shiki pair`,
+    !dual || (typeof entry.shiki === "object" && entry.shiki.light && entry.shiki.dark),
+    "a dual palette needs a light and a dark Shiki theme to match it",
   );
 
   const indexPath = join(THEMES, slug, "index.css");
@@ -56,8 +70,21 @@ for (const slug of slugs) {
   }
 
   const source = readFileSync(indexPath, "utf8");
-  const missing = REQUIRED_TOKENS.filter(
-    (token) => !new RegExp(`^\\s*${token}\\s*:`, "m").test(source),
+
+  // A dual theme must carry the seeds in both of its blocks, or one mode silently
+  // borrows the other's background.
+  const blocks = dual
+    ? source.split(/^html\.dark \{$/m)
+    : [source];
+
+  check(
+    `${slug}: has both a light and a dark block`,
+    !dual || blocks.length === 2,
+    "a dual theme needs a :root block and an html.dark one",
+  );
+
+  const missing = REQUIRED_TOKENS.filter((token) =>
+    blocks.some((b) => !new RegExp(`^\\s*${token}\\s*:`, "m").test(b)),
   );
 
   check(
@@ -67,9 +94,13 @@ for (const slug of slugs) {
   );
 
   check(
-    `${slug}: dark.css is in sync`,
-    existsSync(darkPath) && readFileSync(darkPath, "utf8") === darkVariant(source),
-    "run `pnpm build:themes` and commit the result",
+    `${slug}: dark.css matches its mode`,
+    dual
+      ? !existsSync(darkPath)
+      : existsSync(darkPath) && readFileSync(darkPath, "utf8") === darkVariant(source),
+    dual
+      ? "a dual theme already covers dark mode; it must not ship a /dark variant"
+      : "run `pnpm build:themes` and commit the result",
   );
 }
 

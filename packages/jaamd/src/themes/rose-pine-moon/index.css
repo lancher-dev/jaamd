@@ -1,0 +1,33 @@
+/* JAAMD theme — Rosé Pine Moon. Dawn in light, moon in dark. */
+
+:root {
+  --jaamd-bg:                     #faf4ed;
+  --jaamd-color-fg:               #575279;
+  --jaamd-color-fg-bright:        #575279;
+  --jaamd-color-primary:          #286983;
+  --jaamd-color-success:          #286983;
+  --jaamd-alert-note-color:       #56949f;
+  --jaamd-alert-tip-color:        #286983;
+  --jaamd-alert-important-color:  #286983;
+  --jaamd-alert-warning-color:    #ea9d34;
+  --jaamd-alert-caution-color:    #b4637a;
+
+  --jaamd-border-strong:          #9893a5;
+  --jaamd-em-fg:                  #907aa9;
+}
+
+html.dark {
+  --jaamd-bg:                     #232136;
+  --jaamd-color-fg:               #e0def4;
+  --jaamd-color-fg-bright:        #e0def4;
+  --jaamd-color-primary:          #9ccfd8;
+  --jaamd-color-success:          #9ccfd8;
+  --jaamd-alert-note-color:       #3e8fb0;
+  --jaamd-alert-tip-color:        #9ccfd8;
+  --jaamd-alert-important-color:  #9ccfd8;
+  --jaamd-alert-warning-color:    #f6c177;
+  --jaamd-alert-caution-color:    #eb6f92;
+
+  --jaamd-border-strong:          #6e6a86;
+  --jaamd-em-fg:                  #c4a7e7;
+}

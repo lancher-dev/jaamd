@@ -1,0 +1,31 @@
+/* JAAMD theme — Catppuccin. Latte in light, Mocha in dark. */
+
+:root {
+  --jaamd-bg:                     #eff1f5;
+  --jaamd-color-fg:               #4c4f69;
+  --jaamd-color-fg-bright:        #4c4f69;
+  --jaamd-color-primary:          #1e66f5;
+  --jaamd-color-success:          #40a02b;
+  --jaamd-alert-note-color:       #1e66f5;
+  --jaamd-alert-tip-color:        #40a02b;
+  --jaamd-alert-important-color:  #1e66f5;
+  --jaamd-alert-warning-color:    #df8e1d;
+  --jaamd-alert-caution-color:    #d20f39;
+
+  --jaamd-em-fg:                  #8839ef;
+}
+
+html.dark {
+  --jaamd-bg:                     #1e1e2e;
+  --jaamd-color-fg:               #cdd6f4;
+  --jaamd-color-fg-bright:        #cdd6f4;
+  --jaamd-color-primary:          #89b4fa;
+  --jaamd-color-success:          #a6e3a1;
+  --jaamd-alert-note-color:       #89b4fa;
+  --jaamd-alert-tip-color:        #a6e3a1;
+  --jaamd-alert-important-color:  #89b4fa;
+  --jaamd-alert-warning-color:    #f9e2af;
+  --jaamd-alert-caution-color:    #f38ba8;
+
+  --jaamd-em-fg:                  #cba6f7;
+}
