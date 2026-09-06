@@ -138,6 +138,46 @@ check(
   "the anchor icon stays invisible on the deeper levels",
 );
 
+// ─── themes ──────────────────────────────────────────────────────────────────
+
+const themeSlugs = [
+  ...new Set([...html.matchAll(/html\[data-jaamd-theme="([a-z0-9-]+)"\]/g)].map((m) => m[1])),
+];
+
+check(
+  `themes: ${themeSlugs.length} scoped in the page`,
+  themeSlugs.length > 0,
+  "the layout did not inject the re-scoped theme CSS",
+);
+
+// Authored on :root, so without re-scoping only the last import would ever win.
+check(
+  "themes: none left on bare :root",
+  !/(^|\})\s*:root\s*\{[^}]*--jaamd-color-primary/.test(html),
+  "a theme reached the page unscoped and will override every other one",
+);
+
+check(
+  "themes: the site bridge is scoped too",
+  /\[data-jaamd-theme=("?)jaamd\1\]/.test(css),
+  "an unscoped bridge outranks the themes, so only secondary colours would change",
+);
+
+// One Shiki variable per theme is what lets code follow the switch.
+for (const slug of themeSlugs) {
+  check(
+    `themes: ${slug} has its Shiki colours baked`,
+    html.includes(`--shiki-${slug}:`),
+    `add ${slug} to shikiConfig.themes, or its code blocks keep the previous theme`,
+  );
+}
+
+check(
+  "themes: the picker lists every theme plus the site's own",
+  countOf(/<option value="/g) === themeSlugs.length + 1,
+  "the picker is built from the manifest; an option is missing",
+);
+
 // ─── the rest of the pipeline still ships ────────────────────────────────────
 
 check(

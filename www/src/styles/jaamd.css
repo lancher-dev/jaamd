@@ -1,16 +1,31 @@
-/* Bridge from the site identity to JAAMD's own seeds, so the markdown body and
-   the chrome around it are the same design. Unlayered, so it outranks
-   @layer jaamd.defaults in both themes; the identity tokens carry dark mode. */
+/* Bridge between the site identity and JAAMD's tokens. Unlayered, so it outranks
+   @layer jaamd.defaults; the themes it competes with are unlayered too, so the
+   attribute selectors are what keep them apart. */
 
-:root {
+/* Typography is the site's in every theme: the palette changes, the type does not. */
+html {
   --jaamd-font-sans: var(--identity-font-sans);
   --jaamd-font-serif: var(--identity-font-serif);
   --jaamd-font-mono: var(--identity-font-mono);
   --jaamd-font-size: 1.125rem;
   --jaamd-line-height: 1.6;
+}
 
+/* The site's own theme, and the state before the boot script runs. */
+html:not([data-jaamd-theme]),
+html[data-jaamd-theme="jaamd"] {
   --jaamd-bg: var(--identity-background);
   --jaamd-color-fg: var(--identity-foreground);
   --jaamd-color-fg-bright: var(--identity-foreground-bright);
   --jaamd-color-primary: var(--identity-primary);
+}
+
+/* Every package theme, in reverse: the chrome follows the article rather than the
+   site knowing each palette. Borders and muted text derive from these in
+   identity.css, so four seeds are enough. */
+html[data-jaamd-theme]:not([data-jaamd-theme="jaamd"]) {
+  --identity-background: var(--jaamd-bg);
+  --identity-foreground: var(--jaamd-color-fg);
+  --identity-foreground-bright: var(--jaamd-color-fg-bright);
+  --identity-primary: var(--jaamd-color-primary);
 }

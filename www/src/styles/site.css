@@ -111,45 +111,43 @@ a {
   text-align: center;
 }
 
-.site-theme-button {
-  display: flex;
-  width: 2.25rem;
-  height: 2.25rem;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  border: 0;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.site-theme-picker select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--identity-border);
   border-radius: 0.5rem;
   background: transparent;
   color: var(--identity-foreground-secondary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
   transition: color 200ms ease-in-out;
 }
 
-.site-theme-button:hover {
+.site-theme-picker select:hover {
   color: var(--identity-foreground-bright);
 }
 
-.site-theme-button:focus-visible {
+.site-theme-picker select:focus-visible {
   outline: 2px solid var(--identity-primary);
   outline-offset: 2px;
   color: var(--identity-foreground-bright);
 }
 
-.site-theme-button svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.site-theme-icon-light {
-  display: none;
-}
-
-html.dark .site-theme-icon-dark {
-  display: none;
-}
-
-html.dark .site-theme-icon-light {
-  display: block;
+/* The list is painted by the OS, which does not inherit the transparent background. */
+.site-theme-picker option {
+  background: var(--identity-background);
+  color: var(--identity-foreground);
 }
 
 /* ─── Hero ─────────────────────────────────────────────────────────────────── */
