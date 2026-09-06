@@ -1,15 +1,7 @@
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
 import type { Root } from "mdast";
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
+import { escapeHtml } from "./utils.js";
 
 /**
  * Tabbed code blocks: a `:::code-tabs` container wrapping fenced blocks.
