@@ -3,6 +3,7 @@ you see below is the integration's own output.
 
 :::toc[Components]
 - [Installation](#installation)
+- [Themes](#themes)
 - [Table of contents](#table-of-contents)
 - [Alerts](#alerts)
 - [Code tabs](#code-tabs)
@@ -37,6 +38,23 @@ import MarkdownContent from "@lancher-dev/jaamd/components";
   <slot />
 </MarkdownContent>
 ```
+
+---
+
+## Themes
+
+The picker in the header switches between JAAMD's own palette, which follows your
+system, and the presets the package ships. The whole page follows — including the
+syntax colours, because Shiki bakes one variable per theme at build time and the
+switch is pure CSS.
+
+```css
+@import "@lancher-dev/jaamd/default.css";
+@import "@lancher-dev/jaamd/themes/nord.css";
+```
+
+A theme declares nine seed colours and everything else derives from them. Adding
+one is a directory and a manifest entry.
 
 ---
 
