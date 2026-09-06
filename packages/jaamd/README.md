@@ -387,10 +387,11 @@ schemes:
 As a standalone theme, replacing the default light theme:
 
 ```ts
-jaamd({ theme: "dracula", noDefault: true })
+jaamd({ theme: "dracula" })
 ```
 
 ```css
+@import "@lancher-dev/jaamd/default.css";
 @import "@lancher-dev/jaamd/themes/dracula.css";
 @import "@lancher-dev/jaamd/styles.css";
 ```
@@ -405,7 +406,22 @@ Scoped to `html.dark` via the `/dark` variant:
 import "@lancher-dev/jaamd/themes/dracula/dark";
 ```
 
-Copy any preset from `src/themes/` to customise it.
+> [!IMPORTANT]
+> A preset declares a palette, not the whole variable set: surfaces, borders and
+> the table-of-contents card are derived from it by `default.css`. Load the
+> defaults alongside it — do **not** pair a preset with `noDefault: true`, or
+> those derived tokens fall back to the light palette.
+
+Each theme also declares itself, so a picker can be built from data rather than a
+hardcoded list:
+
+```ts
+import { themes } from "@lancher-dev/jaamd/themes";
+// [{ slug: "dracula", name: "Dracula", mode: "dark", shiki: "dracula" }, …]
+```
+
+To customise one, copy a directory from `src/themes/`. To add one, see
+[CONTRIBUTING.md](../../CONTRIBUTING.md#themes).
 
 ### Dual-theme Shiki
 

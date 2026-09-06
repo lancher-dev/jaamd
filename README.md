@@ -37,13 +37,15 @@ Showcase: [jaamd.lancher.dev](https://jaamd.lancher.dev)
 |---|---|
 | [`packages/jaamd`](/packages/jaamd) | The integration, and its [documentation](/packages/jaamd/README.md) |
 | [`www`](/www) | The showcase, itself rendered with jaamd |
-| [`tests`](/tests) | Slug parity and post-build assertions |
+| [`tests`](/tests) | Slug parity, the theme contract, and post-build assertions |
 
 ```bash
 pnpm install
 pnpm dev            # the showcase, on localhost:4321
 pnpm build && pnpm smoke
 ```
+
+Adding a theme is a directory and a manifest entry — see [CONTRIBUTING.md](/CONTRIBUTING.md#themes).
 
 ## License
 
