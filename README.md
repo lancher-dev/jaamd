@@ -1,7 +1,11 @@
-<h1 align="center">JAAMD</h1>
+<p align="center">
+  <a href="https://jaamd.lancher.dev">
+    <img src="./.github/readme-header.png" alt="JAAMD — Just Another Astro Markdown. Markdown, finished." width="1200" />
+  </a>
+</p>
 
 <p align="center">
-  <b>Just Another Astro Markdown</b> — remark plugins, client-side enhancements and styles as a single <a href="https://astro.build">Astro</a> integration.
+  Remark plugins, client-side enhancements and styles as a single <a href="https://astro.build">Astro</a> integration for Markdown content.
 </p>
 
 <div align="center">
