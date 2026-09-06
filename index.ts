@@ -3,6 +3,7 @@ import type { AstroIntegration } from "astro";
 import remarkDirective from "remark-directive";
 import { remarkAlert } from "./src/plugins/remark-alert.js";
 import remarkCodeTabs from "./src/plugins/remark-code-tabs.js";
+import remarkToc from "./src/plugins/remark-toc.js";
 import { paths } from "./src/paths.js";
 import { DEFAULT_SELECTOR } from "./src/scripts/utils.js";
 
@@ -60,9 +61,11 @@ export interface JaamdOptions {
   plugins?: {
     /** :::code-tabs directive — requires `directive: true` */
     codeTabs?: boolean;
+    /** :::toc directive — requires `directive: true` */
+    toc?: boolean;
     /** GitHub-style > [!NOTE] / [!WARNING] alerts */
     alerts?: boolean;
-    /** remark-directive (prerequisite for codeTabs) */
+    /** remark-directive (prerequisite for codeTabs and toc) */
     directive?: boolean;
   };
 }
@@ -75,7 +78,7 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
     noDefault = false,
     plugins   = {},
   } = options;
-  const { codeTabs = true, alerts = true, directive = true } = plugins;
+  const { codeTabs = true, toc = true, alerts = true, directive = true } = plugins;
 
   return {
     name: "@lancher-dev/jaamd",
@@ -83,9 +86,10 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
       "astro:config:setup": ({ config, updateConfig, injectScript, logger }) => {
         const jaamdRemarkPlugins: unknown[] = [];
         if (alerts) jaamdRemarkPlugins.push(remarkAlert);
-        // directive must come before codeTabs
-        if (directive || codeTabs) jaamdRemarkPlugins.push(remarkDirective);
+        // directive must come before its consumers
+        if (directive || codeTabs || toc) jaamdRemarkPlugins.push(remarkDirective);
         if (codeTabs) jaamdRemarkPlugins.push(remarkCodeTabs);
+        if (toc) jaamdRemarkPlugins.push(remarkToc);
 
         // Astro types both of these more precisely than jaamd needs; narrow them
         // once here to the handful of keys the integration actually touches.
@@ -185,6 +189,7 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
 
 // Named re-exports for users who configure remark manually
 export { default as remarkCodeTabs } from "./src/plugins/remark-code-tabs.js";
+export { default as remarkToc } from "./src/plugins/remark-toc.js";
 export { remarkAlert } from "./src/plugins/remark-alert.js";
 export { default as remarkDirective } from "remark-directive";
 

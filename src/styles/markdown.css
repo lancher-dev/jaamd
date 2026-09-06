@@ -780,6 +780,86 @@
   }
 }
 
+/* ─── Table of contents (:::toc) ─────────────────────────────────────────────
+   The list is the author's own markdown, so most of this undoes the global
+   link and list styling. */
+
+.jaamd-content .jaamd-toc {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--jaamd-toc-border);
+  border-radius: 0.5rem;
+  background-color: var(--jaamd-toc-bg);
+  font-size: var(--jaamd-font-size-toc, calc(var(--jaamd-font-size) * 0.94));
+}
+
+/* A <p>, not a heading; styled like an alert title. */
+.jaamd-content .jaamd-toc-title {
+  font-weight: 700;
+  font-size: var(
+    --jaamd-font-size-toc-title,
+    calc(var(--jaamd-font-size) * 0.83)
+  );
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--jaamd-color-fg-bright);
+  margin-bottom: 0.75rem;
+}
+
+.jaamd-content .jaamd-toc ul,
+.jaamd-content .jaamd-toc ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* `ul` drops its bullets; `ol` keeps its numbers — writing `1.` is a choice. */
+.jaamd-content .jaamd-toc ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.jaamd-content .jaamd-toc ol {
+  padding-left: 1.25rem;
+}
+
+/* Nested levels: a guide rail instead of deeper bullets. */
+.jaamd-content .jaamd-toc ul ul,
+.jaamd-content .jaamd-toc ul ol,
+.jaamd-content .jaamd-toc ol ul,
+.jaamd-content .jaamd-toc ol ol {
+  margin-left: 0.25rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid var(--jaamd-toc-border);
+}
+
+/* The block token governs its contents, as with blockquotes. */
+.jaamd-content .jaamd-toc li {
+  font-size: inherit;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+}
+
+.jaamd-content .jaamd-toc a {
+  display: inline-block;
+  font-weight: 400;
+  text-decoration: none;
+  color: var(--jaamd-color-fg);
+}
+
+.jaamd-content .jaamd-toc a:hover,
+.jaamd-content .jaamd-toc a:focus-visible {
+  color: var(--jaamd-color-primary);
+  text-decoration: underline;
+}
+
+/* Set by the client script. */
+.jaamd-content .jaamd-toc a[aria-current="location"] {
+  color: var(--jaamd-color-primary);
+  font-weight: 600;
+}
+
 /* ─── Reduced motion ────────────────────────────────────────────
    Scoped to jaamd's own elements, so the host page keeps control of the rest.
    The details height animation uses the Web Animations API and is handled in
