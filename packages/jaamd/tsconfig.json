@@ -10,5 +10,5 @@
     "types": ["astro/client", "node"]
   },
   "include": ["index.ts", "src/**/*"],
-  "exclude": ["dist", "node_modules", "example"]
+  "exclude": ["dist", "node_modules"]
 }
