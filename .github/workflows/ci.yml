@@ -18,9 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Version comes from "packageManager" in package.json.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       # The slug parity test imports a .ts file, which needs Node's native type
       # stripping.
@@ -55,9 +54,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Version comes from "packageManager" in package.json.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:
