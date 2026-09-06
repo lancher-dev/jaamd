@@ -7,7 +7,7 @@
  */
 
 import Slugger from "github-slugger";
-import { slugify } from "../src/scripts/utils.ts";
+import { slugify } from "../../packages/jaamd/src/scripts/utils.ts";
 
 const cases = [
   "Feature Demo",
