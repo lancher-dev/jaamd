@@ -7,6 +7,14 @@
   --site-page-padding: var(--identity-page-padding);
 }
 
+/* JAAD gets this from Tailwind's preflight; without it, padding is added to
+   width and .site-main overflows the viewport by its own padding. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   background-color: var(--identity-background);
   color: var(--identity-foreground);
