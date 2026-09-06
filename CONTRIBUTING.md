@@ -15,7 +15,9 @@ A theme is a directory under `packages/jaamd/src/themes/<slug>/` plus one entry 
 
 ### 1. Write `index.css`
 
-One `:root` block of `--jaamd-*` declarations. These **seeds are required**:
+A `:root` block of `--jaamd-*` declarations. A theme that has both a light and a
+dark palette adds a second block on `html.dark`, and must repeat the seeds there —
+otherwise one mode borrows the other's background. These **seeds are required**:
 
 | Token | What it is |
 |---|---|
@@ -38,9 +40,13 @@ Do not restate the font tokens: they are the defaults already.
 
 ### 2. Declare it
 
-Add an entry to `src/themes/index.ts` with the directory name as `slug`, a readable
-`name`, the `mode` the palette expects (`"light"` or `"dark"` — themes are not
-assumed to be dark), and the `shiki` theme that pairs with it.
+Add an entry to `src/themes/index.ts` with the directory name as `slug` and a
+readable `name`, plus:
+
+| `mode` | The palette is | `shiki` |
+|---|---|---|
+| `"light"` / `"dark"` | one palette, applying in both modes | one theme name |
+| `"dual"` | two palettes, `:root` and `html.dark` | `{ light, dark }` |
 
 ### 3. Generate the dark variant
 
@@ -48,8 +54,9 @@ assumed to be dark), and the `shiki` theme that pairs with it.
 pnpm build:themes
 ```
 
-`dark.css` is `index.css` under `html.dark`, generated and committed. Never edit it
-by hand.
+`dark.css` is `index.css` under `html.dark` — the variant for using a single-palette
+theme only in dark mode. It is generated and committed; never edit it by hand. A
+`dual` theme covers dark mode itself and gets no `dark.css`.
 
 ### 4. Check it
 
