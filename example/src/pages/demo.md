@@ -7,6 +7,21 @@ title: JAAMD Feature Demo
 
 This page exercises every client-side enhancement provided by jaamd.
 
+:::toc[On this page]
+- [Heading anchor links](#heading-anchor-links)
+- [Code copy button](#code-copy-button)
+- [Image lightbox](#image-lightbox)
+- [Alerts](#alerts)
+- [Details / accordion](#details--accordion)
+- [Spoiler](#spoiler)
+- [Table](#table)
+- [Typography scale](#typography-scale)
+  - [Third level](#third-level)
+  - [Fourth level](#fourth-level)
+  - [Fifth level](#fifth-level)
+  - [Sixth level](#sixth-level)
+:::
+
 ---
 
 ## Heading anchor links
