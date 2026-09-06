@@ -1,20 +1,16 @@
----
-layout: ../layouts/Layout.astro
-title: JAAMD Feature Demo
----
+This page is rendered with JAAMD, and exercises every component it ships. What
+you see below is the integration's own output, unstyled by the site.
 
-# Feature Demo
-
-This page exercises every client-side enhancement provided by jaamd.
-
-:::toc[On this page]
-- [Heading anchor links](#heading-anchor-links)
-- [Code copy button](#code-copy-button)
-- [Image lightbox](#image-lightbox)
+:::toc[Components]
+- [Table of contents](#table-of-contents)
 - [Alerts](#alerts)
-- [Details / accordion](#details--accordion)
-- [Spoiler](#spoiler)
-- [Table](#table)
+- [Code tabs](#code-tabs)
+- [Copy buttons](#copy-buttons)
+- [Heading links](#heading-links)
+- [Image lightbox](#image-lightbox)
+- [Details](#details)
+- [Spoilers](#spoilers)
+- [Tables](#tables)
 - [Typography scale](#typography-scale)
   - [Third level](#third-level)
   - [Fourth level](#fourth-level)
@@ -24,42 +20,22 @@ This page exercises every client-side enhancement provided by jaamd.
 
 ---
 
-## Heading anchor links
+## Table of contents
 
-Hover any heading above to reveal the copy-link icon. Click it to copy the
-section URL to the clipboard.
+The block above is markdown you write yourself: nothing is generated, so the
+entries, their order and their depth are yours. The label becomes the title, and
+the entry whose section is on screen is marked as current.
 
----
-
-## Code copy button
-
-```ts
-export function hello(name: string): string {
-  return `Hello, ${name}!`;
-}
-```
-
-:::code-tabs
-```js JavaScript
-console.log("Hello from JavaScript!");
-```
-```ts TypeScript
-const msg: string = "Hello from TypeScript!";
-console.log(msg);
-```
-```py Python
-print("Hello from Python!")
-```
+```markdown
+:::toc[Components]
+- [Alerts](#alerts)
+- [Code tabs](#code-tabs)
+  - [Nested entries work too](#nested-entries-work-too)
 :::
+```
 
----
-
-## Image lightbox
-
-Click on the image below to open the lightbox. Press **Esc** or click the
-backdrop / ✕ button to close it.
-
-![Astro logo](https://astro.build/assets/press/astro-logo-light-gradient.svg)
+Anchors come from Astro's heading ids, slugged with `github-slugger` — one dash
+per space, punctuation dropped, underscores kept.
 
 ---
 
@@ -82,13 +58,63 @@ backdrop / ✕ button to close it.
 
 ---
 
-## Details / accordion
+## Code tabs
+
+Several code blocks in one tabbed panel. The text after the language is the tab
+label; arrows move between tabs, and each panel is focusable so wide samples can
+be scrolled by keyboard.
+
+:::code-tabs
+```js JavaScript
+console.log("Hello from JavaScript!");
+```
+```ts TypeScript
+const msg: string = "Hello from TypeScript!";
+console.log(msg);
+```
+```py Python
+print("Hello from Python!")
+```
+:::
+
+---
+
+## Copy buttons
+
+Every fenced block gets one, top right on hover.
+
+```ts
+export function hello(name: string): string {
+  return `Hello, ${name}!`;
+}
+```
+
+---
+
+## Heading links
+
+Hover any heading on this page to reveal the anchor icon. Click it to copy that
+section's URL. All six levels have one, and an anchored heading comes to rest
+clear of the sticky header above.
+
+---
+
+## Image lightbox
+
+Click the image to open it full screen. Press **Esc**, click the backdrop or the
+✕ button to close.
+
+![Astro logo](https://astro.build/assets/press/astro-logo-light-gradient.svg)
+
+---
+
+## Details
 
 <details>
 <summary>Click to expand</summary>
 
-This content is revealed with a smooth height animation. You can put **any
-markdown** inside, including lists, code, and nested details.
+The height is animated on open and close. Any markdown goes inside, lists and
+code included.
 
 ```js
 console.log("Inside an accordion!");
@@ -99,13 +125,13 @@ console.log("Inside an accordion!");
 <details open>
 <summary>This one starts open</summary>
 
-And it also animates when you close it.
+And it animates on the way out too.
 
 </details>
 
 ---
 
-## Spoiler
+## Spoilers
 
 Click the blurred text, or focus it with <kbd>Tab</kbd> and press
 <kbd>Enter</kbd>, to reveal it:
@@ -114,17 +140,20 @@ Click the blurred text, or focus it with <kbd>Tab</kbd> and press
 
 ---
 
-## Table
+## Tables
 
-| Feature          | Status  | Notes                         |
-|------------------|---------|-------------------------------|
-| Heading links    | ✅ Done  | Copies URL to clipboard       |
-| Copy buttons     | ✅ Done  | Resets after 2 s              |
-| Image lightbox   | ✅ Done  | Backdrop + Esc to close       |
-| Code tabs        | ✅ Done  | `:::code-tabs` directive      |
-| Alerts           | ✅ Done  | GitHub-style `> [!NOTE]`      |
-| Details animate  | ✅ Done  | Smooth height transition      |
-| Spoilers         | ✅ Done  | Click to reveal               |
+Wrapped in a scroll container, so a wide table never pushes the page sideways.
+
+| Component        | Trigger                    | Notes                     |
+|------------------|----------------------------|---------------------------|
+| Table of contents| `:::toc`                   | Marks the entry in view   |
+| Alerts           | `> [!NOTE]`                | Five variants             |
+| Code tabs        | `:::code-tabs`             | Keyboard navigable        |
+| Copy buttons     | any `pre`                  | Resets after 2 s          |
+| Heading links    | `h1`–`h6`                  | Copies the section URL    |
+| Image lightbox   | any `img`                  | Backdrop + Esc to close   |
+| Details          | `<details>`                | Animated height           |
+| Spoilers         | `class="spoiler"`          | Click or Enter to reveal  |
 
 ---
 
