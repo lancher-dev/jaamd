@@ -7,7 +7,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-import { themes } from "../../packages/jaamd/src/themes/index.ts";
+import { themes } from "../../packages/jaamd/src/themes/index.js";
 
 const DIST = join(process.cwd(), "www", "dist");
 const PAGE = join(DIST, "index.html");

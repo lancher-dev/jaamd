@@ -8,7 +8,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { bundledThemes } from "shiki";
 
-import { themes, REQUIRED_TOKENS } from "../../packages/jaamd/src/themes/index.ts";
+import { themes, REQUIRED_TOKENS } from "../../packages/jaamd/src/themes/index.js";
 import { darkVariant } from "../../scripts/build-themes.mjs";
 
 const THEMES = join(process.cwd(), "packages", "jaamd", "src", "themes");
@@ -30,7 +30,7 @@ for (const slug of slugs) {
   check(
     `${slug}: declared in the manifest`,
     entry,
-    "add it to packages/jaamd/src/themes/index.ts, or pickers will never show it",
+    "add it to packages/jaamd/src/themes/index.js, or pickers will never show it",
   );
   if (!entry) continue;
 

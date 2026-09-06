@@ -1,27 +1,15 @@
-/*
- * Theme manifest. Consumers build pickers from this instead of hardcoding a
- * list; `tests/unit/themes.mjs` checks each entry against a directory that
- * honours the token contract.
- */
-
 /**
- * `light` and `dark` are single palettes applying in both modes. `dual` carries
- * both a `:root` block and an `html.dark` one, and follows the mode; it has no
- * `/dark` variant.
+ * What every theme declares about itself. Consumers build theme pickers from
+ * this instead of hardcoding a list, and `tests/unit/themes.mjs` checks that
+ * each entry matches a directory that honours the token contract.
+ *
+ * Plain JavaScript on purpose: Node refuses to strip types from files under
+ * node_modules, so a TypeScript manifest would be readable by bundlers and by
+ * nothing else — tooling and test runners included. Types live in index.d.ts.
  */
-export type JaamdThemeMode = "light" | "dark" | "dual";
 
-export interface JaamdTheme {
-  /** Directory name, and the value a `data-jaamd-theme` attribute would carry. */
-  slug: string;
-  /** Human-readable name, for pickers. */
-  name: string;
-  mode: JaamdThemeMode;
-  /** Shiki theme that pairs with this palette, or a pair for a `dual` one. */
-  shiki: string | { light: string; dark: string };
-}
-
-export const themes: JaamdTheme[] = [
+/** @type {import("./index.d.ts").JaamdTheme[]} */
+export const themes = [
   {
     slug: "catppuccin",
     name: "Catppuccin",
@@ -63,4 +51,4 @@ export const REQUIRED_TOKENS = [
   "--jaamd-alert-important-color",
   "--jaamd-alert-warning-color",
   "--jaamd-alert-caution-color",
-] as const;
+];
