@@ -1,6 +1,7 @@
 /* JAAMD theme — One Dark (dark mode only). Pairs with Shiki theme "one-dark-pro". */
 
 html.dark {
+  --jaamd-bg:                  #282c34;
   --jaamd-color-fg:            #abb2bf;
   --jaamd-color-fg-bright:     #e6e6e6;
   --jaamd-color-primary:       #61afef;
