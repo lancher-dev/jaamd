@@ -1,34 +1,6 @@
----
-const install = "npx astro add @lancher-dev/jaamd";
----
-
-<section class="hero">
+<header class="hero">
   <p class="hero-eyebrow">Just Another Astro Markdown</p>
-  <h1 class="hero-title">Markdown that arrives finished</h1>
-  <p class="hero-lede">
-    Remark plugins, client-side enhancements and styles, as a single Astro
-    integration. Add it, wrap your content, and everything below this line is
-    what you get.
-  </p>
-
-  <div class="hero-install">
-    <code>{install}</code>
-    <button type="button" data-copy={install} aria-label="Copy the install command">
-      Copy
-    </button>
-  </div>
-</section>
-
-<script>
-  const button = document.querySelector<HTMLButtonElement>(".hero-install button");
-
-  button?.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(button.dataset.copy ?? "");
-      button.textContent = "Copied";
-      setTimeout(() => (button.textContent = "Copy"), 1500);
-    } catch {
-      // clipboard unavailable (non-secure context) — fail silently
-    }
-  });
-</script>
+  <h1 class="hero-wordmark font-brand">JAAMD</h1>
+  <div class="hero-rule"></div>
+  <p class="hero-tagline">Markdown, finished.</p>
+</header>
