@@ -78,6 +78,9 @@
 
   --jaamd-heading-border-color: rgb(from var(--jaamd-color-primary) r g b / 0.4);
 
+  /** Rest offset of an anchored heading (raise it to clear a sticky header) */
+  --jaamd-scroll-margin-top: 80px;
+
 
   /* ── Inline code (<code> outside a <pre>) ───────────────── */
 
