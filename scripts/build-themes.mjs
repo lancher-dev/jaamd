@@ -10,7 +10,7 @@ import { readdirSync, readFileSync, writeFileSync, rmSync, existsSync } from "no
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { themes } from "../packages/jaamd/src/themes/index.ts";
+import { themes } from "../packages/jaamd/src/themes/index.js";
 
 const THEMES = join(process.cwd(), "packages", "jaamd", "src", "themes");
 

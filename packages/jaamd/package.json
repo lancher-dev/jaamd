@@ -35,7 +35,10 @@
     "./styles.css": "./src/styles/markdown.css",
     "./shiki-dual": "./src/styles/shiki-dual.css",
     "./shiki-dual.css": "./src/styles/shiki-dual.css",
-    "./themes": "./src/themes/index.ts",
+    "./themes": {
+      "types": "./src/themes/index.d.ts",
+      "default": "./src/themes/index.js"
+    },
     "./themes/*/dark.css": "./src/themes/*/dark.css",
     "./themes/*/dark": "./src/themes/*/dark.css",
     "./themes/*.css": "./src/themes/*/index.css",
