@@ -20,6 +20,9 @@ jobs:
       - run: npx tsc --noEmit
       - run: npm run lint
 
+      # The client-side id fallback has to agree with the ids Astro emits.
+      - run: npm run test:slug
+
   example-build:
     runs-on: ubuntu-latest
     steps:
