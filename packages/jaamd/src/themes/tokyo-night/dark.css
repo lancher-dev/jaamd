@@ -1,0 +1,18 @@
+/* JAAMD theme — Tokyo Night (dark mode only). A dark theme: it applies in both modes. */
+
+html.dark {
+  --jaamd-bg:                     #1a1b26;
+  --jaamd-color-fg:               #a9b1d6;
+  --jaamd-color-fg-bright:        #c0caf5;
+  --jaamd-color-primary:          #7aa2f7;
+  --jaamd-color-success:          #9ece6a;
+  --jaamd-alert-note-color:       #7dcfff;
+  --jaamd-alert-tip-color:        #9ece6a;
+  --jaamd-alert-important-color:  #7aa2f7;
+  --jaamd-alert-warning-color:    #e0af68;
+  --jaamd-alert-caution-color:    #f7768e;
+
+  --jaamd-border-strong:          #565f89;
+  --jaamd-color-primary-light:    #7dcfff;
+  --jaamd-em-fg:                  #bb9af7;
+}

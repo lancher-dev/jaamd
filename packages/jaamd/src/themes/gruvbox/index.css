@@ -1,0 +1,33 @@
+/* JAAMD theme — Gruvbox. Light and dark, following the toggle. */
+
+:root {
+  --jaamd-bg:                     #fbf1c7;
+  --jaamd-color-fg:               #3c3836;
+  --jaamd-color-fg-bright:        #282828;
+  --jaamd-color-primary:          #458588;
+  --jaamd-color-success:          #98971a;
+  --jaamd-alert-note-color:       #458588;
+  --jaamd-alert-tip-color:        #98971a;
+  --jaamd-alert-important-color:  #458588;
+  --jaamd-alert-warning-color:    #d79921;
+  --jaamd-alert-caution-color:    #cc241d;
+
+  --jaamd-border-strong:          #d5c4a1;
+  --jaamd-em-fg:                  #b16286;
+}
+
+html.dark {
+  --jaamd-bg:                     #282828;
+  --jaamd-color-fg:               #ebdbb2;
+  --jaamd-color-fg-bright:        #fbf1c7;
+  --jaamd-color-primary:          #83a598;
+  --jaamd-color-success:          #b8bb26;
+  --jaamd-alert-note-color:       #83a598;
+  --jaamd-alert-tip-color:        #b8bb26;
+  --jaamd-alert-important-color:  #83a598;
+  --jaamd-alert-warning-color:    #fabd2f;
+  --jaamd-alert-caution-color:    #fb4934;
+
+  --jaamd-border-strong:          #665c54;
+  --jaamd-em-fg:                  #d3869b;
+}

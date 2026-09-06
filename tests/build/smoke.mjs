@@ -7,6 +7,8 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+import { themes } from "../../packages/jaamd/src/themes/index.ts";
+
 const DIST = join(process.cwd(), "www", "dist");
 const PAGE = join(DIST, "index.html");
 
@@ -136,6 +138,51 @@ check(
   "toc: heading-link hover covers h3-h6",
   css.includes("h6:hover .jaamd-heading-link"),
   "the anchor icon stays invisible on the deeper levels",
+);
+
+// ─── themes ──────────────────────────────────────────────────────────────────
+
+const themeSlugs = [
+  ...new Set([...html.matchAll(/html\[data-jaamd-theme="([a-z0-9-]+)"\]/g)].map((m) => m[1])),
+];
+
+check(
+  `themes: ${themeSlugs.length} scoped in the page`,
+  themeSlugs.length > 0,
+  "the layout did not inject the re-scoped theme CSS",
+);
+
+// Authored on :root, so without re-scoping only the last import would ever win.
+check(
+  "themes: none left on bare :root",
+  !/(^|\})\s*:root\s*\{[^}]*--jaamd-color-primary/.test(html),
+  "a theme reached the page unscoped and will override every other one",
+);
+
+check(
+  "themes: the site bridge is scoped too",
+  /\[data-jaamd-theme=("?)default\1\]/.test(css),
+  "an unscoped bridge outranks the themes, so only secondary colours would change",
+);
+
+// One Shiki variable per key is what lets code follow the switch; a dual theme
+// needs two, or one of its two modes keeps the previous theme's syntax colours.
+for (const theme of themes) {
+  const keys =
+    theme.mode === "dual" ? [theme.slug, `${theme.slug}-dark`] : [theme.slug];
+  const absent = keys.filter((key) => !html.includes(`--shiki-${key}:`));
+
+  check(
+    `themes: ${theme.slug} has its Shiki colours baked`,
+    absent.length === 0,
+    `missing --shiki-${absent.join(", --shiki-")} in the rendered code`,
+  );
+}
+
+check(
+  "themes: the picker lists every theme plus the site's own",
+  countOf(/<option value="/g) === themeSlugs.length + 1,
+  "the picker is built from the manifest; an option is missing",
 );
 
 // ─── the rest of the pipeline still ships ────────────────────────────────────

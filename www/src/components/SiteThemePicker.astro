@@ -1,0 +1,61 @@
+---
+import { siteThemes, SITE_THEME } from "../themes.ts";
+---
+
+<site-theme-picker class="site-theme-picker">
+  <label class="sr-only" for="theme">Theme</label>
+  <select id="theme" name="theme">
+    {
+      siteThemes.map((theme) => (
+        <option value={theme.slug} selected={theme.slug === SITE_THEME.slug}>
+          {theme.name}
+        </option>
+      ))
+    }
+  </select>
+</site-theme-picker>
+
+<script>
+  import { themeModes, THEME_STORAGE_KEY, SITE_THEME } from "../themes.ts";
+
+  const prefersDark = matchMedia("(prefers-color-scheme: dark)");
+
+  function apply(slug: string) {
+    const mode = themeModes[slug] ?? SITE_THEME.mode;
+    document.documentElement.dataset.jaamdTheme = slug;
+    document.documentElement.classList.toggle(
+      "dark",
+      mode === "dark" || (mode === "dual" && prefersDark.matches),
+    );
+  }
+
+  class SiteThemePicker extends HTMLElement {
+    connectedCallback() {
+      const select = this.querySelector("select");
+      if (!select) return;
+
+      // The boot script already chose; reflect it rather than reset it.
+      const current = document.documentElement.dataset.jaamdTheme;
+      if (current && themeModes[current]) select.value = current;
+
+      select.addEventListener("change", () => {
+        apply(select.value);
+        try {
+          localStorage.setItem(THEME_STORAGE_KEY, select.value);
+        } catch {
+          // Private browsing.
+        }
+      });
+
+      // Dual themes carry both palettes, so they follow the system while active.
+      prefersDark.addEventListener("change", () => {
+        const slug = document.documentElement.dataset.jaamdTheme;
+        if (slug && themeModes[slug] === "dual") apply(slug);
+      });
+    }
+  }
+
+  if (!customElements.get("site-theme-picker")) {
+    customElements.define("site-theme-picker", SiteThemePicker);
+  }
+</script>

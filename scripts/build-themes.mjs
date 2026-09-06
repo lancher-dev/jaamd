@@ -7,11 +7,16 @@
  * `--check` verifies the committed files instead of writing them.
  */
 
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { themes } from "../packages/jaamd/src/themes/index.ts";
+
 const THEMES = join(process.cwd(), "packages", "jaamd", "src", "themes");
+
+/** A dual theme carries both palettes already; a dark-only variant is meaningless. */
+const isDual = (slug) => themes.find((t) => t.slug === slug)?.mode === "dual";
 
 /** The dark variant of a theme's source. */
 export function darkVariant(source) {
@@ -29,12 +34,23 @@ function run(check) {
   const stale = [];
 
   for (const slug of slugs) {
-    const source = readFileSync(join(THEMES, slug, "index.css"), "utf8");
-    const expected = darkVariant(source);
     const path = join(THEMES, slug, "dark.css");
 
+    if (isDual(slug)) {
+      if (check) {
+        if (existsSync(path)) stale.push(`${slug} (dual, should have no dark.css)`);
+      } else if (existsSync(path)) {
+        rmSync(path);
+        console.log(`✓ ${slug}/dark.css removed (dual)`);
+      }
+      continue;
+    }
+
+    const source = readFileSync(join(THEMES, slug, "index.css"), "utf8");
+    const expected = darkVariant(source);
+
     if (check) {
-      if (readFileSync(path, "utf8") !== expected) stale.push(slug);
+      if (!existsSync(path) || readFileSync(path, "utf8") !== expected) stale.push(slug);
       continue;
     }
 

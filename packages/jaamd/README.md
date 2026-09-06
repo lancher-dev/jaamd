@@ -375,14 +375,20 @@ The default set includes dark-mode overrides activated by the `dark` class on
 
 ### Theme presets
 
-Three presets restyle all `--jaamd-*` variables to match popular editor colour
-schemes:
+Eight presets restyle the `--jaamd-*` palette to match popular editor colour
+schemes. A **dual** preset carries a light and a dark palette and follows
+`html.dark`; the others are one palette that applies in both modes.
 
-| Preset | Import | Recommended Shiki theme |
-|--------|--------|------------------------|
-| Dracula | `@lancher-dev/jaamd/themes/dracula` | `dracula` |
-| Nord | `@lancher-dev/jaamd/themes/nord` | `nord` |
-| One Dark | `@lancher-dev/jaamd/themes/one-dark` | `one-dark-pro` |
+| Preset | Import | Kind | Recommended Shiki theme |
+|--------|--------|------|------------------------|
+| Catppuccin | `@lancher-dev/jaamd/themes/catppuccin` | dual | `catppuccin-latte` / `catppuccin-mocha` |
+| Dracula | `@lancher-dev/jaamd/themes/dracula` | dark | `dracula` |
+| Gruvbox | `@lancher-dev/jaamd/themes/gruvbox` | dual | `gruvbox-light-medium` / `gruvbox-dark-medium` |
+| Nord | `@lancher-dev/jaamd/themes/nord` | dark | `nord` |
+| One Dark | `@lancher-dev/jaamd/themes/one-dark` | dark | `one-dark-pro` |
+| Rosé Pine | `@lancher-dev/jaamd/themes/rose-pine` | dual | `rose-pine-dawn` / `rose-pine` |
+| Rosé Pine Moon | `@lancher-dev/jaamd/themes/rose-pine-moon` | dual | `rose-pine-dawn` / `rose-pine-moon` |
+| Tokyo Night | `@lancher-dev/jaamd/themes/tokyo-night` | dark | `tokyo-night` |
 
 As a standalone theme, replacing the default light theme:
 
@@ -396,7 +402,9 @@ jaamd({ theme: "dracula" })
 @import "@lancher-dev/jaamd/styles.css";
 ```
 
-Scoped to `html.dark` via the `/dark` variant:
+A single-palette preset can also be scoped to `html.dark` via the `/dark` variant,
+to use it as the dark half of your own light theme. Dual presets already cover both
+modes and have no `/dark`:
 
 ```css
 @import "@lancher-dev/jaamd/themes/dracula/dark.css";

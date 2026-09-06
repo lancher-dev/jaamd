@@ -1,11 +1,63 @@
 ---
+import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
 import { Font } from "astro:assets";
+import { themes as packageThemes } from "@lancher-dev/jaamd/themes";
+import type { JaamdTheme } from "@lancher-dev/jaamd/themes";
 import "@lancher-dev/jaamd/default.css";
 import "@lancher-dev/jaamd/styles.css";
 import "../styles/identity.css";
 import "../styles/jaamd.css";
 import "../styles/site.css";
-import SiteThemeToggle from "../components/SiteThemeToggle.astro";
+import SiteThemePicker from "../components/SiteThemePicker.astro";
+import {
+  themeModes,
+  THEME_STORAGE_KEY,
+  SITE_THEME,
+  shikiKeys,
+} from "../themes.ts";
+
+const require = createRequire(import.meta.url);
+
+/**
+ * Shiki bakes one variable per configured key; this picks which one the code
+ * reads. `.dark` / `:not(.dark)` is not decoration — without it the selector
+ * ties with shiki-dual.css and injection order would decide the winner.
+ */
+function shikiRule(scope: string, key: string) {
+  return `${scope} .jaamd-content .astro-code span,
+${scope} .jaamd-content .shiki span {
+  color: var(--shiki-${key}) !important;
+  font-style: var(--shiki-${key}-font-style) !important;
+  font-weight: var(--shiki-${key}-font-weight) !important;
+  text-decoration: var(--shiki-${key}-text-decoration) !important;
+}`;
+}
+
+// Themes are authored on :root, so importing more than one would just let the
+// last win. Re-scoped here, at build time, so they can coexist and be switched.
+const themeCss = packageThemes
+  .map((theme: JaamdTheme) => {
+    const { slug } = theme;
+    const source = readFileSync(
+      require.resolve(`@lancher-dev/jaamd/themes/${slug}.css`),
+      "utf8",
+    );
+    const attr = `[data-jaamd-theme="${slug}"]`;
+    const keys = shikiKeys(theme);
+
+    const scoped = source
+      .replace(/^:root \{$/m, `html${attr} {`)
+      .replace(/^html\.dark \{$/m, `html.dark${attr} {`);
+
+    const rules = [
+      keys.light && shikiRule(`html${attr}:not(.dark)`, keys.light),
+      keys.dark && shikiRule(`html.dark${attr}`, keys.dark),
+    ].filter(Boolean);
+
+    return [scoped, ...rules].join("\n");
+  })
+  .join("\n\n");
 
 const title = "JAAMD";
 const description =
@@ -13,13 +65,19 @@ const description =
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/og-image.png", Astro.site).href;
 
-// Inline and before paint: a class set from a module would flash the wrong theme.
+// Inline and before paint: applied from a module, the wrong theme would flash.
 const themeScript = `(function () {
-  try {
-    var t = localStorage.getItem("theme");
-    if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches))
-      document.documentElement.classList.add("dark");
-  } catch (e) {}
+  var modes = ${JSON.stringify(themeModes)};
+  var slug;
+  try { slug = localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)}); } catch (e) {}
+  if (!modes[slug]) slug = ${JSON.stringify(SITE_THEME.slug)};
+
+  var mode = modes[slug];
+  var dark = mode === "dark" ||
+    (mode === "dual" && matchMedia("(prefers-color-scheme: dark)").matches);
+
+  document.documentElement.dataset.jaamdTheme = slug;
+  document.documentElement.classList.toggle("dark", dark);
 })();`;
 ---
 
@@ -40,6 +98,7 @@ const themeScript = `(function () {
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
+    <style is:inline set:html={themeCss}></style>
     <script is:inline set:html={themeScript} />
   </head>
   <body data-site-layout>
@@ -50,7 +109,7 @@ const themeScript = `(function () {
           <a href="https://github.com/lancher-dev/jaamd">GitHub</a>
           <a href="https://www.npmjs.com/package/@lancher-dev/jaamd">npm</a>
         </nav>
-        <SiteThemeToggle />
+        <SiteThemePicker />
       </div>
     </header>
 
