@@ -1,0 +1,218 @@
+/* Chrome of the showcase: base, header, hero, footer. Mirrors JAAD's site.css
+   without Tailwind. The markdown body itself is left to JAAMD — that is what
+   the page is for. */
+
+:root {
+  --site-content-width: var(--identity-content-width);
+  --site-page-padding: var(--identity-page-padding);
+}
+
+html {
+  background-color: var(--identity-background);
+  color: var(--identity-foreground);
+  font-family: var(--identity-font-sans);
+  font-size: 16px;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--identity-foreground-bright);
+  font-family: var(--identity-font-serif);
+}
+
+a {
+  color: var(--identity-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Serif, italic, light: the wordmark treatment shared with JAAD. */
+.font-brand {
+  font-family: var(--identity-font-serif);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.site-chrome {
+  width: 100%;
+  max-width: var(--site-content-width);
+  margin-inline: auto;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.site-brand {
+  color: var(--identity-primary);
+  font-size: 1.25rem;
+  text-decoration: none;
+}
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.site-header nav a {
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  color: var(--identity-foreground-bright);
+}
+
+.site-main {
+  width: 100%;
+  max-width: var(--site-content-width);
+  flex: 1;
+  margin-inline: auto;
+  padding-inline: var(--site-page-padding);
+}
+
+.site-footer {
+  margin-top: 1rem;
+  border-top: 1px solid var(--identity-border-dark);
+  padding: 0.5rem 1rem 0.25rem;
+  color: var(--identity-foreground-muted);
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.site-theme-button {
+  display: flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--identity-foreground-secondary);
+  transition: color 200ms ease-in-out;
+}
+
+.site-theme-button:hover {
+  color: var(--identity-foreground-bright);
+}
+
+.site-theme-button:focus-visible {
+  outline: 2px solid var(--identity-primary);
+  outline-offset: 2px;
+  color: var(--identity-foreground-bright);
+}
+
+.site-theme-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.site-theme-icon-light {
+  display: none;
+}
+
+html.dark .site-theme-icon-dark {
+  display: none;
+}
+
+html.dark .site-theme-icon-light {
+  display: block;
+}
+
+/* ─── Hero ─────────────────────────────────────────────────────────────────── */
+
+.hero {
+  margin-bottom: 2rem;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--identity-foreground-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.hero-wordmark {
+  margin: 0 0 1rem;
+  font-size: 4.5rem;
+}
+
+.hero-rule {
+  width: 4rem;
+  height: 1px;
+  margin: 0 auto 1.5rem;
+  opacity: 0.4;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--identity-primary),
+    transparent
+  );
+}
+
+.hero-tagline {
+  margin: 0;
+  color: var(--identity-foreground-muted);
+  font-size: 1.125rem;
+  font-weight: 300;
+}
+
+@media (min-width: 1024px) {
+  .site-main {
+    padding-inline: calc(var(--site-page-padding) * 2);
+  }
+
+  .hero {
+    margin-bottom: 3rem;
+    padding: 4rem 0;
+  }
+
+  .hero-wordmark {
+    font-size: 6rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

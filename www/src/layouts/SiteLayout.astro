@@ -1,0 +1,63 @@
+---
+import { Font } from "astro:assets";
+import "@lancher-dev/jaamd/default.css";
+import "@lancher-dev/jaamd/styles.css";
+import "../styles/identity.css";
+import "../styles/jaamd.css";
+import "../styles/site.css";
+import SiteThemeToggle from "../components/SiteThemeToggle.astro";
+
+const title = "JAAMD";
+const description =
+  "Remark plugins, client-side enhancements and styles as a single Astro integration for Markdown content.";
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og-image.png", Astro.site).href;
+
+// Inline and before paint: a class set from a module would flash the wrong theme.
+const themeScript = `(function () {
+  try {
+    var t = localStorage.getItem("theme");
+    if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches))
+      document.documentElement.classList.add("dark");
+  } catch (e) {}
+})();`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-merriweather" preload />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline set:html={themeScript} />
+  </head>
+  <body data-site-layout>
+    <header class="site-chrome site-header">
+      <a class="site-brand font-brand" href="/">JAAMD</a>
+      <div class="site-header-actions">
+        <nav aria-label="Main navigation">
+          <a href="https://github.com/lancher-dev/jaamd">GitHub</a>
+          <a href="https://www.npmjs.com/package/@lancher-dev/jaamd">npm</a>
+        </nav>
+        <SiteThemeToggle />
+      </div>
+    </header>
+
+    <main class="site-main"><slot /></main>
+
+    <footer class="site-chrome site-footer">
+      JAAMD is released under the MIT License.
+    </footer>
+  </body>
+</html>

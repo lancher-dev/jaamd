@@ -6,10 +6,10 @@ dist/
 # dependencies
 node_modules/
 
-# playground
-example/node_modules/
-example/.astro/
-example/dist/
+# showcase
+www/node_modules/
+www/.astro/
+www/dist/
 
 # logs
 npm-debug.log*
