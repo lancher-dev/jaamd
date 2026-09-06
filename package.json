@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit -p packages/jaamd && pnpm --filter www check",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "build:themes": "node scripts/build-themes.mjs",
     "test:slug": "node tests/unit/slug-parity.mjs",
+    "test:themes": "node tests/unit/themes.mjs",
     "smoke": "node tests/build/smoke.mjs"
   },
   "devDependencies": {
@@ -22,6 +24,7 @@
     "eslint-plugin-astro": "^3.1.0",
     "github-slugger": "^2.0.0",
     "globals": "^17.11.0",
+    "shiki": "4.4.3",
     "typescript": "^6.0.0",
     "typescript-eslint": "^8.67.0"
   }
