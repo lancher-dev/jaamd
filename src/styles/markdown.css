@@ -19,15 +19,16 @@
   margin-bottom: 1rem;
   position: relative;
   text-wrap: balance;
-}
-
-.jaamd-content h1,
-.jaamd-content h2 {
-  scroll-margin-top: 80px;
+  /* Every level: a TOC links h3+ too. */
+  scroll-margin-top: var(--jaamd-scroll-margin-top, 80px);
 }
 
 .jaamd-content h1:hover .jaamd-heading-link,
-.jaamd-content h2:hover .jaamd-heading-link {
+.jaamd-content h2:hover .jaamd-heading-link,
+.jaamd-content h3:hover .jaamd-heading-link,
+.jaamd-content h4:hover .jaamd-heading-link,
+.jaamd-content h5:hover .jaamd-heading-link,
+.jaamd-content h6:hover .jaamd-heading-link {
   opacity: 0.6;
 }
 

@@ -1,7 +1,10 @@
 import { qs, qsa, slugify, uniqueElementId } from "../utils.js";
 
 export function addHeadingLinks(selector: string): void {
-  qsa<HTMLElement>(document, `${selector} h1, ${selector} h2, ${selector} h3`).forEach(
+  // All six levels: a TOC can link an h5.
+  const levels = [1, 2, 3, 4, 5, 6].map((n) => `${selector} h${n}`).join(", ");
+
+  qsa<HTMLElement>(document, levels).forEach(
     (header) => {
       // Astro normally assigns heading ids itself; this only fills the gap for
       // markup that arrived without them.
