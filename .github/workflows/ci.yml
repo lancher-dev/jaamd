@@ -36,6 +36,9 @@ jobs:
       # The client-side id fallback has to agree with the ids Astro emits.
       - run: pnpm test:slug
 
+      # A theme that omits a seed still builds; only this says so.
+      - run: pnpm test:themes
+
       - run: pnpm build
 
       # `astro build` exits 0 even when jaamd skips its remark plugins (it only
