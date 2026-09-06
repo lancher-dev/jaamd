@@ -28,7 +28,9 @@ export default tseslint.config(
       "packages/jaamd/index.ts",
       "packages/jaamd/src/paths.ts",
       "packages/jaamd/src/plugins/**/*.ts",
+      "packages/jaamd/src/themes/index.ts",
       "tests/**/*.mjs",
+      "scripts/**/*.mjs",
     ],
     languageOptions: { globals: globals.node },
   },
@@ -46,7 +48,7 @@ export default tseslint.config(
   },
 
   {
-    files: ["tests/**/*.mjs"],
+    files: ["tests/**/*.mjs", "scripts/**/*.mjs"],
     rules: { "no-console": "off" },
   },
 );
