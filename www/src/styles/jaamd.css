@@ -13,7 +13,7 @@ html {
 
 /* The site's own theme, and the state before the boot script runs. */
 html:not([data-jaamd-theme]),
-html[data-jaamd-theme="jaamd"] {
+html[data-jaamd-theme="default"] {
   --jaamd-bg: var(--identity-background);
   --jaamd-color-fg: var(--identity-foreground);
   --jaamd-color-fg-bright: var(--identity-foreground-bright);
@@ -23,7 +23,7 @@ html[data-jaamd-theme="jaamd"] {
 /* Every package theme, in reverse: the chrome follows the article rather than the
    site knowing each palette. Borders and muted text derive from these in
    identity.css, so four seeds are enough. */
-html[data-jaamd-theme]:not([data-jaamd-theme="jaamd"]) {
+html[data-jaamd-theme]:not([data-jaamd-theme="default"]) {
   --identity-background: var(--jaamd-bg);
   --identity-foreground: var(--jaamd-color-fg);
   --identity-foreground-bright: var(--jaamd-color-fg-bright);

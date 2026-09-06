@@ -3,37 +3,59 @@ import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
 import { Font } from "astro:assets";
 import { themes as packageThemes } from "@lancher-dev/jaamd/themes";
+import type { JaamdTheme } from "@lancher-dev/jaamd/themes";
 import "@lancher-dev/jaamd/default.css";
 import "@lancher-dev/jaamd/styles.css";
 import "../styles/identity.css";
 import "../styles/jaamd.css";
 import "../styles/site.css";
 import SiteThemePicker from "../components/SiteThemePicker.astro";
-import { themeModes, THEME_STORAGE_KEY, SITE_THEME } from "../themes.ts";
+import {
+  themeModes,
+  THEME_STORAGE_KEY,
+  SITE_THEME,
+  shikiKeys,
+} from "../themes.ts";
 
 const require = createRequire(import.meta.url);
+
+/**
+ * Shiki bakes one variable per configured key; this picks which one the code
+ * reads. `.dark` / `:not(.dark)` is not decoration — without it the selector
+ * ties with shiki-dual.css and injection order would decide the winner.
+ */
+function shikiRule(scope: string, key: string) {
+  return `${scope} .jaamd-content .astro-code span,
+${scope} .jaamd-content .shiki span {
+  color: var(--shiki-${key}) !important;
+  font-style: var(--shiki-${key}-font-style) !important;
+  font-weight: var(--shiki-${key}-font-weight) !important;
+  text-decoration: var(--shiki-${key}-text-decoration) !important;
+}`;
+}
 
 // Themes are authored on :root, so importing more than one would just let the
 // last win. Re-scoped here, at build time, so they can coexist and be switched.
 const themeCss = packageThemes
-  .map(({ slug }) => {
+  .map((theme: JaamdTheme) => {
+    const { slug } = theme;
     const source = readFileSync(
       require.resolve(`@lancher-dev/jaamd/themes/${slug}.css`),
       "utf8",
     );
-    const scope = `html[data-jaamd-theme="${slug}"]`;
+    const attr = `[data-jaamd-theme="${slug}"]`;
+    const keys = shikiKeys(theme);
 
-    // Shiki bakes one variable per configured theme; this picks which one the
-    // code reads. More specific than shiki-dual.css, so injection order is moot.
-    const code = `${scope}.dark .jaamd-content .astro-code span,
-${scope}.dark .jaamd-content .shiki span {
-  color: var(--shiki-${slug}) !important;
-  font-style: var(--shiki-${slug}-font-style) !important;
-  font-weight: var(--shiki-${slug}-font-weight) !important;
-  text-decoration: var(--shiki-${slug}-text-decoration) !important;
-}`;
+    const scoped = source
+      .replace(/^:root \{$/m, `html${attr} {`)
+      .replace(/^html\.dark \{$/m, `html.dark${attr} {`);
 
-    return `${source.replace(/^:root \{$/m, `${scope} {`)}\n${code}`;
+    const rules = [
+      keys.light && shikiRule(`html${attr}:not(.dark)`, keys.light),
+      keys.dark && shikiRule(`html.dark${attr}`, keys.dark),
+    ].filter(Boolean);
+
+    return [scoped, ...rules].join("\n");
   })
   .join("\n\n");
 
@@ -52,7 +74,7 @@ const themeScript = `(function () {
 
   var mode = modes[slug];
   var dark = mode === "dark" ||
-    (mode === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+    (mode === "dual" && matchMedia("(prefers-color-scheme: dark)").matches);
 
   document.documentElement.dataset.jaamdTheme = slug;
   document.documentElement.classList.toggle("dark", dark);

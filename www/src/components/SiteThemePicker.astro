@@ -25,7 +25,7 @@ import { siteThemes, SITE_THEME } from "../themes.ts";
     document.documentElement.dataset.jaamdTheme = slug;
     document.documentElement.classList.toggle(
       "dark",
-      mode === "dark" || (mode === "system" && prefersDark.matches),
+      mode === "dark" || (mode === "dual" && prefersDark.matches),
     );
   }
 
@@ -47,10 +47,10 @@ import { siteThemes, SITE_THEME } from "../themes.ts";
         }
       });
 
-      // Only the site's own theme follows the system, and only while it is active.
+      // Dual themes carry both palettes, so they follow the system while active.
       prefersDark.addEventListener("change", () => {
         const slug = document.documentElement.dataset.jaamdTheme;
-        if (slug && themeModes[slug] === "system") apply(slug);
+        if (slug && themeModes[slug] === "dual") apply(slug);
       });
     }
   }

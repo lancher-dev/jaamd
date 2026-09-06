@@ -7,6 +7,8 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+import { themes } from "../../packages/jaamd/src/themes/index.ts";
+
 const DIST = join(process.cwd(), "www", "dist");
 const PAGE = join(DIST, "index.html");
 
@@ -159,16 +161,21 @@ check(
 
 check(
   "themes: the site bridge is scoped too",
-  /\[data-jaamd-theme=("?)jaamd\1\]/.test(css),
+  /\[data-jaamd-theme=("?)default\1\]/.test(css),
   "an unscoped bridge outranks the themes, so only secondary colours would change",
 );
 
-// One Shiki variable per theme is what lets code follow the switch.
-for (const slug of themeSlugs) {
+// One Shiki variable per key is what lets code follow the switch; a dual theme
+// needs two, or one of its two modes keeps the previous theme's syntax colours.
+for (const theme of themes) {
+  const keys =
+    theme.mode === "dual" ? [theme.slug, `${theme.slug}-dark`] : [theme.slug];
+  const absent = keys.filter((key) => !html.includes(`--shiki-${key}:`));
+
   check(
-    `themes: ${slug} has its Shiki colours baked`,
-    html.includes(`--shiki-${slug}:`),
-    `add ${slug} to shikiConfig.themes, or its code blocks keep the previous theme`,
+    `themes: ${theme.slug} has its Shiki colours baked`,
+    absent.length === 0,
+    `missing --shiki-${absent.join(", --shiki-")} in the rendered code`,
   );
 }
 
