@@ -12,6 +12,10 @@
 - [Setup](#setup)
 - [Integration Options](#integration-options)
 - [Markdown Syntax](#markdown-syntax)
+  - [Alerts](#alerts)
+  - [Code tabs](#code-tabs)
+  - [Table of contents](#table-of-contents-1)
+  - [Spoilers](#spoilers)
 - [MarkdownContent Component](#markdowncontent-component)
 - [Client-side Enhancements](#client-side-enhancements)
 - [Theming](#theming)
@@ -93,8 +97,9 @@ jaamd({
   noDefault:  false,            // skip injecting @lancher-dev/jaamd/default variable fallbacks
   plugins: {
     codeTabs:  true,            // :::code-tabs directive blocks
+    toc:       true,            // :::toc directive blocks
     alerts:    true,            // > [!NOTE] / [!WARNING] blockquote alerts
-    directive: true,            // remark-directive (prerequisite for codeTabs)
+    directive: true,            // remark-directive (prerequisite for codeTabs and toc)
   },
 })
 ```
@@ -153,6 +158,56 @@ pnpm install
 :::
 ````
 
+### Table of contents
+
+A `:::toc` block wraps the list you write in a navigation landmark. Nothing is
+generated — entries, order, wording and depth are whatever the markdown says.
+The text in brackets is an optional title.
+
+```markdown
+:::toc[On this page]
+- [Installation](#installation)
+- [Setup](#setup)
+  - [Integration options](#integration-options)
+:::
+```
+
+It renders as:
+
+```html
+<nav class="jaamd-toc" aria-label="On this page">
+  <p class="jaamd-toc-title">On this page</p>
+  <ul>…your list…</ul>
+</nav>
+```
+
+The title is a `<p>`: out of `getHeadings()`, no anchor icon. A `-` list loses
+its bullets, `1.` keeps the numbers. Entries are plain anchors and navigate with
+JavaScript disabled; with it, the entry whose section is on screen is marked
+`aria-current="location"`.
+
+#### Writing the anchors
+
+Heading ids come from Astro, slugged with
+[`github-slugger`](https://github.com/Flet/github-slugger):
+
+| Heading | Anchor |
+|---|---|
+| `## Getting started` | `#getting-started` |
+| `## Details / accordion` | `#details--accordion` — one dash per space, the `/` dropped between them |
+| `## What's new?` | `#whats-new` — punctuation removed, not replaced |
+| `## snake_case` | `#snake_case` — underscores survive |
+| a second `## Setup` | `#setup-1` |
+
+The client-side fallback follows the same rules, so ids match for markdown that
+never went through Astro's pipeline (`set:html`, HTML from a CMS).
+
+With a sticky header, raise `--jaamd-scroll-margin-top` (default `80px`).
+
+> [!NOTE]
+> `:::toc` needs `remark-directive`, on by default. With `plugins: { toc: false }`
+> the block degrades to a plain `<div>`: list and links intact, unstyled.
+
 ### Spoilers
 
 Any element with the `spoiler` class is hidden until activated:
@@ -209,7 +264,8 @@ re-runs on every `astro:page-load`, so it keeps working across View Transitions.
 
 | Enhancement | Behaviour |
 |---|---|
-| Heading links | Adds an anchor to `h1`–`h3`; clicking copies the section URL. Fills in a missing `id` with a Unicode-aware slug, de-duplicated across the page. |
+| Heading links | Adds an anchor to `h1`–`h6`; clicking copies the section URL. Fills in a missing `id` with a `github-slugger`-compatible slug, de-duplicated across the page. |
+| Table of contents | Marks the `:::toc` entry whose section is on screen with `aria-current="location"`. |
 | Copy buttons | Adds a copy button to every `pre`. |
 | Image lightbox | Click an image to open it full-screen. Closes on backdrop click, the ✕ button or <kbd>Esc</kbd>. |
 | Responsive tables | Wraps every `table` in a horizontally scrollable container. |
@@ -265,7 +321,7 @@ Override any variable on `:root` in your own stylesheet:
 Defaults live in `@layer jaamd.defaults`, so an unlayered `:root` block always
 wins regardless of import order.
 
-See [`src/styles/variables.css`](src/styles/variables.css) for all 50 variables
+See [`src/styles/variables.css`](src/styles/variables.css) for all 60 variables
 and their default values.
 
 ### Font sizes
@@ -302,6 +358,8 @@ they are opt-in, one at a time:
 | `--jaamd-font-size-table` | `th` and `td` together | `0.78` × base |
 | `--jaamd-font-size-summary` | `<details>` summary | `0.89` × base |
 | `--jaamd-font-size-alert-title` | alert titles | `0.83` × base |
+| `--jaamd-font-size-toc` | `:::toc` block, contents included | `0.94` × base |
+| `--jaamd-font-size-toc-title` | `:::toc` title | `0.83` × base |
 | `--jaamd-font-size-footnotes` | footnotes block, contents included | `0.85` × base |
 
 A block that owns a token governs what is inside it: paragraphs in a blockquote

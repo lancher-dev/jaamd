@@ -138,6 +138,12 @@
   --jaamd-tabs-btn-active-bg: var(--jaamd-surface-1);
 
 
+  /* ── Table of contents (.jaamd-toc) ─────────────────────── */
+
+  --jaamd-toc-bg:     var(--jaamd-surface-1);
+  --jaamd-toc-border: var(--jaamd-border);
+
+
   /* ── Details / Summary ──────────────────────────────────── */
 
   --jaamd-details-bg:     var(--jaamd-surface-1);
