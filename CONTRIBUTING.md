@@ -11,36 +11,50 @@ pnpm build && pnpm smoke
 ## Themes
 
 A theme is a directory under `packages/jaamd/src/themes/<slug>/` plus one entry in
-`packages/jaamd/src/themes/index.ts`. Themes are welcome as pull requests.
+`packages/jaamd/src/themes/index.js`. Themes are welcome as pull requests.
 
-### 1. Write `index.css`
+The CSS is generated. You write a palette; `pnpm build:themes` writes `index.css`
+and, for a single-palette theme, `dark.css`. Never edit those by hand.
 
-A `:root` block of `--jaamd-*` declarations. A theme with both a light and a dark
-palette adds a second block on `html.dark` and repeats the seeds there; otherwise
-one mode borrows the other's background. These **seeds are required**:
+### 1. Write `palette.js`
 
-| Token | What it is |
-|---|---|
-| `--jaamd-bg` | Page background the palette assumes |
-| `--jaamd-color-fg` | Body text |
-| `--jaamd-color-fg-bright` | Headings, strong, table headers |
-| `--jaamd-color-primary` | Links and accents |
-| `--jaamd-alert-*-color` | The five alert hues: note, tip, important, warning, caution |
+Fourteen colours per palette. A `dual` theme fills both `light` and `dark`, the
+others leave one `null`.
 
-Everything else (surfaces, borders, the table-of-contents card, alert backgrounds)
-is derived from those by `src/styles/variables.css`: a nine-colour theme is
-complete. Omit `--jaamd-bg` and the derived tokens mix against the *default*
-background instead of yours.
+```js
+export default {
+  light: null,
+  dark: {
+    recessed: "#21222c",   // below the background: code-tab header
+    base:     "#282a36",   // the background itself
+    surface:  "#44475a",   // raised: inline code, table rows, spoilers
+    overlay:  "#6272a4",   // borders and rules
+    text:     "#f8f8f2",
+    bright:   "#ffffff",   // headings, strong
 
-Beyond the seeds, override any concrete token an editor scheme defines by hand
-rather than by formula: `--jaamd-code-bg`, `--jaamd-pre-bg` and friends. See an
-existing theme for the full list.
+    primary:      "#bd93f9",
+    primaryLight: "#ff79c6",
+    accent:       "#8be9fd",   // emphasis
 
-Do not restate the font tokens: they are the defaults already.
+    alert: { note: "#8be9fd", tip: "#50fa7b", important: "#bd93f9",
+             warning: "#f1fa8c", caution: "#ff5555" },
+  },
+};
+```
+
+Most palettes document these levels already: Catppuccin has `mantle/base/surface0/
+overlay0/text`, Gruvbox the `bg0_h/bg0/bg1/bg2`, Rosé Pine `base/surface/muted`,
+Tokyo Night `bg_dark/bg/bg_highlight/comment`.
+
+Where a palette wants a token off the recipe, add it under `overrides`:
+
+```js
+    overrides: { "blockquote-fg": "#6272a4" },
+```
 
 ### 2. Declare it
 
-Add an entry to `src/themes/index.ts` with the directory name as `slug` and a
+Add an entry to `src/themes/index.js` with the directory name as `slug` and a
 readable `name`, plus:
 
 | `mode` | The palette is | `shiki` |
@@ -48,20 +62,12 @@ readable `name`, plus:
 | `"light"` / `"dark"` | one palette, applying in both modes | one theme name |
 | `"dual"` | two palettes, `:root` and `html.dark` | `{ light, dark }` |
 
-### 3. Generate the dark variant
+### 3. Generate and check
 
 ```bash
 pnpm build:themes
-```
-
-`dark.css` is `index.css` under `html.dark`: the variant for using a single-palette
-theme only in dark mode. It is generated and committed; never edit it by hand. A
-`dual` theme covers dark mode itself and gets no `dark.css`.
-
-### 4. Check it
-
-```bash
 pnpm test:themes
 ```
 
-It names the missing seed, an unknown Shiki theme, or a stale `dark.css`.
+The test names the missing level, an unknown Shiki theme, a token no other theme
+lacks, or CSS that no longer matches its palette.

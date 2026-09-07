@@ -1,33 +1,121 @@
-/* JAAMD theme: Rosé Pine. Dawn in light, main in dark. */
+/* JAAMD theme: Rosé Pine. Pairs with Shiki theme "rose-pine-dawn" and "rose-pine". */
 
 :root {
-  --jaamd-bg:                     #faf4ed;
-  --jaamd-color-fg:               #575279;
-  --jaamd-color-fg-bright:        #575279;
-  --jaamd-color-primary:          #286983;
-  --jaamd-color-success:          #286983;
-  --jaamd-alert-note-color:       #56949f;
-  --jaamd-alert-tip-color:        #286983;
-  --jaamd-alert-important-color:  #286983;
-  --jaamd-alert-warning-color:    #ea9d34;
-  --jaamd-alert-caution-color:    #b4637a;
+  --jaamd-bg:                   #faf4ed;
+  --jaamd-color-fg:             #575279;
+  --jaamd-color-fg-bright:      #575279;
+  --jaamd-color-primary:        #286983;
+  --jaamd-color-primary-light:  #56949f;
+  --jaamd-color-success:        #286983;
 
-  --jaamd-border-strong:          #9893a5;
-  --jaamd-em-fg:                  #907aa9;
+  --jaamd-heading-border-color: rgba(40, 105, 131, 0.3);
+
+  --jaamd-code-bg:              #fffaf3;
+  --jaamd-code-border:          #9893a5;
+  --jaamd-code-fg:              #575279;
+
+  --jaamd-pre-bg:               #faf4ed;
+  --jaamd-pre-border:           #fffaf3;
+  --jaamd-pre-fg:               #575279;
+
+  --jaamd-copy-btn-bg:          #fffaf3;
+  --jaamd-copy-btn-border:      #9893a5;
+  --jaamd-copy-btn-fg:          #575279;
+  --jaamd-copy-btn-hover-bg:    #9893a5;
+  --jaamd-copy-btn-hover-border:#286983;
+  --jaamd-copy-btn-hover-fg:    #575279;
+
+  --jaamd-blockquote-bg:        #faf4ed;
+  --jaamd-blockquote-border:    #9893a5;
+  --jaamd-blockquote-fg:        #56949f;
+
+  --jaamd-em-fg:                #907aa9;
+  --jaamd-hr-color:             rgba(40, 105, 131, 0.3);
+
+  --jaamd-table-border:         #fffaf3;
+  --jaamd-table-header-bg:      #faf4ed;
+  --jaamd-table-hover-bg:       #fffaf3;
+
+  --jaamd-tabs-border:          #fffaf3;
+  --jaamd-tabs-header-bg:       #f2e9e1;
+  --jaamd-tabs-btn-hover-bg:    #fffaf3;
+  --jaamd-tabs-btn-active-bg:   #faf4ed;
+
+  --jaamd-details-bg:           #faf4ed;
+  --jaamd-details-border:       #fffaf3;
+
+  --jaamd-spoiler-hidden-color: #575279;
+  --jaamd-spoiler-revealed-bg:  #fffaf3;
+  --jaamd-spoiler-revealed-fg:  #575279;
+
+  --jaamd-alert-note-color:     #56949f;
+  --jaamd-alert-note-bg:        rgba(86, 148, 159, 0.1);
+  --jaamd-alert-tip-color:      #286983;
+  --jaamd-alert-tip-bg:         rgba(40, 105, 131, 0.1);
+  --jaamd-alert-important-color:#907aa9;
+  --jaamd-alert-important-bg:   rgba(144, 122, 169, 0.1);
+  --jaamd-alert-warning-color:  #ea9d34;
+  --jaamd-alert-warning-bg:     rgba(234, 157, 52, 0.1);
+  --jaamd-alert-caution-color:  #b4637a;
+  --jaamd-alert-caution-bg:     rgba(180, 99, 122, 0.1);
 }
 
 html.dark {
-  --jaamd-bg:                     #191724;
-  --jaamd-color-fg:               #e0def4;
-  --jaamd-color-fg-bright:        #e0def4;
-  --jaamd-color-primary:          #9ccfd8;
-  --jaamd-color-success:          #9ccfd8;
-  --jaamd-alert-note-color:       #31748f;
-  --jaamd-alert-tip-color:        #9ccfd8;
-  --jaamd-alert-important-color:  #9ccfd8;
-  --jaamd-alert-warning-color:    #f6c177;
-  --jaamd-alert-caution-color:    #eb6f92;
+  --jaamd-bg:                   #191724;
+  --jaamd-color-fg:             #e0def4;
+  --jaamd-color-fg-bright:      #e0def4;
+  --jaamd-color-primary:        #9ccfd8;
+  --jaamd-color-primary-light:  #31748f;
+  --jaamd-color-success:        #9ccfd8;
 
-  --jaamd-border-strong:          #6e6a86;
-  --jaamd-em-fg:                  #c4a7e7;
+  --jaamd-heading-border-color: rgba(156, 207, 216, 0.3);
+
+  --jaamd-code-bg:              #1f1d2e;
+  --jaamd-code-border:          #6e6a86;
+  --jaamd-code-fg:              #e0def4;
+
+  --jaamd-pre-bg:               #191724;
+  --jaamd-pre-border:           #1f1d2e;
+  --jaamd-pre-fg:               #e0def4;
+
+  --jaamd-copy-btn-bg:          #1f1d2e;
+  --jaamd-copy-btn-border:      #6e6a86;
+  --jaamd-copy-btn-fg:          #e0def4;
+  --jaamd-copy-btn-hover-bg:    #6e6a86;
+  --jaamd-copy-btn-hover-border:#9ccfd8;
+  --jaamd-copy-btn-hover-fg:    #e0def4;
+
+  --jaamd-blockquote-bg:        #191724;
+  --jaamd-blockquote-border:    #6e6a86;
+  --jaamd-blockquote-fg:        #31748f;
+
+  --jaamd-em-fg:                #c4a7e7;
+  --jaamd-hr-color:             rgba(156, 207, 216, 0.3);
+
+  --jaamd-table-border:         #1f1d2e;
+  --jaamd-table-header-bg:      #191724;
+  --jaamd-table-hover-bg:       #1f1d2e;
+
+  --jaamd-tabs-border:          #1f1d2e;
+  --jaamd-tabs-header-bg:       #191724;
+  --jaamd-tabs-btn-hover-bg:    #1f1d2e;
+  --jaamd-tabs-btn-active-bg:   #191724;
+
+  --jaamd-details-bg:           #191724;
+  --jaamd-details-border:       #1f1d2e;
+
+  --jaamd-spoiler-hidden-color: #e0def4;
+  --jaamd-spoiler-revealed-bg:  #1f1d2e;
+  --jaamd-spoiler-revealed-fg:  #e0def4;
+
+  --jaamd-alert-note-color:     #31748f;
+  --jaamd-alert-note-bg:        rgba(49, 116, 143, 0.1);
+  --jaamd-alert-tip-color:      #9ccfd8;
+  --jaamd-alert-tip-bg:         rgba(156, 207, 216, 0.1);
+  --jaamd-alert-important-color:#c4a7e7;
+  --jaamd-alert-important-bg:   rgba(196, 167, 231, 0.1);
+  --jaamd-alert-warning-color:  #f6c177;
+  --jaamd-alert-warning-bg:     rgba(246, 193, 119, 0.1);
+  --jaamd-alert-caution-color:  #eb6f92;
+  --jaamd-alert-caution-bg:     rgba(235, 111, 146, 0.1);
 }

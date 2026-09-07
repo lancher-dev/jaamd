@@ -1,18 +1,61 @@
-/* JAAMD theme: Tokyo Night. A dark theme: it applies in both modes. */
+/* JAAMD theme: Tokyo Night. Pairs with Shiki theme "tokyo-night". */
 
 :root {
-  --jaamd-bg:                     #1a1b26;
-  --jaamd-color-fg:               #a9b1d6;
-  --jaamd-color-fg-bright:        #c0caf5;
-  --jaamd-color-primary:          #7aa2f7;
-  --jaamd-color-success:          #9ece6a;
-  --jaamd-alert-note-color:       #7dcfff;
-  --jaamd-alert-tip-color:        #9ece6a;
-  --jaamd-alert-important-color:  #7aa2f7;
-  --jaamd-alert-warning-color:    #e0af68;
-  --jaamd-alert-caution-color:    #f7768e;
+  --jaamd-bg:                   #1a1b26;
+  --jaamd-color-fg:             #a9b1d6;
+  --jaamd-color-fg-bright:      #c0caf5;
+  --jaamd-color-primary:        #7aa2f7;
+  --jaamd-color-primary-light:  #7dcfff;
+  --jaamd-color-success:        #9ece6a;
 
-  --jaamd-border-strong:          #565f89;
-  --jaamd-color-primary-light:    #7dcfff;
-  --jaamd-em-fg:                  #bb9af7;
+  --jaamd-heading-border-color: rgba(122, 162, 247, 0.3);
+
+  --jaamd-code-bg:              #292e42;
+  --jaamd-code-border:          #565f89;
+  --jaamd-code-fg:              #c0caf5;
+
+  --jaamd-pre-bg:               #1a1b26;
+  --jaamd-pre-border:           #292e42;
+  --jaamd-pre-fg:               #a9b1d6;
+
+  --jaamd-copy-btn-bg:          #292e42;
+  --jaamd-copy-btn-border:      #565f89;
+  --jaamd-copy-btn-fg:          #a9b1d6;
+  --jaamd-copy-btn-hover-bg:    #565f89;
+  --jaamd-copy-btn-hover-border:#7aa2f7;
+  --jaamd-copy-btn-hover-fg:    #c0caf5;
+
+  --jaamd-blockquote-bg:        #1a1b26;
+  --jaamd-blockquote-border:    #565f89;
+  --jaamd-blockquote-fg:        #7dcfff;
+
+  --jaamd-em-fg:                #bb9af7;
+  --jaamd-hr-color:             rgba(122, 162, 247, 0.3);
+
+  --jaamd-table-border:         #292e42;
+  --jaamd-table-header-bg:      #1a1b26;
+  --jaamd-table-hover-bg:       #292e42;
+
+  --jaamd-tabs-border:          #292e42;
+  --jaamd-tabs-header-bg:       #16161e;
+  --jaamd-tabs-btn-hover-bg:    #292e42;
+  --jaamd-tabs-btn-active-bg:   #1a1b26;
+
+  --jaamd-details-bg:           #1a1b26;
+  --jaamd-details-border:       #292e42;
+
+  --jaamd-spoiler-hidden-color: #c0caf5;
+  --jaamd-spoiler-revealed-bg:  #292e42;
+  --jaamd-spoiler-revealed-fg:  #a9b1d6;
+
+  --jaamd-alert-note-color:     #7dcfff;
+  --jaamd-alert-note-bg:        rgba(125, 207, 255, 0.1);
+  --jaamd-alert-tip-color:      #9ece6a;
+  --jaamd-alert-tip-bg:         rgba(158, 206, 106, 0.1);
+  --jaamd-alert-important-color:#7aa2f7;
+  --jaamd-alert-important-bg:   rgba(122, 162, 247, 0.1);
+  --jaamd-alert-warning-color:  #e0af68;
+  --jaamd-alert-warning-bg:     rgba(224, 175, 104, 0.1);
+  --jaamd-alert-caution-color:  #f7768e;
+  --jaamd-alert-caution-bg:     rgba(247, 118, 142, 0.1);
 }

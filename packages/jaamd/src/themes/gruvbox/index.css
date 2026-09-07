@@ -1,33 +1,121 @@
-/* JAAMD theme: Gruvbox. Light and dark, following the toggle. */
+/* JAAMD theme: Gruvbox. Pairs with Shiki theme "gruvbox-light-medium" and "gruvbox-dark-medium". */
 
 :root {
-  --jaamd-bg:                     #fbf1c7;
-  --jaamd-color-fg:               #3c3836;
-  --jaamd-color-fg-bright:        #282828;
-  --jaamd-color-primary:          #458588;
-  --jaamd-color-success:          #98971a;
-  --jaamd-alert-note-color:       #458588;
-  --jaamd-alert-tip-color:        #98971a;
-  --jaamd-alert-important-color:  #458588;
-  --jaamd-alert-warning-color:    #d79921;
-  --jaamd-alert-caution-color:    #cc241d;
+  --jaamd-bg:                   #fbf1c7;
+  --jaamd-color-fg:             #3c3836;
+  --jaamd-color-fg-bright:      #282828;
+  --jaamd-color-primary:        #458588;
+  --jaamd-color-primary-light:  #689d6a;
+  --jaamd-color-success:        #98971a;
 
-  --jaamd-border-strong:          #d5c4a1;
-  --jaamd-em-fg:                  #b16286;
+  --jaamd-heading-border-color: rgba(69, 133, 136, 0.3);
+
+  --jaamd-code-bg:              #ebdbb2;
+  --jaamd-code-border:          #d5c4a1;
+  --jaamd-code-fg:              #282828;
+
+  --jaamd-pre-bg:               #fbf1c7;
+  --jaamd-pre-border:           #ebdbb2;
+  --jaamd-pre-fg:               #3c3836;
+
+  --jaamd-copy-btn-bg:          #ebdbb2;
+  --jaamd-copy-btn-border:      #d5c4a1;
+  --jaamd-copy-btn-fg:          #3c3836;
+  --jaamd-copy-btn-hover-bg:    #d5c4a1;
+  --jaamd-copy-btn-hover-border:#458588;
+  --jaamd-copy-btn-hover-fg:    #282828;
+
+  --jaamd-blockquote-bg:        #fbf1c7;
+  --jaamd-blockquote-border:    #d5c4a1;
+  --jaamd-blockquote-fg:        #689d6a;
+
+  --jaamd-em-fg:                #b16286;
+  --jaamd-hr-color:             rgba(69, 133, 136, 0.3);
+
+  --jaamd-table-border:         #ebdbb2;
+  --jaamd-table-header-bg:      #fbf1c7;
+  --jaamd-table-hover-bg:       #ebdbb2;
+
+  --jaamd-tabs-border:          #ebdbb2;
+  --jaamd-tabs-header-bg:       #f9f5d7;
+  --jaamd-tabs-btn-hover-bg:    #ebdbb2;
+  --jaamd-tabs-btn-active-bg:   #fbf1c7;
+
+  --jaamd-details-bg:           #fbf1c7;
+  --jaamd-details-border:       #ebdbb2;
+
+  --jaamd-spoiler-hidden-color: #282828;
+  --jaamd-spoiler-revealed-bg:  #ebdbb2;
+  --jaamd-spoiler-revealed-fg:  #3c3836;
+
+  --jaamd-alert-note-color:     #458588;
+  --jaamd-alert-note-bg:        rgba(69, 133, 136, 0.1);
+  --jaamd-alert-tip-color:      #98971a;
+  --jaamd-alert-tip-bg:         rgba(152, 151, 26, 0.1);
+  --jaamd-alert-important-color:#b16286;
+  --jaamd-alert-important-bg:   rgba(177, 98, 134, 0.1);
+  --jaamd-alert-warning-color:  #d79921;
+  --jaamd-alert-warning-bg:     rgba(215, 153, 33, 0.1);
+  --jaamd-alert-caution-color:  #cc241d;
+  --jaamd-alert-caution-bg:     rgba(204, 36, 29, 0.1);
 }
 
 html.dark {
-  --jaamd-bg:                     #282828;
-  --jaamd-color-fg:               #ebdbb2;
-  --jaamd-color-fg-bright:        #fbf1c7;
-  --jaamd-color-primary:          #83a598;
-  --jaamd-color-success:          #b8bb26;
-  --jaamd-alert-note-color:       #83a598;
-  --jaamd-alert-tip-color:        #b8bb26;
-  --jaamd-alert-important-color:  #83a598;
-  --jaamd-alert-warning-color:    #fabd2f;
-  --jaamd-alert-caution-color:    #fb4934;
+  --jaamd-bg:                   #282828;
+  --jaamd-color-fg:             #ebdbb2;
+  --jaamd-color-fg-bright:      #fbf1c7;
+  --jaamd-color-primary:        #83a598;
+  --jaamd-color-primary-light:  #8ec07c;
+  --jaamd-color-success:        #b8bb26;
 
-  --jaamd-border-strong:          #665c54;
-  --jaamd-em-fg:                  #d3869b;
+  --jaamd-heading-border-color: rgba(131, 165, 152, 0.3);
+
+  --jaamd-code-bg:              #3c3836;
+  --jaamd-code-border:          #504945;
+  --jaamd-code-fg:              #fbf1c7;
+
+  --jaamd-pre-bg:               #282828;
+  --jaamd-pre-border:           #3c3836;
+  --jaamd-pre-fg:               #ebdbb2;
+
+  --jaamd-copy-btn-bg:          #3c3836;
+  --jaamd-copy-btn-border:      #504945;
+  --jaamd-copy-btn-fg:          #ebdbb2;
+  --jaamd-copy-btn-hover-bg:    #504945;
+  --jaamd-copy-btn-hover-border:#83a598;
+  --jaamd-copy-btn-hover-fg:    #fbf1c7;
+
+  --jaamd-blockquote-bg:        #282828;
+  --jaamd-blockquote-border:    #504945;
+  --jaamd-blockquote-fg:        #8ec07c;
+
+  --jaamd-em-fg:                #d3869b;
+  --jaamd-hr-color:             rgba(131, 165, 152, 0.3);
+
+  --jaamd-table-border:         #3c3836;
+  --jaamd-table-header-bg:      #282828;
+  --jaamd-table-hover-bg:       #3c3836;
+
+  --jaamd-tabs-border:          #3c3836;
+  --jaamd-tabs-header-bg:       #1d2021;
+  --jaamd-tabs-btn-hover-bg:    #3c3836;
+  --jaamd-tabs-btn-active-bg:   #282828;
+
+  --jaamd-details-bg:           #282828;
+  --jaamd-details-border:       #3c3836;
+
+  --jaamd-spoiler-hidden-color: #fbf1c7;
+  --jaamd-spoiler-revealed-bg:  #3c3836;
+  --jaamd-spoiler-revealed-fg:  #ebdbb2;
+
+  --jaamd-alert-note-color:     #83a598;
+  --jaamd-alert-note-bg:        rgba(131, 165, 152, 0.1);
+  --jaamd-alert-tip-color:      #b8bb26;
+  --jaamd-alert-tip-bg:         rgba(184, 187, 38, 0.1);
+  --jaamd-alert-important-color:#d3869b;
+  --jaamd-alert-important-bg:   rgba(211, 134, 155, 0.1);
+  --jaamd-alert-warning-color:  #fabd2f;
+  --jaamd-alert-warning-bg:     rgba(250, 189, 47, 0.1);
+  --jaamd-alert-caution-color:  #fb4934;
+  --jaamd-alert-caution-bg:     rgba(251, 73, 52, 0.1);
 }
