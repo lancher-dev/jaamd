@@ -8,8 +8,23 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { bundledThemes } from "shiki";
 
+import { pathToFileURL } from "node:url";
+
 import { themes, REQUIRED_TOKENS } from "../../packages/jaamd/src/themes/index.js";
-import { darkVariant } from "../../scripts/build-themes.mjs";
+import { render, TOKENS } from "../../scripts/build-themes.mjs";
+
+const LEVELS = [
+  "recessed",
+  "base",
+  "surface",
+  "overlay",
+  "text",
+  "bright",
+  "primary",
+  "primaryLight",
+  "accent",
+];
+const ALERTS = ["note", "tip", "important", "warning", "caution"];
 
 const THEMES = join(process.cwd(), "packages", "jaamd", "src", "themes");
 
@@ -60,6 +75,42 @@ for (const slug of slugs) {
     "a dual palette needs a light and a dark Shiki theme to match it",
   );
 
+  // ─── the palette behind it ─────────────────────────────────────────────────
+  // Checked before the CSS: a gap here makes the generator throw, and a stack
+  // trace says less than the name of the missing level.
+
+  const palettePath = join(THEMES, slug, "palette.js");
+
+  if (!existsSync(palettePath)) {
+    check(`${slug}: has palette.js`, false, "the CSS is generated from a palette");
+    continue;
+  }
+
+  const palette = (await import(pathToFileURL(palettePath).href)).default;
+  const sets = [palette.light, palette.dark].filter(Boolean);
+
+  check(
+    `${slug}: palette matches its mode`,
+    dual ? sets.length === 2 : sets.length === 1,
+    dual
+      ? "a dual theme needs both a light and a dark palette"
+      : "a single-palette theme declares one of light or dark, the other null",
+  );
+
+  const gaps = sets.flatMap((set) => [
+    ...LEVELS.filter((level) => !set[level]),
+    ...ALERTS.filter((kind) => !set.alert?.[kind]).map((k) => `alert.${k}`),
+  ]);
+
+  check(
+    `${slug}: palette declares every level`,
+    gaps.length === 0,
+    `missing ${[...new Set(gaps)].join(", ")}`,
+  );
+  if (gaps.length > 0) continue;
+
+  // ─── the CSS it generates ──────────────────────────────────────────────────
+
   const indexPath = join(THEMES, slug, "index.css");
   const darkPath = join(THEMES, slug, "dark.css");
 
@@ -92,15 +143,35 @@ for (const slug of slugs) {
     `missing ${missing.join(", ")}: derived tokens fall back to the default palette`,
   );
 
+  // One kind of file: no theme is richer or poorer than the others.
+  const absent = blocks.flatMap((b) =>
+    TOKENS.filter((token) => !new RegExp(`^\\s*--jaamd-${token}\\s*:`, "m").test(b)),
+  );
+
+  check(
+    `${slug}: declares the whole token set`,
+    absent.length === 0,
+    `missing ${[...new Set(absent)].join(", ")}`,
+  );
+
+  const generated = await render(slug);
+
+  check(
+    `${slug}: index.css is in sync with palette.js`,
+    source === generated.index,
+    "run `pnpm build:themes` and commit the result",
+  );
+
   check(
     `${slug}: dark.css matches its mode`,
     dual
       ? !existsSync(darkPath)
-      : existsSync(darkPath) && readFileSync(darkPath, "utf8") === darkVariant(source),
+      : existsSync(darkPath) && readFileSync(darkPath, "utf8") === generated.dark,
     dual
       ? "a dual theme already covers dark mode; it must not ship a /dark variant"
       : "run `pnpm build:themes` and commit the result",
   );
+
 }
 
 // ─── and nothing is declared that does not exist ─────────────────────────────
