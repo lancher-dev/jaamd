@@ -109,7 +109,7 @@
   /* ── Blockquote ─────────────────────────────────────────── */
 
   --jaamd-blockquote-bg:     var(--jaamd-surface-1);
-  --jaamd-blockquote-border: color-mix(in oklab, var(--jaamd-color-fg) 81%, var(--jaamd-bg));
+  --jaamd-blockquote-border: var(--jaamd-border-strong);
   --jaamd-blockquote-fg:     var(--jaamd-color-primary-light);
 
 
@@ -184,7 +184,6 @@ html.dark {
   --jaamd-border-strong: color-mix(in oklab, var(--jaamd-color-fg) 36%, var(--jaamd-bg));
 
   --jaamd-table-border:          var(--jaamd-border);
-  --jaamd-blockquote-border:     var(--jaamd-border-strong);
   --jaamd-copy-btn-hover-border: var(--jaamd-border-strong);
 
   --jaamd-alert-note-color:      #58a6ff;
