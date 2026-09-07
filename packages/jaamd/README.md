@@ -427,7 +427,9 @@ import { themes } from "@lancher-dev/jaamd/themes";
 // [{ slug: "dracula", name: "Dracula", mode: "dark", shiki: "dracula" }, …]
 ```
 
-To customise one, copy a directory from `src/themes/`. To add one, see
+Each preset is generated from a `palette.js` of fourteen colours, so every theme
+declares the same token set. The `.css` files are build output: to customise a
+preset, copy its directory and edit the palette. To add one, see
 [CONTRIBUTING.md](../../CONTRIBUTING.md#themes).
 
 ### Dual-theme Shiki
