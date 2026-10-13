@@ -5,7 +5,8 @@ pnpm install
 pnpm dev                    # the showcase, on localhost:4321
 pnpm typecheck && pnpm lint
 pnpm test:slug && pnpm test:themes
-pnpm build && pnpm smoke
+pnpm build && pnpm smoke           # on Sätteri, Astro's default
+pnpm build:unified && pnpm smoke   # on unified
 ```
 
 ## Themes
