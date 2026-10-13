@@ -1,7 +1,7 @@
 {
   "name": "@lancher-dev/jaamd",
   "version": "0.9.2",
-  "description": "Add remark plugins, client-side enhancements and styles as a single Astro integration for Markdown content.",
+  "description": "Add markdown plugins, client-side enhancements and styles as a single Astro integration for Markdown content.",
   "type": "module",
   "license": "MIT",
   "author": "Kasui92 <info@lucapattocchio.dev>",
@@ -52,17 +52,22 @@
     "src",
     "README.md"
   ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "peerDependencies": {
-    "astro": ">=7.0.0 <8.0.0"
+    "astro": "^7.3.0"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^7.2.2",
+    "@astrojs/markdown-remark": "^7.3.0",
     "remark-directive": "^4.0.0",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
+    "@astrojs/markdown-satteri": "0.4.3",
     "@types/mdast": "^4.0.4",
-    "astro": "^7.2.0",
+    "astro": "^7.3.8",
+    "satteri": "^0.10.5",
     "typescript": "^6.0.0",
     "unified": "^11.0.0"
   }
