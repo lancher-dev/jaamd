@@ -9,10 +9,13 @@ import remarkDirective from "remark-directive";
 import { remarkAlert } from "./src/plugins/remark-alert.js";
 import remarkCodeTabs from "./src/plugins/remark-code-tabs.js";
 import remarkToc from "./src/plugins/remark-toc.js";
+import { rehypeHeadingLinks, rehypeTableWrapper } from "./src/plugins/rehype.js";
 import {
   satteriAlert,
   satteriCodeTabs,
   satteriDirectiveFallback,
+  satteriHeadingLinks,
+  satteriTableWrapper,
   satteriToc,
 } from "./src/plugins/satteri.js";
 import { paths } from "./src/paths.js";
@@ -61,6 +64,10 @@ export interface JaamdOptions {
     alerts?: boolean;
     /** `:::` directive syntax (prerequisite for codeTabs and toc) */
     directive?: boolean;
+    /** Scroll container around tables */
+    tables?: boolean;
+    /** Anchor link on every heading */
+    headingLinks?: boolean;
   };
 }
 
@@ -72,7 +79,14 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
     noDefault = false,
     plugins   = {},
   } = options;
-  const { codeTabs = true, toc = true, alerts = true, directive = true } = plugins;
+  const {
+    codeTabs = true,
+    toc = true,
+    alerts = true,
+    directive = true,
+    tables = true,
+    headingLinks = true,
+  } = plugins;
 
   return {
     name: "@lancher-dev/jaamd",
@@ -127,7 +141,20 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
           if (needsDirective) {
             processor.options.features = { ...processor.options.features, directive: true };
           }
-          [registered, total] = [missing.length, plugins.length];
+
+          const hastPlugins = [
+            ...(tables ? [satteriTableWrapper] : []),
+            ...(headingLinks ? [satteriHeadingLinks] : []),
+          ];
+          const existingHast = processor.options.hastPlugins;
+          const hastNames = new Set(namesIn(existingHast));
+          const missingHast = hastPlugins.filter((p) => !hastNames.has(p.name));
+
+          processor.options.hastPlugins = [...existingHast, ...missingHast];
+          [registered, total] = [
+            missing.length + missingHast.length,
+            plugins.length + hastPlugins.length,
+          ];
         } else if (isUnified(processor)) {
           const plugins = [
             ...(alerts ? [remarkAlert] : []),
@@ -149,10 +176,23 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
           );
 
           processor.options.remarkPlugins = [...missing, ...existing];
-          [registered, total] = [missing.length, plugins.length];
+
+          const rehypePlugins = [
+            ...(tables ? [rehypeTableWrapper] : []),
+            ...(headingLinks ? [rehypeHeadingLinks] : []),
+          ];
+          const existingRehype = processor.options.rehypePlugins;
+          const rehypeNames = new Set(existingRehype.map(nameOf).filter(Boolean));
+          const missingRehype = rehypePlugins.filter((p) => !rehypeNames.has(nameOf(p)));
+
+          processor.options.rehypePlugins = [...existingRehype, ...missingRehype];
+          [registered, total] = [
+            missing.length + missingRehype.length,
+            plugins.length + rehypePlugins.length,
+          ];
         } else {
           logger.warn(
-            `markdown processor "${processor.name}" is neither Sätteri nor unified; jaamd's plugins (alerts/code-tabs/toc) were not added. Pass them to your processor manually.`,
+            `markdown processor "${processor.name}" is neither Sätteri nor unified; jaamd's markdown plugins were not added. Pass them to your processor manually.`,
           );
           [registered, total] = [0, 0];
         }
@@ -204,8 +244,11 @@ export {
   satteriAlert,
   satteriCodeTabs,
   satteriDirectiveFallback,
+  satteriHeadingLinks,
+  satteriTableWrapper,
   satteriToc,
 } from "./src/plugins/satteri.js";
+export { rehypeHeadingLinks, rehypeTableWrapper } from "./src/plugins/rehype.js";
 export { default as remarkCodeTabs } from "./src/plugins/remark-code-tabs.js";
 export { default as remarkToc } from "./src/plugins/remark-toc.js";
 export { remarkAlert } from "./src/plugins/remark-alert.js";

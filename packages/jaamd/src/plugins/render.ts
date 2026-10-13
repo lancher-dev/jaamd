@@ -1,5 +1,11 @@
 /** Markup shared by the remark and Sätteri plugins. */
 
+import {
+  HEADING_LINK_CLASS,
+  HEADING_LINK_ICON,
+  headingLinkLabel,
+  slugify,
+} from "../scripts/utils.js";
 import { escapeHtml } from "./utils.js";
 
 export const ALERT_MARKER = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i;
@@ -101,6 +107,31 @@ export function tocOpenHtml(label: string): string {
 }
 
 export const TOC_CLOSE_HTML = `</nav>`;
+
+/** Heading ids as Astro assigns them: `github-slugger`, "setup", "setup-1", "setup-2". */
+export function createSlugger(): (text: string) => string {
+  const counts = new Map<string, number>();
+
+  return (text) => {
+    const slug = slugify(text);
+    let result = slug;
+    while (counts.has(result)) {
+      const n = (counts.get(slug) ?? 0) + 1;
+      counts.set(slug, n);
+      result = `${slug}-${n}`;
+    }
+    counts.set(result, 0);
+    return result;
+  };
+}
+
+/** Anchor appended to a heading. */
+export function headingLinkHtml(id: string, text: string): string {
+  return (
+    `<a class="${HEADING_LINK_CLASS}" href="#${escapeHtml(id)}" ` +
+    `aria-label="${escapeHtml(headingLinkLabel(text))}">${HEADING_LINK_ICON}</a>`
+  );
+}
 
 const pathData: Record<string, string> = {
   note: "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z",
