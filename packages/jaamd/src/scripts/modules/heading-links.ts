@@ -1,39 +1,28 @@
-import { qs, qsa, slugify, uniqueElementId } from "../utils.js";
+import {
+  HEADING_LINK_CLASS,
+  HEADING_LINK_ICON,
+  headingLinkLabel,
+  qs,
+  qsa,
+  slugify,
+  uniqueElementId,
+} from "../utils.js";
 
+/** Fallback for markup that skipped the build-time plugin. */
 export function addHeadingLinks(selector: string): void {
   // All six levels: a TOC can link an h5.
   const levels = [1, 2, 3, 4, 5, 6].map((n) => `${selector} h${n}`).join(", ");
 
-  qsa<HTMLElement>(document, levels).forEach(
-    (header) => {
-      // Astro assigns heading ids itself; this fills the gap for markup that
-      // arrived without them.
-      if (!header.id) header.id = uniqueElementId(slugify(header.textContent ?? ""));
-      if (qs(header, ".jaamd-heading-link")) return;
+  qsa<HTMLElement>(document, levels).forEach((header) => {
+    if (!header.id) header.id = uniqueElementId(slugify(header.textContent ?? ""));
+    if (qs(header, `.${HEADING_LINK_CLASS}`)) return;
 
-      const a = document.createElement("a");
-      a.className = "jaamd-heading-link";
-      a.setAttribute("aria-label", `Copy link to section: ${header.textContent}`);
-      a.setAttribute("href", `#${header.id}`);
-      a.title = "Copy link to section";
-      a.innerHTML =
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" ` +
-        `stroke="currentColor" stroke-width="2" stroke-linecap="round" ` +
-        `stroke-linejoin="round" width="1em" height="1em" aria-hidden="true">` +
-        `<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>` +
-        `<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>` +
-        `</svg>`;
+    const a = document.createElement("a");
+    a.className = HEADING_LINK_CLASS;
+    a.setAttribute("aria-label", headingLinkLabel(header.textContent ?? ""));
+    a.setAttribute("href", `#${header.id}`);
+    a.innerHTML = HEADING_LINK_ICON;
 
-      a.addEventListener("click", async () => {
-        const url = `${location.origin}${location.pathname}#${header.id}`;
-        try {
-          await navigator.clipboard.writeText(url);
-        } catch {
-          // clipboard unavailable (e.g. non-secure context): fail silently
-        }
-      });
-
-      header.appendChild(a);
-    },
-  );
+    header.appendChild(a);
+  });
 }

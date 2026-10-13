@@ -32,7 +32,12 @@
   opacity: 0.6;
 }
 
+/* Emitted for all markdown: hidden outside the wrapper. */
 .jaamd-heading-link {
+  display: none;
+}
+
+.jaamd-content .jaamd-heading-link {
   display: inline-flex;
   align-items: center;
   opacity: 0;
@@ -193,6 +198,29 @@
   background-color: var(--jaamd-copy-btn-hover-bg);
   color: var(--jaamd-copy-btn-hover-fg);
   border-color: var(--jaamd-copy-btn-hover-border);
+}
+
+.jaamd-content pre > .jaamd-copy-btn .jaamd-copied-icon,
+.jaamd-content pre > .jaamd-copy-btn[data-copied="true"] .jaamd-copy-icon {
+  display: none;
+}
+
+.jaamd-content pre > .jaamd-copy-btn[data-copied="true"] .jaamd-copied-icon {
+  display: inline;
+}
+
+.jaamd-content pre > .jaamd-copy-btn[data-copied="true"] {
+  color: var(--jaamd-color-success, #22c55e);
+}
+
+/* Screen-reader announcements from the client script. */
+.jaamd-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .jaamd-content pre code {
@@ -405,41 +433,40 @@
 
 /* ─── Lightbox ─────────────────────────────────────────────────────────────── */
 
+/* A modal <dialog> filling the viewport: a click outside the image lands on it. */
 .jaamd-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.jaamd-lightbox[open] {
   display: flex;
   align-items: center;
   justify-content: center;
   animation: jaamd-fade-in 0.2s ease-in-out;
 }
 
-.jaamd-lightbox--hidden {
-  display: none;
-}
-
-.jaamd-lightbox__backdrop {
-  position: absolute;
-  inset: 0;
+.jaamd-lightbox::backdrop {
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
-  cursor: pointer;
 }
 
-.jaamd-lightbox__content {
-  position: relative;
-  max-width: 95vw;
-  max-height: 95vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
+html:has(.jaamd-lightbox[open]) {
+  overflow: hidden;
 }
 
 .jaamd-lightbox__img {
-  max-width: 100%;
+  max-width: 95vw;
   max-height: 95vh;
+  cursor: default;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -478,6 +505,7 @@
 }
 
 .jaamd-content img.jaamd-lightbox-enabled {
+  cursor: pointer;
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
@@ -545,6 +573,15 @@
   display: block;
 }
 
+@media (scripting: none) {
+  .jaamd-content .code-tab-buttons {
+    display: none;
+  }
+  .jaamd-content .code-tab-panel {
+    display: block;
+  }
+}
+
 .jaamd-content .code-tabs pre {
   margin: 0;
   border: none;
@@ -563,12 +600,27 @@
   margin-bottom: 1.5rem;
 }
 
-.jaamd-content .jaamd-details-wrapper {
-  overflow: hidden;
+/* Height animates where `interpolate-size` exists, opacity elsewhere. */
+.jaamd-content details {
+  interpolate-size: allow-keywords;
 }
 
-.jaamd-content .jaamd-details-inner {
-  padding: 0 0.25rem 0.75rem;
+.jaamd-content details::details-content {
+  block-size: 0;
+  padding: 0 0.25rem;
+  opacity: 0;
+  overflow: clip;
+  transition:
+    block-size 0.28s ease,
+    padding 0.28s ease,
+    opacity 0.28s ease,
+    content-visibility 0.28s allow-discrete;
+}
+
+.jaamd-content details[open]::details-content {
+  block-size: auto;
+  padding-bottom: 0.75rem;
+  opacity: 1;
 }
 
 .jaamd-content summary {
@@ -603,12 +655,11 @@
   transform: rotate(90deg);
 }
 
-.jaamd-content details > *:not(summary),
-.jaamd-content .jaamd-details-wrapper > *:first-child {
+.jaamd-content details > summary + * {
   margin-top: 0;
 }
 
-.jaamd-content .jaamd-details-wrapper > *:last-child {
+.jaamd-content details > *:last-child {
   margin-bottom: 0;
 }
 
@@ -860,14 +911,13 @@
 }
 
 /* ─── Reduced motion ────────────────────────────────────────────
-   Scoped to jaamd's own elements, so the host page keeps control of the rest.
-   The details height animation uses the Web Animations API and is handled in
-   the client script instead. */
+   Scoped to jaamd's own elements, so the host page keeps control of the rest. */
 
 @media (prefers-reduced-motion: reduce) {
   .jaamd-content *,
   .jaamd-content *::before,
   .jaamd-content *::after,
+  .jaamd-content details::details-content,
   .jaamd-lightbox,
   .jaamd-lightbox * {
     animation-duration: 0.01ms !important;
