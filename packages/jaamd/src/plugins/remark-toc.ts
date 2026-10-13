@@ -1,9 +1,7 @@
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
 import type { Root } from "mdast";
-import { escapeHtml } from "./utils.js";
-
-const DEFAULT_LABEL = "Table of contents";
+import { TOC_CLOSE_HTML, tocOpenHtml } from "./render.js";
 
 /** Plain text of a label paragraph. */
 function textOf(node: any): string {
@@ -40,21 +38,11 @@ const remarkToc: Plugin<[], Root> = () => {
 
       if (children.length === 0) return;
 
-      // A <p>, not a heading: keeps it out of getHeadings().
-      const titleHtml = label
-        ? `<p class="jaamd-toc-title">${escapeHtml(label)}</p>`
-        : "";
-
       const replacement: any[] = [
-        {
-          type: "html",
-          value:
-            `<nav class="jaamd-toc" aria-label="${escapeHtml(label || DEFAULT_LABEL)}">` +
-            titleHtml,
-        },
+        { type: "html", value: tocOpenHtml(label) },
         // Left as mdast: the list renders normally.
         ...children,
-        { type: "html", value: `</nav>` },
+        { type: "html", value: TOC_CLOSE_HTML },
       ];
 
       parent.children.splice(index, 1, ...replacement);
