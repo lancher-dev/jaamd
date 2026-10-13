@@ -140,6 +140,42 @@ check(
   "the anchor icon stays invisible on the deeper levels",
 );
 
+// ─── markup that no longer waits for the client script ───────────────────────
+
+check(
+  "tables: wrapped at build",
+  countOf(/<table/g) > 0 &&
+    countOf(/<div class="jaamd-table-wrapper">\s*<table/g) === countOf(/<table/g),
+  "the table wrapper plugin did not run; check the hast/rehype registration in index.ts",
+);
+
+check(
+  "heading links: one per markdown heading, pointing at its id",
+  article !== "" &&
+    [...article.matchAll(/<h[1-6][^>]*\sid="([^"]+)"[^>]*>[\s\S]*?<\/h[1-6]>/g)].every(
+      (m) => m[0].includes(`class="jaamd-heading-link" href="#${m[1]}"`),
+    ),
+  "the heading link plugin did not run, or its id disagrees with Astro's",
+);
+
+check(
+  "heading links: hidden outside the wrapper",
+  /(^|\})\.jaamd-heading-link\{display:none\}/.test(css),
+  "anchors emitted for markdown outside .jaamd-content would show unstyled",
+);
+
+check(
+  "code-tabs: every panel shown without scripting",
+  /@media \(?scripting:\s*none\)?/.test(css),
+  "with scripting off only the first tab would be reachable",
+);
+
+check(
+  "copy button: state driven by CSS",
+  css.includes('[data-copied=true]') || css.includes('[data-copied="true"]'),
+  "the copied icon would never show",
+);
+
 // ─── themes ──────────────────────────────────────────────────────────────────
 
 const themeSlugs = [

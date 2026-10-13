@@ -58,6 +58,14 @@ Node, a CommonJS build, or a TypeScript project using
 - `markdown.remarkPlugins` and `markdown.rehypePlugins` still work: Astro moves
   to unified, jaamd adds its remark plugins.
 - Astro `^7.3.0` is required.
+- Heading anchors are plain links: a click navigates, nothing is copied.
+- Table wrappers and heading anchors are in the built HTML. Turn them off with
+  `plugins: { tables: false, headingLinks: false }`.
+- The lightbox is a `<dialog class="jaamd-lightbox">`. `.jaamd-lightbox__backdrop`,
+  `.jaamd-lightbox__content` and `.jaamd-lightbox--hidden` are gone: style
+  `::backdrop` and `[open]`.
+- `<details>` animates in CSS. `.jaamd-details-wrapper` and
+  `.jaamd-details-inner` are gone.
 
 ## Setup
 
@@ -115,6 +123,8 @@ jaamd({
     toc:       true,            // :::toc directive blocks
     alerts:    true,            // > [!NOTE] / [!WARNING] blockquote alerts
     directive: true,            // `:::` syntax (prerequisite for codeTabs and toc)
+    tables:    true,            // scroll container around tables
+    headingLinks: true,         // anchor link on every heading
   },
 })
 ```
@@ -274,19 +284,22 @@ import MarkdownContent from "@lancher-dev/jaamd/components";
 
 ## Client-side Enhancements
 
-A dependency-free ES module (~2 kB gzipped) enhances the rendered markdown. It
-re-runs on every `astro:page-load`, so it keeps working across View Transitions.
+A dependency-free ES module enhances the rendered markdown. Events are
+delegated on `document`; per-element setup re-runs on every `astro:page-load`,
+so it keeps working across View Transitions.
+
+Table wrappers and heading anchors come from the build. The module adds them
+only to markup that skipped the processor (`set:html`, HTML from a CMS).
 
 | Enhancement | Behaviour |
 |---|---|
-| Heading links | Adds an anchor to `h1`–`h6`; clicking copies the section URL. Fills in a missing `id` with a `github-slugger`-compatible slug, de-duplicated across the page. |
+| Heading links | Adds an anchor link to `h1`–`h6` where the build did not. Fills in a missing `id` with a `github-slugger`-compatible slug, de-duplicated across the page. |
 | Table of contents | Marks the `:::toc` entry whose section is on screen with `aria-current="location"`. |
-| Copy buttons | Adds a copy button to every `pre`. |
-| Image lightbox | Click an image to open it full-screen. Closes on backdrop click, the ✕ button or <kbd>Esc</kbd>. |
-| Responsive tables | Wraps every `table` in a horizontally scrollable container. |
+| Copy buttons | Adds a copy button to every `pre`. Without clipboard access it selects the code instead. The only clipboard write in the package. |
+| Image lightbox | Click an image to open it in a modal `<dialog>`. Closes on a click outside the image, the ✕ button or <kbd>Esc</kbd>. |
+| Responsive tables | Wraps a `table` in a horizontally scrollable container where the build did not. |
 | Code tabs | Drives the `:::code-tabs` tablist. |
 | Spoilers | Reveals `.spoiler` content on click or <kbd>Enter</kbd>/<kbd>Space</kbd>. |
-| Details | Animates the height of `<details>` on open/close. |
 
 ### Keyboard
 
@@ -296,8 +309,13 @@ re-runs on every `astro:page-load`, so it keeps working across View Transitions.
 | Spoilers | <kbd>Tab</kbd> to focus, <kbd>Enter</kbd> or <kbd>Space</kbd> to reveal. Hover does not reveal. |
 | Lightbox | <kbd>Esc</kbd> to close. |
 
-Under `prefers-reduced-motion: reduce` the `<details>` animation is skipped and
-JAAMD's CSS transitions are disabled.
+`<details>` animates in CSS, no script: height where the browser supports
+`interpolate-size`, a fade elsewhere.
+
+Under `prefers-reduced-motion: reduce` JAAMD's CSS transitions are disabled.
+
+With scripting disabled, tables still scroll, heading anchors work and every
+code tab panel is shown.
 
 ### Excluding images from the lightbox
 
@@ -483,6 +501,8 @@ import {
   satteriCodeTabs,
   satteriToc,
   satteriDirectiveFallback,
+  satteriTableWrapper,
+  satteriHeadingLinks,
 } from "@lancher-dev/jaamd";
 
 export default defineConfig({
@@ -490,6 +510,7 @@ export default defineConfig({
     processor: satteri({
       features: { directive: true },
       mdastPlugins: [satteriAlert, satteriCodeTabs, satteriToc, satteriDirectiveFallback],
+      hastPlugins: [satteriTableWrapper, satteriHeadingLinks],
     }),
   },
 });
@@ -503,12 +524,20 @@ On unified:
 ```ts
 // astro.config.mjs
 import { unified } from "@astrojs/markdown-remark";
-import { remarkAlert, remarkCodeTabs, remarkDirective, remarkToc } from "@lancher-dev/jaamd";
+import {
+  remarkAlert,
+  remarkCodeTabs,
+  remarkDirective,
+  remarkToc,
+  rehypeTableWrapper,
+  rehypeHeadingLinks,
+} from "@lancher-dev/jaamd";
 
 export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkAlert, remarkDirective, remarkCodeTabs, remarkToc],
+      rehypePlugins: [rehypeTableWrapper, rehypeHeadingLinks],
     }),
   },
 });

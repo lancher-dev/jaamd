@@ -1,6 +1,11 @@
-/** Sätteri mdast plugins. `:::` blocks require `features.directive`. */
+/** Sätteri mdast and hast plugins. `:::` blocks require `features.directive`. */
 
-import type { MdastPluginDefinition, MdastVisitorContext } from "satteri";
+import type {
+  HastPluginDefinition,
+  MdastPluginDefinition,
+  MdastVisitorContext,
+} from "satteri";
+import { TABLE_WRAPPER_CLASS } from "../scripts/utils.js";
 import {
   ALERT_MARKER,
   TOC_CLOSE_HTML,
@@ -8,6 +13,8 @@ import {
   alertTitle,
   codeTabLabel,
   codeTabsHtml,
+  createSlugger,
+  headingLinkHtml,
   tocOpenHtml,
 } from "./render.js";
 
@@ -131,3 +138,47 @@ function keepAsDiv(node: BlockDirective, ctx: MdastVisitorContext): void {
   if (isClaimed(node)) return;
   ctx.setProperty(node, "data", { ...node.data, hName: "div" });
 }
+
+/** Wraps tables in a scroll container. */
+export const satteriTableWrapper: HastPluginDefinition = {
+  name: "jaamd-table-wrapper",
+  element: {
+    filter: ["table"],
+    visit(node, ctx) {
+      ctx.wrapNode(node, {
+        type: "element",
+        tagName: "div",
+        properties: { className: [TABLE_WRAPPER_CLASS] },
+        children: [],
+      });
+    },
+  },
+};
+
+// One slugger per document, keyed on its data bag.
+const sluggers = new WeakMap<object, (text: string) => string>();
+
+/**
+ * Appends the anchor to headings. Astro assigns ids after user plugins, so the
+ * id is set here, with the same slug; Astro keeps an id it finds.
+ */
+export const satteriHeadingLinks: HastPluginDefinition = {
+  name: "jaamd-heading-links",
+  element: {
+    filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
+    visit(node, ctx) {
+      const text = ctx.textContent(node);
+      // Astro resolves frontmatter expressions in these: left to the client.
+      if (text.includes("frontmatter")) return;
+
+      let id = node.properties?.id;
+      if (typeof id !== "string") {
+        const slug = sluggers.get(ctx.data) ?? createSlugger();
+        sluggers.set(ctx.data, slug);
+        id = slug(text);
+        ctx.setProperty(node, "id", id);
+      }
+      ctx.appendChild(node, { type: "raw", value: headingLinkHtml(id, text) });
+    },
+  },
+};
