@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Remark plugins, client-side enhancements and styles as a single <a href="https://astro.build">Astro</a> integration for Markdown content.
+  Markdown plugins, client-side enhancements and styles as a single <a href="https://astro.build">Astro</a> integration for Markdown content.
 </p>
 
 <div align="center">
@@ -42,7 +42,8 @@ Showcase: [jaamd.lancher.dev](https://jaamd.lancher.dev)
 ```bash
 pnpm install
 pnpm dev            # the showcase, on localhost:4321
-pnpm build && pnpm smoke
+pnpm build && pnpm smoke             # on Sätteri, Astro's default
+pnpm build:unified && pnpm smoke     # on unified
 ```
 
 Adding a theme is a directory and a manifest entry: see [CONTRIBUTING.md](/CONTRIBUTING.md#themes).

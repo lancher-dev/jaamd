@@ -1,6 +1,6 @@
 <h1 align="center">JAAMD</h1>
 <p align="center">
-  <b>Just Another Astro Markdown</b> — remark plugins, client-side enhancements and styles as a single Astro integration.
+  <b>Just Another Astro Markdown</b> — markdown plugins, client-side enhancements and styles as a single Astro integration.
 </p>
 
 ---
@@ -40,13 +40,24 @@ npx astro add @lancher-dev/jaamd
 
 | Requirement | Detail |
 |---|---|
-| Astro | `>=7.0.0 <8.0.0` |
+| Astro | `^7.3.0` |
+| Node | `>=22.12.0` |
+| Markdown processor | Sätteri (Astro's default) or `unified()` |
 | Toolchain | Must compile TypeScript and `.astro` sources |
 
 JAAMD is published as source, with no compiled `dist/` and no emitted `.d.ts`.
 It works out of the box in any Astro project, but is not consumable from plain
 Node, a CommonJS build, or a TypeScript project using
 `"moduleResolution": "node16"`.
+
+### Upgrading from 0.9
+
+- jaamd no longer switches the markdown processor. With no configuration you
+  are on Sätteri.
+- Set `markdown.processor: unified()` to stay on unified.
+- `markdown.remarkPlugins` and `markdown.rehypePlugins` still work: Astro moves
+  to unified, jaamd adds its remark plugins.
+- Astro `^7.3.0` is required.
 
 ## Setup
 
@@ -74,8 +85,12 @@ import MarkdownContent from "@lancher-dev/jaamd/components";
 </MarkdownContent>
 ```
 
-The integration registers all remark plugins and injects the stylesheet
-automatically. No other configuration is required.
+The integration registers its plugins on the configured markdown processor and
+injects the stylesheet automatically. No other configuration is required.
+
+The processor is extended, never replaced: Sätteri gets mdast plugins and the
+directive syntax, `unified()` gets the remark plugins. Any other processor is
+left alone, with a warning.
 
 > [!IMPORTANT]
 > `<MarkdownContent>` loads the stylesheets for you. If you render markdown
@@ -99,7 +114,7 @@ jaamd({
     codeTabs:  true,            // :::code-tabs directive blocks
     toc:       true,            // :::toc directive blocks
     alerts:    true,            // > [!NOTE] / [!WARNING] blockquote alerts
-    directive: true,            // remark-directive (prerequisite for codeTabs and toc)
+    directive: true,            // `:::` syntax (prerequisite for codeTabs and toc)
   },
 })
 ```
@@ -205,7 +220,7 @@ never went through Astro's pipeline (`set:html`, HTML from a CMS).
 With a sticky header, raise `--jaamd-scroll-margin-top` (default `80px`).
 
 > [!NOTE]
-> `:::toc` needs `remark-directive`, on by default. With `plugins: { toc: false }`
+> `:::toc` needs the directive syntax, on by default. With `plugins: { toc: false }`
 > the block degrades to a plain `<div>`: list and links intact, unstyled.
 
 ### Spoilers
@@ -457,19 +472,43 @@ Add an inline script in `<head>` to prevent a flash of the wrong theme:
 
 ## Manual / Advanced Usage
 
-To bypass the integration, register the plugins yourself. Astro's default
-markdown processor does not run `markdown.remarkPlugins`, so pass the `unified`
-processor from `@astrojs/markdown-remark` explicitly:
+To bypass the integration, register the plugins yourself on the processor you
+use. On Sätteri, Astro's default:
+
+```ts
+// astro.config.mjs
+import { satteri } from "@astrojs/markdown-satteri";
+import {
+  satteriAlert,
+  satteriCodeTabs,
+  satteriToc,
+  satteriDirectiveFallback,
+} from "@lancher-dev/jaamd";
+
+export default defineConfig({
+  markdown: {
+    processor: satteri({
+      features: { directive: true },
+      mdastPlugins: [satteriAlert, satteriCodeTabs, satteriToc, satteriDirectiveFallback],
+    }),
+  },
+});
+```
+
+`satteriDirectiveFallback` keeps directives no plugin handles, which Sätteri
+drops: blocks as a plain `<div>`, an inline `:name` as typed. Put it last.
+
+On unified:
 
 ```ts
 // astro.config.mjs
 import { unified } from "@astrojs/markdown-remark";
-import { remarkCodeTabs, remarkAlert, remarkDirective } from "@lancher-dev/jaamd";
+import { remarkAlert, remarkCodeTabs, remarkDirective, remarkToc } from "@lancher-dev/jaamd";
 
 export default defineConfig({
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkAlert, remarkDirective, remarkCodeTabs],
+      remarkPlugins: [remarkAlert, remarkDirective, remarkCodeTabs, remarkToc],
     }),
   },
 });

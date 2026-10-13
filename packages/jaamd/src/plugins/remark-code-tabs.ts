@@ -1,7 +1,7 @@
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
 import type { Root } from "mdast";
-import { escapeHtml } from "./utils.js";
+import { codeTabLabel, codeTabsHtml } from "./render.js";
 
 /**
  * Tabbed code blocks: a `:::code-tabs` container wrapping fenced blocks.
@@ -24,48 +24,21 @@ const remarkCodeTabs: Plugin<[], Root> = () => {
       );
       if (codeNodes.length === 0) return;
 
-      const group = `jaamd-tabs-${groupIndex++}`;
-      const tabId = (i: number) => `${group}-tab-${i}`;
-      const panelId = (i: number) => `${group}-panel-${i}`;
-
-      const labels: string[] = codeNodes.map(
-        (cn: any, i: number) => cn.meta || cn.lang || `Tab ${i + 1}`,
+      const html = codeTabsHtml(
+        `jaamd-tabs-${groupIndex++}`,
+        codeNodes.map(codeTabLabel),
       );
 
-      const buttons = labels
-        .map((label, i) => {
-          const selected = i === 0;
-          return (
-            `<button class="code-tab-btn${selected ? " active" : ""}" ` +
-            `id="${tabId(i)}" data-tab-index="${i}" role="tab" ` +
-            `aria-selected="${selected}" aria-controls="${panelId(i)}" ` +
-            // Roving tabindex: only the selected tab is in the tab order.
-            `tabindex="${selected ? 0 : -1}">${escapeHtml(label)}</button>`
-          );
-        })
-        .join("");
-
-      const openHtml =
-        `<div class="code-tabs" id="${group}">` +
-        `<div class="code-tab-buttons" role="tablist">${buttons}</div>`;
-
-      const replacement: any[] = [{ type: "html", value: openHtml }];
+      const replacement: any[] = [{ type: "html", value: html.open }];
 
       codeNodes.forEach((codeNode: any, i: number) => {
-        replacement.push({
-          type: "html",
-          value:
-            `<div class="code-tab-panel${i === 0 ? " active" : ""}" ` +
-            `id="${panelId(i)}" data-tab-index="${i}" role="tabpanel" ` +
-            // Focusable so wide samples can be scrolled by keyboard.
-            `aria-labelledby="${tabId(i)}" tabindex="0">`,
-        });
+        replacement.push({ type: "html", value: html.panelOpen(i) });
         // Strip meta so Shiki doesn't render it as a title annotation
         replacement.push({ ...codeNode, meta: null });
-        replacement.push({ type: "html", value: `</div>` });
+        replacement.push({ type: "html", value: html.panelClose });
       });
 
-      replacement.push({ type: "html", value: `</div>` });
+      replacement.push({ type: "html", value: html.close });
       parent.children.splice(index, 1, ...replacement);
 
       return index + replacement.length;

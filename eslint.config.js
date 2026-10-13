@@ -29,6 +29,7 @@ export default tseslint.config(
       "packages/jaamd/src/paths.ts",
       "packages/jaamd/src/plugins/**/*.ts",
       "packages/jaamd/src/themes/index.ts",
+      "www/astro.config.mjs",
       "tests/**/*.mjs",
       "scripts/**/*.mjs",
     ],
