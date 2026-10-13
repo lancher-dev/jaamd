@@ -28,7 +28,7 @@ export default {
   dark: {
     recessed: "#21222c",   // below the background: code-tab header
     base:     "#282a36",   // the background itself
-    surface:  "#44475a",   // raised: inline code, table rows, spoilers
+    surface:  "#44475a",   // raised: code, table rows, spoilers
     overlay:  "#6272a4",   // borders and rules
     text:     "#f8f8f2",
     bright:   "#ffffff",   // headings, strong

@@ -133,6 +133,7 @@
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   border-width: 1px;
+  border-style: solid;
   border-color: var(--jaamd-code-border);
   border-radius: 0.25rem;
   color: var(--jaamd-code-fg);
@@ -144,6 +145,7 @@
 .jaamd-content pre {
   background-color: var(--jaamd-pre-bg) !important;
   border-width: 1px;
+  border-style: solid;
   border-color: var(--jaamd-pre-border);
   border-radius: 0.5rem;
   padding: 1rem;

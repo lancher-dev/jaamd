@@ -34,12 +34,12 @@ const GROUPS = [
     ["code-fg", "bright"],
   ],
   [
-    ["pre-bg", "base"],
-    ["pre-border", "surface"],
+    ["pre-bg", "surface"],
+    ["pre-border", "overlay"],
     ["pre-fg", "text"],
   ],
   [
-    ["copy-btn-bg", "surface"],
+    ["copy-btn-bg", "base"],
     ["copy-btn-border", "overlay"],
     ["copy-btn-fg", "text"],
     ["copy-btn-hover-bg", "overlay"],
@@ -63,8 +63,8 @@ const GROUPS = [
   [
     ["tabs-border", "surface"],
     ["tabs-header-bg", "recessed"],
-    ["tabs-btn-hover-bg", "surface"],
-    ["tabs-btn-active-bg", "base"],
+    ["tabs-btn-hover-bg", "base"],
+    ["tabs-btn-active-bg", "surface"],
   ],
   [
     ["details-bg", "base"],
