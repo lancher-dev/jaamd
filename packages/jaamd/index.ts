@@ -1,34 +1,28 @@
-import * as astroMarkdownRemark from "@astrojs/markdown-remark";
+import type {
+  MarkdownProcessor,
+  ShikiConfig,
+  UnifiedResolvedOptions,
+} from "@astrojs/markdown-remark";
+import type { SatteriResolvedOptions } from "@astrojs/markdown-satteri";
 import type { AstroIntegration } from "astro";
 import remarkDirective from "remark-directive";
 import { remarkAlert } from "./src/plugins/remark-alert.js";
 import remarkCodeTabs from "./src/plugins/remark-code-tabs.js";
 import remarkToc from "./src/plugins/remark-toc.js";
+import {
+  satteriAlert,
+  satteriCodeTabs,
+  satteriDirectiveFallback,
+  satteriToc,
+} from "./src/plugins/satteri.js";
 import { paths } from "./src/paths.js";
 import { DEFAULT_SELECTOR } from "./src/scripts/utils.js";
 
-interface MarkdownProcessor {
-  name: string;
-  options: { remarkPlugins?: unknown[]; rehypePlugins?: unknown[]; remarkRehype?: unknown };
-}
-
-// `@astrojs/markdown-remark`'s `.d.ts` doesn't declare these yet, though the runtime exports them.
-const { unified, isUnifiedProcessor } = astroMarkdownRemark as unknown as {
-  unified: (opts?: { remarkPlugins?: unknown[]; rehypePlugins?: unknown[]; remarkRehype?: unknown }) => MarkdownProcessor;
-  isUnifiedProcessor: (p: unknown) => boolean;
-};
-
-interface ShikiConfig {
-  theme?: string;
-  themes?: { light: string; dark: string };
-  defaultColor?: string | false;
-  wrap?: boolean;
-}
-
-interface MarkdownConfig {
-  processor?: MarkdownProcessor;
-  shikiConfig?: ShikiConfig;
-}
+// Same check as Astro's `isSatteriProcessor` / `isUnifiedProcessor`.
+const isSatteri = (p: MarkdownProcessor): p is MarkdownProcessor<SatteriResolvedOptions> =>
+  p.name === "satteri";
+const isUnified = (p: MarkdownProcessor): p is MarkdownProcessor<UnifiedResolvedOptions> =>
+  p.name === "unified";
 
 export interface JaamdOptions {
   /**
@@ -55,7 +49,7 @@ export interface JaamdOptions {
   noDefault?: boolean;
 
   /**
-   * Granular control over which remark plugins are registered.
+   * Granular control over which markdown plugins are registered.
    * All enabled by default.
    */
   plugins?: {
@@ -65,12 +59,12 @@ export interface JaamdOptions {
     toc?: boolean;
     /** GitHub-style > [!NOTE] / [!WARNING] alerts */
     alerts?: boolean;
-    /** remark-directive (prerequisite for codeTabs and toc) */
+    /** `:::` directive syntax (prerequisite for codeTabs and toc) */
     directive?: boolean;
   };
 }
 
-/** Registers jaamd's remark plugins and injects its stylesheets. */
+/** Registers jaamd's markdown plugins on the configured processor and injects its stylesheets. */
 export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
   const {
     selector  = DEFAULT_SELECTOR,
@@ -84,52 +78,65 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
     name: "@lancher-dev/jaamd",
     hooks: {
       "astro:config:setup": ({ config, updateConfig, injectScript, logger }) => {
-        const jaamdRemarkPlugins: unknown[] = [];
-        if (alerts) jaamdRemarkPlugins.push(remarkAlert);
-        // directive must come before its consumers
-        if (directive || codeTabs || toc) jaamdRemarkPlugins.push(remarkDirective);
-        if (codeTabs) jaamdRemarkPlugins.push(remarkCodeTabs);
-        if (toc) jaamdRemarkPlugins.push(remarkToc);
+        const needsDirective = directive || codeTabs || toc;
 
-        // Astro types these more precisely than jaamd needs; narrowed once to
-        // the keys the integration touches.
-        const mergedShikiConfig = {
-          ...config.markdown?.shikiConfig,
-        } as unknown as ShikiConfig;
-        const currentProcessor = config.markdown?.processor as
-          | MarkdownProcessor
-          | undefined;
-
-        const isDualTheme = typeof theme === "object" && !!theme.light && !!theme.dark;
+        const shikiConfig: ShikiConfig = { ...config.markdown.shikiConfig };
 
         // Dual-theme mode: { light, dark } → Shiki "themes" with CSS variables
+        const isDualTheme = typeof theme === "object" && !!theme.light && !!theme.dark;
         if (isDualTheme) {
-          delete mergedShikiConfig.theme;
-          mergedShikiConfig.themes = { light: theme.light, dark: theme.dark };
-          mergedShikiConfig.defaultColor = false;
+          delete shikiConfig.theme;
+          shikiConfig.themes = { light: theme.light, dark: theme.dark } as ShikiConfig["themes"];
+          shikiConfig.defaultColor = false;
         } else {
-          mergedShikiConfig.theme = typeof theme === "string" ? theme : "github-light";
+          shikiConfig.theme = (typeof theme === "string" ? theme : "github-light") as ShikiConfig["theme"];
         }
 
-        if (mergedShikiConfig.wrap === undefined) mergedShikiConfig.wrap = true;
+        shikiConfig.wrap ??= true;
 
-        const markdownUpdate: MarkdownConfig = { shikiConfig: mergedShikiConfig };
+        // Extended in place. New arrays, not unshift: a shared processor
+        // would stack duplicates across setup runs.
+        const processor = config.markdown.processor;
+        let registered: number;
+        let total: number;
 
-        // Not public API. On rename jaamd skips its plugins silently; the
-        // scheduled CI run against latest Astro catches it.
-        const ASTRO_DEFAULT_PROCESSOR = "satteri";
+        if (isSatteri(processor)) {
+          const plugins = [
+            ...(alerts ? [satteriAlert] : []),
+            ...(codeTabs ? [satteriCodeTabs] : []),
+            ...(toc ? [satteriToc] : []),
+          ];
+          const existing = processor.options.mdastPlugins;
+          // Entries nest. Factories have no name.
+          const namesIn = (entry: unknown): string[] =>
+            Array.isArray(entry)
+              ? entry.flatMap(namesIn)
+              : entry && typeof entry === "object" && "name" in entry
+                ? [String(entry.name)]
+                : [];
+          const existingNames = new Set(namesIn(existing));
+          const missing = plugins.filter((p) => !existingNames.has(p.name));
 
-        const isUnified = !!currentProcessor && isUnifiedProcessor(currentProcessor);
-        const isDefault =
-          !currentProcessor || currentProcessor.name === ASTRO_DEFAULT_PROCESSOR;
+          // After the user's plugins.
+          const fallback =
+            needsDirective && !existingNames.has(satteriDirectiveFallback.name)
+              ? [satteriDirectiveFallback]
+              : [];
 
-        if (!isDefault && !isUnified) {
-          logger.warn(
-            `a custom \`markdown.processor\` ("${currentProcessor.name}") is already configured; jaamd's remark plugins (alerts/code-tabs) were not added. Pass them to your processor manually.`,
-          );
-        } else {
-          const target = isUnified ? currentProcessor : unified();
-          const existing: unknown[] = target.options.remarkPlugins ?? [];
+          processor.options.mdastPlugins = [...missing, ...existing, ...fallback];
+          if (needsDirective) {
+            processor.options.features = { ...processor.options.features, directive: true };
+          }
+          [registered, total] = [missing.length, plugins.length];
+        } else if (isUnified(processor)) {
+          const plugins = [
+            ...(alerts ? [remarkAlert] : []),
+            // directive must come before its consumers
+            ...(needsDirective ? [remarkDirective] : []),
+            ...(codeTabs ? [remarkCodeTabs] : []),
+            ...(toc ? [remarkToc] : []),
+          ];
+          const existing = processor.options.remarkPlugins;
 
           // Registering a plugin twice re-registers its micromark extensions.
           const nameOf = (p: unknown): string => {
@@ -137,17 +144,22 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
             return typeof fn === "function" ? fn.name : "";
           };
           const existingNames = new Set(existing.map(nameOf).filter(Boolean));
-          const missing = jaamdRemarkPlugins.filter(
+          const missing = plugins.filter(
             (p) => !existing.includes(p) && !existingNames.has(nameOf(p)),
           );
 
-          // New array, not unshift: the processor can be shared between
-          // configs; mutating it stacks duplicates across setup runs.
-          target.options.remarkPlugins = [...missing, ...existing];
-          markdownUpdate.processor = target;
+          processor.options.remarkPlugins = [...missing, ...existing];
+          [registered, total] = [missing.length, plugins.length];
+        } else {
+          logger.warn(
+            `markdown processor "${processor.name}" is neither Sätteri nor unified; jaamd's plugins (alerts/code-tabs/toc) were not added. Pass them to your processor manually.`,
+          );
+          [registered, total] = [0, 0];
+        }
 
+        if (total > 0) {
           logger.info(
-            `markdown processor: ${currentProcessor?.name ?? "none"}, registered ${missing.length}/${jaamdRemarkPlugins.length} remark plugin(s)`,
+            `markdown processor: ${processor.name}, registered ${registered}/${total} plugin(s)`,
           );
         }
 
@@ -157,7 +169,7 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
             // and never reach the Astro compiler.
             ssr: { noExternal: ["@lancher-dev/jaamd"] },
           },
-          markdown: markdownUpdate,
+          markdown: { shikiConfig },
         });
 
         // Stylesheets go through "page-ssr". CSS imported from the client "page"
@@ -187,7 +199,13 @@ export default function jaamd(options: JaamdOptions = {}): AstroIntegration {
   };
 }
 
-// Named re-exports for users who configure remark manually
+// For manual processor setup
+export {
+  satteriAlert,
+  satteriCodeTabs,
+  satteriDirectiveFallback,
+  satteriToc,
+} from "./src/plugins/satteri.js";
 export { default as remarkCodeTabs } from "./src/plugins/remark-code-tabs.js";
 export { default as remarkToc } from "./src/plugins/remark-toc.js";
 export { remarkAlert } from "./src/plugins/remark-alert.js";
