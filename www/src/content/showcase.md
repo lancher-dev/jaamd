@@ -131,8 +131,8 @@ export function hello(name: string): string {
 
 ## Heading links
 
-Hover any heading on this page to reveal the anchor icon. Click it to copy that
-section's URL. All six levels have one, and an anchored heading comes to rest
+Hover any heading on this page to reveal the anchor icon. It links to that
+section. All six levels have one, and an anchored heading comes to rest
 clear of the sticky header above.
 
 ---
@@ -190,7 +190,7 @@ Wrapped in a scroll container, so a wide table never pushes the page sideways.
 | Copy buttons     | any `pre`                  | Resets after 2 s          |
 | Heading links    | `h1`–`h6`                  | Copies the section URL    |
 | Image lightbox   | any `img`                  | Backdrop + Esc to close   |
-| Details          | `<details>`                | Animated height           |
+| Details          | `<details>`                | Animated in CSS           |
 | Spoilers         | `class="spoiler"`          | Click or Enter to reveal  |
 
 ---
