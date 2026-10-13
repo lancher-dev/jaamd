@@ -14,11 +14,11 @@
   --jaamd-code-border:          #4c566a;
   --jaamd-code-fg:              #eceff4;
 
-  --jaamd-pre-bg:               #2e3440;
-  --jaamd-pre-border:           #3b4252;
+  --jaamd-pre-bg:               #3b4252;
+  --jaamd-pre-border:           #4c566a;
   --jaamd-pre-fg:               #d8dee9;
 
-  --jaamd-copy-btn-bg:          #3b4252;
+  --jaamd-copy-btn-bg:          #2e3440;
   --jaamd-copy-btn-border:      #4c566a;
   --jaamd-copy-btn-fg:          #d8dee9;
   --jaamd-copy-btn-hover-bg:    #4c566a;
@@ -38,8 +38,8 @@
 
   --jaamd-tabs-border:          #3b4252;
   --jaamd-tabs-header-bg:       #2e3440;
-  --jaamd-tabs-btn-hover-bg:    #3b4252;
-  --jaamd-tabs-btn-active-bg:   #2e3440;
+  --jaamd-tabs-btn-hover-bg:    #2e3440;
+  --jaamd-tabs-btn-active-bg:   #3b4252;
 
   --jaamd-details-bg:           #2e3440;
   --jaamd-details-border:       #3b4252;
