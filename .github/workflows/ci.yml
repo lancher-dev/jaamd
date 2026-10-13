@@ -41,11 +41,14 @@ jobs:
 
       - run: pnpm build
 
-      # `astro build` exits 0 even when jaamd skips its remark plugins (it only
-      # logs a warning), so a green build is not evidence that the pipeline ran.
-      # This asserts on the rendered HTML, which is what would catch Astro
-      # renaming its default markdown processor out from under us.
+      # `astro build` exits 0 when jaamd skips its plugins (warning only).
+      # Asserts on the rendered HTML; catches a renamed markdown processor.
       - name: Assertions on the built site
+        run: pnpm smoke
+
+      # Same assertions on the remark plugins.
+      - run: pnpm build:unified
+      - name: Assertions on the unified build
         run: pnpm smoke
 
   # `www` pins astro ^7, so the job above never sees a new major. Red here means
@@ -70,4 +73,8 @@ jobs:
       - run: pnpm build
 
       - name: Assertions against the latest Astro
+        run: pnpm smoke
+
+      - run: pnpm build:unified
+      - name: Assertions against the latest Astro, on unified
         run: pnpm smoke

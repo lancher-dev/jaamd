@@ -1,4 +1,5 @@
 import { defineConfig, fontProviders } from "astro/config";
+import { unified } from "@astrojs/markdown-remark";
 import jaamd from "@lancher-dev/jaamd";
 import { shikiThemes } from "./src/themes.ts";
 
@@ -18,8 +19,12 @@ const shikiMultiTheme = {
   },
 };
 
+// `pnpm build:unified` builds on unified. Default: Sätteri.
+const onUnified = process.env.JAAMD_PROCESSOR === "unified";
+
 export default defineConfig({
   site: "https://jaamd.lancher.dev",
+  ...(onUnified ? { markdown: { processor: unified() } } : {}),
   integrations: [
     jaamd({ theme: { light: "github-light", dark: "one-dark-pro" } }),
     shikiMultiTheme,

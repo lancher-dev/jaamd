@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "pnpm --filter www dev",
     "build": "pnpm --filter www build",
+    "build:unified": "JAAMD_PROCESSOR=unified pnpm --filter www build",
     "preview": "pnpm --filter www preview",
     "typecheck": "tsc --noEmit -p packages/jaamd && pnpm --filter www check",
     "lint": "eslint .",

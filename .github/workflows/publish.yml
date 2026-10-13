@@ -32,6 +32,8 @@ jobs:
       # working: build the showcase and assert on the HTML it produces.
       - run: pnpm build
       - run: pnpm smoke
+      - run: pnpm build:unified
+      - run: pnpm smoke
 
       - name: Publish
         working-directory: packages/jaamd
